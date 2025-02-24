@@ -1,7 +1,8 @@
 const express = require('express');
-const cors = require('cors');
-const pool = require('./db');
+// const cors = require('cors');
+// const pool = require('./db');
 const SQL = require('sql-template-strings');
+const port = process.env.PORT || 5000;
 
 const app = express();
 
