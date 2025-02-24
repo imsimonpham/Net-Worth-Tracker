@@ -1,22 +1,39 @@
 const express = require('express');
 const cors = require('cors');
+const { Pool } = require('pg');
+const dotenv = require('dotenv'); 
 const SQL = require('sql-template-strings');
-const port = process.env.PORT || 5000;
 
+dotenv.config();
+const port = process.env.PORT || 5000;
 const app = express();
 
 //middleware
 app.use(cors()); //allow cross origins
 app.use(express.json()); //allow access to request.body for json data
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Needed for Render (SSL is required for connections)
+  },
+});
+
 //ROUTES
 
-// TRANSACTIONS
-//test
-app.get('/', (req, res) => {
-  res.send('This is a test message');
-})
+//TEST
+app.get('/', async (req, res) => {
+  try {
+    // Test the connection with a query
+    const result = await pool.query('SELECT NOW()');
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error connecting to the database', err);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
 
+// TRANSACTIONS
 //create transaction
 app.post('/transactions', async (req, res) => {
   try {
