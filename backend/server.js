@@ -12,6 +12,11 @@ app.use(express.json()); //allow access to request.body for json data
 //ROUTES
 
 // TRANSACTIONS
+//test
+app.get('/', (req, res) => {
+  res.send('This is a test message');
+})
+
 //create transaction
 app.post('/transactions', async (req, res) => {
   try {
