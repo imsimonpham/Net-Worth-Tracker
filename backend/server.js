@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-// const pool = require('./db');
 const SQL = require('sql-template-strings');
 const port = process.env.PORT || 5000;
 
@@ -162,6 +161,6 @@ app.put('/accounts/:id', async (req, res) => {
 })
 
 //START APP
-app.listen(5000, () => {
-  console.log('server has started on port 5000')
+app.listen(port, () => {
+  console.log(`server has started on port ${port}`)
 })
