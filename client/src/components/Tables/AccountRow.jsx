@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import AccountDeleteButton from '../Buttons/AccountDeleteButton';
+import { API_BASE_URL } from '../../functions/data';
 
 export default function AccountRow({account, deleteAccount}){
   //variables
@@ -24,7 +25,7 @@ export default function AccountRow({account, deleteAccount}){
         return;
       } 
       const res = await fetch (
-        `http://localhost:5000/accounts/${id}`, {
+        `${API_BASE_URL}/accounts/${id}`, {
           method: 'PUT', 
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(body)

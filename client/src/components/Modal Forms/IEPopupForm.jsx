@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
 import { convertToFloat, convertDateToSystemFormat } from '../../functions/utilities';
-import { getAccounts } from '../../functions/data';
+import { getAccounts, API_BASE_URL } from '../../functions/data';
 
 export default function IEPopupForm({handleClose, transaction}){
   //variables
@@ -72,8 +72,8 @@ export default function IEPopupForm({handleClose, transaction}){
       }
 
       const url = transaction 
-        ? `http://localhost:5000/transactions/${transaction.id}`
-        : `http://localhost:5000/transactions/`;
+        ? `${API_BASE_URL}/transactions/${transaction.id}`
+        : `${API_BASE_URL}/transactions/`;
         
       const method = transaction ? 'PUT' : 'POST';
       const res = await fetch(url, {

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Table from 'react-bootstrap/Table';
 import TransRow from './TransRow';
-import { getTransactions } from '../../functions/data';
+import { getTransactions, API_BASE_URL } from '../../functions/data';
 
 export default function TransTable(){
   //fetch transactions
@@ -19,7 +19,7 @@ export default function TransTable(){
   const deleteTransaction = async (id) => {
     try{
       const deleteTrans = await fetch(
-        `http://localhost:5000/transactions/${id}`,{
+        `${API_BASE_URL}/transactions/${id}`,{
           method: 'DELETE'
         }
       )

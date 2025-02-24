@@ -1,5 +1,6 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
+import { API_BASE_URL } from '../../functions/data';
 
 export default function AddAccountForm ({handleClose}) {
   // variables
@@ -31,12 +32,11 @@ export default function AddAccountForm ({handleClose}) {
         name: accountName, 
         balance: 0, 
         type: accountType,
-        isActive: true,
-        createdAt: new Date()
+        isActive: true
       }
 
       const res = await fetch(
-        'http://localhost:5000/accounts',
+        `${API_BASE_URL}/accounts`,
         {
           method: 'POST', 
           headers: {'Content-Type': 'application/json'},

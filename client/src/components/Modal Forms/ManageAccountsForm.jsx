@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Table from 'react-bootstrap/Table';
 import AccountRow from '.././Tables/AccountRow';
-import { getAccounts } from '../../functions/data';
+import { getAccounts, API_BASE_URL } from '../../functions/data';
 
 
 export default function ManageAccountsForm () {
@@ -20,7 +20,7 @@ export default function ManageAccountsForm () {
   const deleteAccount = async(id)=> {
     try {
       const deleteAcct = await fetch(
-        `http://localhost:5000/accounts/${id}`, {
+        `${API_BASE_URL}/accounts/${id}`, {
           method: 'DELETE', 
         }
       )
