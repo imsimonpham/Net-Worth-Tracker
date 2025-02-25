@@ -2,10 +2,10 @@ import { useState } from 'react';
 import {Button, Modal, Accordion} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear } from '@fortawesome/free-solid-svg-icons';
-import IEPopupForm from './Modal Forms/IEPopupForm';
-import TransferPopupForm from './Modal Forms/TransferPopupForm';
-import AddAccountForm from './Modal Forms/AddAccountForm'; 
-import ManageAccountsForm from './Modal Forms/ManageAccountsForm';
+import IEPopupForm from '../Modal Forms/IEPopupForm';
+import TransferPopupForm from '../Modal Forms/TransferPopupForm';
+import AddAccountForm from '../Modal Forms/AddAccountForm'; 
+import ManageAccountsForm from '../Modal Forms/ManageAccountsForm';
 
 
 export default function Popup(){

@@ -10,12 +10,22 @@ export  function convertDateToSystemFormat(date) {
   return `${year}-${month}-${day}`;
 }
 
-export function formatDateForUI (stringDate) {
+export function formatDateForUI(stringDate) {
+  // Parse the ISO 8601 string directly with new Date()
   const date = new Date(stringDate);
+
   const options = {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   };
-  return date.toLocaleDateString('en-US', options);
+
+  // Use the UTC version of the date to avoid time zone issues
+  return date.toLocaleDateString('en-US', {
+    ...options,
+    timeZone: 'UTC',
+  });
 }
+
+
+

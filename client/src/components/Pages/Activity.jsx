@@ -1,7 +1,7 @@
-import CashAccountList from "../CashAccountList";
+import CashAccountList from "../Accordions/CashAccountList";
 import TransTable from "../Tables/TransTable";
 
-export default function Spendings(){
+export default function Activity(){
   return (
     <>
       <CashAccountList/>

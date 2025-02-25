@@ -1,9 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import Table from 'react-bootstrap/Table';
+import {Table, Spinner} from 'react-bootstrap';
 import TransRow from './TransRow';
 import { getTransactions, API_BASE_URL } from '../../functions/data';
+import TransFilter from './TransFilter';
 
 export default function TransTable(){
+  //filter data
+  const [dateRange, setDateRange] = useState(30);
+  const [account, setAccount] = useState('All accounts');
+  const [transactionType, setTransactionType] = useState('All Transaction Types');
+
+
   //fetch transactions
   const [transactions, setTransactions] = useState([]);
   const getTrans = async() => {
@@ -14,6 +21,37 @@ export default function TransTable(){
   useEffect(()=>{
     getTrans();
   }, [])
+
+  //apply filters
+  const filterByDate = (transactions, dateRange) => {
+    const today = new Date();
+    let pastDate = new Date();
+  
+    if (dateRange === 30) {
+      pastDate.setDate(today.getDate() - 30); 
+    } else if (dateRange === 60) {
+      pastDate.setDate(today.getDate() - 60); 
+    } else if (dateRange === 90) {
+      pastDate.setDate(today.getDate() - 90);
+    } else {
+      pastDate = null; 
+    }
+  
+    return transactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return !pastDate || transactionDate >= pastDate; //decide if each transaction should be included
+    });
+  };
+
+  const filterByTransactionType = (transactions, transactionType) => {
+    return transactions.filter((transaction) => {
+      console.log(transactionType)
+      return transactionType === 'All Transaction Types' || transactionType === transaction.transType;
+    })
+  }
+
+  let filteredTransactions = filterByDate(transactions, dateRange);
+  filteredTransactions = filterByTransactionType(filteredTransactions, transactionType);
 
   //delete transaction
   const deleteTransaction = async (id) => {
@@ -33,6 +71,9 @@ export default function TransTable(){
 
   return(
     <div className="section-primary">
+      <TransFilter 
+        dateRange={dateRange} setDateRange={setDateRange} 
+        transactionType={transactionType} setTransactionType={setTransactionType}/>
       <Table className="table table-hover">
         <thead>
           <tr>
@@ -47,12 +88,11 @@ export default function TransTable(){
           </tr>
         </thead>
         <tbody>
-          {transactions
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .map((transaction)=>(
-            <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction}/>
-            ))
-          }
+        {filteredTransactions
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .map((transaction) => (
+            <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} />
+        ))}
         </tbody>
       </Table>
     </div>
