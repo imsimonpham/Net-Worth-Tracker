@@ -7,7 +7,8 @@ import { convertToFloat } from '../../functions/utilities';
 export default function AccountDeleteButton({account, deleteAccount}){
   const [show, setShow] = useState(false);
   const handleBalanceVerification = () => {
-    if(convertToFloat(account.balance) === 0){
+    if(convertToFloat(account.cashBalance) === 0 
+       && convertToFloat(account.investmentBalance) === 0){
       setShow(true);
     } else {
       alert("The account must have a zero balance before it can be deleted.")
