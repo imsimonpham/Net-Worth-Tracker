@@ -43,15 +43,21 @@ export default function TransTable(){
     });
   };
 
+  const filterbyAccount = (transactions, account) => {
+    return transactions.filter((transaction)=> {
+      return account === 'All accounts' || (account === transaction.fromAcct ||account === transaction.toAcct)
+    })
+  }
+
   const filterByTransactionType = (transactions, transactionType) => {
     return transactions.filter((transaction) => {
-      console.log(transactionType)
       return transactionType === 'All Transaction Types' || transactionType === transaction.transType;
     })
   }
 
   let filteredTransactions = filterByDate(transactions, dateRange);
   filteredTransactions = filterByTransactionType(filteredTransactions, transactionType);
+  filteredTransactions = filterbyAccount(filteredTransactions, account);
 
   //delete transaction
   const deleteTransaction = async (id) => {
@@ -73,6 +79,7 @@ export default function TransTable(){
     <div className="section-primary">
       <TransFilter 
         dateRange={dateRange} setDateRange={setDateRange} 
+        account={account} setAccount={setAccount}
         transactionType={transactionType} setTransactionType={setTransactionType}/>
       <Table className="table table-hover">
         <thead>

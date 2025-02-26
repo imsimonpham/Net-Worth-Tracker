@@ -50,7 +50,11 @@ export default function Popup(){
         </Accordion.Item>
       </Accordion>
 
-      <Modal className='modal-container' show={activeModal !== null} onHide={handleClose}>
+      <Modal 
+        className='modal-container' 
+        show={activeModal !== null} 
+        onHide={handleClose}
+        dialogClassName="modal-100w">
         <Modal.Header>
           <Modal.Title className='h5'>
             {activeModal === 'IE' && 'Income/Expense Transaction'}

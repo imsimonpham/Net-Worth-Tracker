@@ -1,5 +1,4 @@
 const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
-
 export {API_BASE_URL};
 
 export const getAccounts = async () => {

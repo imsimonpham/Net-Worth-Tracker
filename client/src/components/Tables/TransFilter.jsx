@@ -14,8 +14,6 @@ export default function TransFilter({dateRange, setDateRange, account, setAccoun
       loadAccounts();
     }, []);
 
-
-  
   return (
     <div className='mb-3 d-flex'>
       <Form.Select
@@ -30,6 +28,7 @@ export default function TransFilter({dateRange, setDateRange, account, setAccoun
       </Form.Select>
       <Form.Select
         className='dropdown-filter me-3'
+        onChange={(e) => setAccount(e.target.value)}
       >
         <option value="All accounts">All accounts</option>
         {

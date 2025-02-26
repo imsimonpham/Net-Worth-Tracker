@@ -7,10 +7,11 @@ export default function AccountTable ({accounts, deleteAccount}) {
     <Table className="table" borderless>
       <thead>
         <tr>
-          <th className="fw-bold" style={{width: "35%"}}>Account Name</th>
-          <th className="fw-bold" style={{width: "30%"}}>Account Type</th>
-          <th className="fw-bold" style={{width: "30%"}}>Balance</th>
-          <th className="fw-bold" style={{width: "5%"}}></th>
+          <th className="fw-bold align-middle" style={{width: "25%"}}>Account Name</th>
+          <th className="fw-bold align-middle" style={{width: "20%"}}>Account Type</th>
+          <th className="fw-bold align-middle" style={{width: "25%"}}>Cash Balance</th>
+          <th className="fw-bold align-middle" style={{width: "25%"}}>Investment Balance</th>
+          <th className="fw-bold align-middle" style={{width: "5%"}}></th>
         </tr>
       </thead>
       <tbody>

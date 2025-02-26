@@ -119,15 +119,14 @@ app.put('/transactions/:id', async (req, res) => {
 app.post('/accounts', async (req, res) => {
   try {
     const name = req.body.name;
-    const balance = req.body.balance;
     const type = req.body.type;
     const isActive = req.body.isActive;
 
     const newAccount = await pool.query(SQL`
       INSERT INTO account
-        ("name", "balance", "type", "isActive")
+        ("name", "type", "isActive")
       VALUES
-        (${name}, ${balance}, ${type}, ${isActive})  
+        (${name}, ${type}, ${isActive})  
       RETURNING *
     `)
 

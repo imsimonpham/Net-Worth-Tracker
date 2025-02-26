@@ -30,7 +30,8 @@ export default function AddAccountForm ({handleClose}) {
     try{
       const body = {
         name: accountName, 
-        balance: 0, 
+        cashBalance: 0, 
+        investmentBalance: 0,
         type: accountType,
         isActive: true
       }
@@ -58,7 +59,10 @@ export default function AddAccountForm ({handleClose}) {
             <Form.Control type="text" 
               value={accountName} 
               onChange={handleAccountNameChange}/>
-              {errors.accountName && <div className="text-danger">{errors.accountName}</div>}
+              {
+                errors.accountName && 
+                <div className="text-danger">{errors.accountName}</div>
+              }
           </Form.Group>
         </Col>
       </Row>
