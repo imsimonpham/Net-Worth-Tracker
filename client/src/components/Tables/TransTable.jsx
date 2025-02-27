@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {Table, Spinner} from 'react-bootstrap';
+import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
 import { getTransactions, API_BASE_URL } from '../../functions/data';
-import TransFilter from './TransFilter';
+import TransFilter from '../Customs/TransFilter';
 
 export default function TransTable(){
   //filter data
-  const [dateRange, setDateRange] = useState(30);
+  const [dateRange, setDateRange] = useState(30); 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
   const [account, setAccount] = useState('All accounts');
   const [transactionType, setTransactionType] = useState('All Transaction Types');
 
@@ -23,23 +26,26 @@ export default function TransTable(){
   }, [])
 
   //apply filters
-  const filterByDate = (transactions, dateRange) => {
+  const filterByDate = (transactions, startDate, endDate) => {  
     const today = new Date();
     let pastDate = new Date();
-  
-    if (dateRange === 30) {
-      pastDate.setDate(today.getDate() - 30); 
-    } else if (dateRange === 60) {
-      pastDate.setDate(today.getDate() - 60); 
-    } else if (dateRange === 90) {
-      pastDate.setDate(today.getDate() - 90);
-    } else {
-      pastDate = null; 
+    
+    // Default to 30 days if no custom range is provided
+    if (!startDate || !endDate) {
+      pastDate.setDate(today.getDate() - 30);
+      return transactions.filter((transaction) => {
+          const transactionDate = new Date(transaction.date);
+          return transactionDate >= pastDate && transactionDate <= today;
+      });
     }
-  
+    
+    // Use custom range if provided
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
     return transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.date);
-      return !pastDate || transactionDate >= pastDate; //decide if each transaction should be included
+      return transactionDate >= start && transactionDate <= end;
     });
   };
 
@@ -55,7 +61,7 @@ export default function TransTable(){
     })
   }
 
-  let filteredTransactions = filterByDate(transactions, dateRange);
+  let filteredTransactions = filterByDate(transactions, startDate, endDate);
   filteredTransactions = filterByTransactionType(filteredTransactions, transactionType);
   filteredTransactions = filterbyAccount(filteredTransactions, account);
 
@@ -79,7 +85,9 @@ export default function TransTable(){
     <div className="section-primary">
       <TransFilter 
         dateRange={dateRange} setDateRange={setDateRange} 
-        account={account} setAccount={setAccount}
+        startDate={startDate} setStartDate={setStartDate}
+        endDate={endDate} setEndDate={setEndDate}
+        setAccount={setAccount}
         transactionType={transactionType} setTransactionType={setTransactionType}/>
       <Table className="table table-hover">
         <thead>

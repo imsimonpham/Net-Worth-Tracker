@@ -26,6 +26,3 @@ export function formatDateForUI(stringDate) {
     timeZone: 'UTC',
   });
 }
-
-
-
