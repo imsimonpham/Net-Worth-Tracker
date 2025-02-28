@@ -163,7 +163,7 @@ app.delete('/accounts/:id', async (req, res) => {
 })
 
 //update account name
-app.put('/accounts/balance/:id', async (req, res) => {
+app.put('/accounts/name/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const name = req.body.name;
@@ -181,7 +181,7 @@ app.put('/accounts/balance/:id', async (req, res) => {
 })
 
 // update account balance (income)
-app.put('/accounts/name/:id', async (req, res)=> {
+app.put('/accounts/balance/:id', async (req, res)=> {
   try {
     const id = req.params.id;
     const cashBalance = req.body.cashBalance;
