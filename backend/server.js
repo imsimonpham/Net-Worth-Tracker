@@ -162,7 +162,7 @@ app.delete('/accounts/:id', async (req, res) => {
   }
 })
 
-// update account
+//update account name
 app.put('/accounts/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -176,6 +176,24 @@ app.put('/accounts/:id', async (req, res) => {
 
     res.json('Account was updated successfully');
   } catch (err) {
+    console.error(err.message);
+  }
+})
+
+// update account balance (income)
+app.put('/accounts/:id', async (req, res)=> {
+  try {
+    const id = req.params.id;
+    const cashBalance = req.body.cashBalance;
+
+    const updateAcct = await pool.query(SQL`
+      UPDATE account
+      SET "cashBalance" = ${cashBalance}
+      WHERE id = ${id};
+    `);
+
+    res.json ('Account balance has been updated successfully');
+  } catch (err){
     console.error(err.message);
   }
 })
