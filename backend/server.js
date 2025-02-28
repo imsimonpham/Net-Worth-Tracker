@@ -5,7 +5,8 @@ const dotenv = require('dotenv');
 const SQL = require('sql-template-strings');
 
 dotenv.config();
-const port = process.env.PORT || 5000;
+// const port = process.env.PORT || 5000;
+const port = 5000;
 const app = express();
 
 //middleware
