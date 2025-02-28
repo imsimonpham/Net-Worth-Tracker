@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
-import { getTransactions, API_BASE_URL } from '../../functions/data';
+import { getTransactions, deleteTransactionById } from '../../functions/data';
 import TransFilter from '../Customs/TransFilter';
 
 export default function TransTable(){
@@ -67,18 +67,10 @@ export default function TransTable(){
 
   //delete transaction
   const deleteTransaction = async (id) => {
-    try{
-      const deleteTrans = await fetch(
-        `${API_BASE_URL}/transactions/${id}`,{
-          method: 'DELETE'
-        }
-      )
-      setTransactions(transactions.filter(
-        transaction => transaction.id !== id
-      ))
-    } catch (err){
-      console.error(err.message);
-    }
+    const deleteTrans = await deleteTransactionById(id);
+    setTransactions(transactions.filter(
+      transaction => transaction.id !== id
+    ))
   }
 
   return(

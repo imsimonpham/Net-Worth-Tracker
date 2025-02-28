@@ -4,17 +4,17 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv'); 
 const SQL = require('sql-template-strings');
 
+const isDev = true;
+
 dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
-
-const isDev = true;
 
 //middleware
 app.use(cors()); //allow cross origins
 app.use(express.json()); //allow access to request.body for json data
 
-const pool = isDev 
+const pool = isDev
   ? require('./db') 
   : new Pool({
       connectionString: process.env.DATABASE_URL,
@@ -180,24 +180,6 @@ app.put('/accounts/name/:id', async (req, res) => {
 
     res.json('Account was updated successfully');
   } catch (err) {
-    console.error(err.message);
-  }
-})
-
-// update account balance (income)
-app.put('/accounts/balance/:id', async (req, res)=> {
-  try {
-    const id = req.params.id;
-    const cashBalance = req.body.cashBalance;
-
-    const updateAcct = await pool.query(SQL`
-      UPDATE account
-      SET "cashBalance" = ${cashBalance}
-      WHERE id = ${id};
-    `);
-
-    res.json ('Account balance has been updated successfully');
-  } catch (err){
     console.error(err.message);
   }
 })

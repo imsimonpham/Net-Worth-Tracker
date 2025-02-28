@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AccountTable from '../Tables/AccountTable';
-import { getAccounts, API_BASE_URL } from '../../functions/data';
+import { getAccounts, deleteAccountById } from '../../functions/data';
 
 
 export default function ManageAccountsForm () {
@@ -16,20 +16,11 @@ export default function ManageAccountsForm () {
   }, []);
 
   //delete accounts
-  const deleteAccount = async(id)=> {
-    try {
-      const deleteAcct = await fetch(
-        `${API_BASE_URL}/accounts/${id}`, {
-          method: 'DELETE', 
-        }
-      )
-
-      setAccounts(accounts.filter(
-        account => account.id !== id
-      ));
-    } catch (err){
-      console.error(err.message);
-    }
+  const deleteAccount = async (id) => {
+    const deleteAcct = await deleteAccountById(id);
+    setAccounts(accounts.filter(
+      account => account.id !== id
+    ));
   }
   
   return (

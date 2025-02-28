@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { convertToFloat, convertDateToSystemFormat } from "../../functions/utilities";
-import { getAccounts, API_BASE_URL } from "../../functions/data";
+import { getAccounts, updateTransaction, createNewTransaction } from "../../functions/data";
 
 export default function TransferPopupForm({handleClose, transaction}){
   // variables
@@ -52,36 +52,55 @@ export default function TransferPopupForm({handleClose, transaction}){
   }
 
   //create new transaction
+  const upsertTransaction = async () => {
+    const body = {
+      date: date, 
+      transType: 'Transfer', 
+      category: 'Transfer', 
+      amount: amount, 
+      fromAcct: sendingAccount, 
+      toAcct: receivingAccount, 
+      note: note
+    }
+
+    const upsertTransaction = transaction ? 
+      await updateTransaction(transaction.id, body) : 
+      await createNewTransaction(body);
+    
+    window.location = '/';
+    handleClose();
+  }
+
   const onSubmitForm = async(e) => {
     e.preventDefault(); 
     if(!isFormDataValid()) return;
+    upsertTransaction();
+    // try{
+    //   const body = {
+    //     date: date, 
+    //     transType: 'Transfer', 
+    //     category: 'Transfer', 
+    //     amount: amount, 
+    //     fromAcct: sendingAccount, 
+    //     toAcct: receivingAccount, 
+    //     note: note
+    //   }
 
-    try{
-      const body = {
-        date: date, 
-        transType: 'Transfer', 
-        category: 'Transfer', 
-        amount: amount, 
-        fromAcct: sendingAccount, 
-        toAcct: receivingAccount, 
-        note: note
-      }
+    //   const url = transaction 
+    //   ? `${API_BASE_URL}/transactions/${transaction.id}`
+    //   : `${API_BASE_URL}/transactions/`;
 
-      const url = transaction 
-      ? `${API_BASE_URL}/transactions/${transaction.id}`
-      : `${API_BASE_URL}/transactions/`;
+    //   const method = transaction ? 'PUT': 'POST'
+    //   const res = await fetch(url, {
+    //     method: method, 
+    //     headers: {'Content-Type': 'application/json'},
+    //     body: JSON.stringify(body)
+    //   })
 
-      const method = transaction ? 'PUT': 'POST'
-      const res = await fetch(url, {
-        method: method, 
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(body)
-      })
-
-      window.location = '/';
-    } catch(err) {
-      console.error(err.message);
-    }
+    //   window.location = '/';
+    // } catch(err) {
+    //   console.error(err.message);
+    // }
   }
 
   return (

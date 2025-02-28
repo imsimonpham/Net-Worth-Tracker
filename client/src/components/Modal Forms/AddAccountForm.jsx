@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import { API_BASE_URL } from '../../functions/data';
+import {createNewAccount } from '../../functions/data';
 
 export default function AddAccountForm ({handleClose}) {
   // variables
@@ -23,31 +23,21 @@ export default function AddAccountForm ({handleClose}) {
   }
 
   //create new account
+  const createAccount = async () => {
+    const body = {
+      name: accountName, 
+      cashBalance: 0, 
+      investmentBalance: 0,
+      type: accountType,
+      isActive: true
+    };
+    const newAccount = await createNewAccount(body);
+  }
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-
-    try{
-      const body = {
-        name: accountName, 
-        cashBalance: 0, 
-        investmentBalance: 0,
-        type: accountType,
-        isActive: true
-      }
-
-      const res = await fetch(
-        `${API_BASE_URL}/accounts`,
-        {
-          method: 'POST', 
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(body)
-        }
-      )
-      window.location = '/';
-    } catch (err) {
-      console.error(err.message)
-    }
+    createAccount();
   }
 
   return (

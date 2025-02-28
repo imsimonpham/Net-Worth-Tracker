@@ -3,8 +3,7 @@ import { Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import { getAccounts} from '../../functions/data';
 import { formatDateForUI } from '../../functions/utilities';
 
-export default function TransFilter({
-  dateRange, setDateRange, 
+export default function TransFilter({ 
   startDate, setStartDate,
   endDate, setEndDate, 
   setAccount, 
@@ -42,8 +41,6 @@ export default function TransFilter({
       setDateString(`${formatDateForUI(startDate)} - ${formatDateForUI(newEndDate)}`);
     }  
   };
-
-
 
   return (
     <div className='mb-3 d-flex'>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import AccountDeleteButton from '../Buttons/AccountDeleteButton';
-import { API_BASE_URL } from '../../functions/data';
+import {updateAccountNameById } from '../../functions/data';
 
 export default function AccountRow({account, deleteAccount}){
   //variables
@@ -13,27 +13,17 @@ export default function AccountRow({account, deleteAccount}){
   const accountNameChange = (e) => setAccountName(e.target.value);
   const handleBlur = (e) => {
     setAccountName(e.target.value);
-    updateAccount(account.id);
+    updateAccountName(account.id);
     setIsEditing(false);
   }
 
-  const updateAccount = async (id) => {
-    try {
-      const body = {name: accountName}
-      if(!accountName) {
-        setAccountName(account.name); 
-        return;
-      } 
-      const res = await fetch (
-        `${API_BASE_URL}/accounts/${id}`, {
-          method: 'PUT', 
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(body)
-        }
-      )
-    } catch (err) {
-      console.error(err.message);
-    }
+  const updateAccountName = async (id) => {
+    const body = {name: accountName}
+    if(!accountName) {
+      setAccountName(account.name); 
+      return;
+    } 
+    const account = await updateAccountNameById(id, body);
   }
 
   return (
@@ -60,6 +50,7 @@ export default function AccountRow({account, deleteAccount}){
       <td>{account.type}</td>
       <td>{account.cashBalance}</td>
       <td>{account.investmentBalance}</td>
+      <td>{account.totalBalance}</td>
       <td style={{textAlign: "right"}}>
         <AccountDeleteButton 
           account={account} deleteAccount={deleteAccount}/>

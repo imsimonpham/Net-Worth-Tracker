@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
 import { convertToFloat, convertDateToSystemFormat } from '../../functions/utilities';
-import { getAccounts, API_BASE_URL } from '../../functions/data';
+import { getAccounts, updateTransaction, createNewTransaction } from '../../functions/data';
 
 export default function IEPopupForm({handleClose, transaction}){
   //variables
@@ -30,16 +30,17 @@ export default function IEPopupForm({handleClose, transaction}){
   const handleAccountChange = (e) => setAccount(e.target.value);
   const handleNoteChange = (e) => setNote(e.target.value);
 
-   // fetch accounts
-   const [accounts, setAccounts] = useState([]);
-   const loadAccounts = async () => {
-     const accounts = await getAccounts();
-     setAccounts(accounts);
-   }
- 
-   useEffect(()=> {
-     loadAccounts();
-   }, []);
+  // fetch accounts
+  const [accounts, setAccounts] = useState([]);
+  const loadAccounts = async () => {
+    const accounts = await getAccounts();
+    setAccounts(accounts);
+  }
+
+  useEffect(()=> {
+    loadAccounts();
+  }, []);
+
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -56,38 +57,29 @@ export default function IEPopupForm({handleClose, transaction}){
   }
 
   // create new transaction
+  const upsertTransaction = async () => {
+    const body = {
+      date: date,
+      transType: transactionType,
+      category: category, 
+      amount: amount, 
+      fromAcct: transactionType === 'Expense' ? account : '',
+      toAcct: transactionType === 'Income' ? account : '',
+      note: note
+    }
+
+    const upsertTransaction = transaction ? 
+      await updateTransaction(transaction.id, body) : 
+      await createNewTransaction(body);
+
+    window.location = '/';
+    handleClose();
+  }
+
   const onSubmitForm = async(e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-
-    try{
-      const body = {
-        date: date,
-        transType: transactionType,
-        category: category, 
-        amount: amount, 
-        fromAcct: transactionType === 'Expense' ? account : '',
-        toAcct: transactionType === 'Income' ? account : '',
-        note: note
-      }
-
-      const url = transaction 
-        ? `${API_BASE_URL}/transactions/${transaction.id}`
-        : `${API_BASE_URL}/transactions/`;
-        
-      const method = transaction ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method: method, 
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(body)
-      })
-
-      window.location = '/';
-      
-    } catch(err){
-      console.error(err.message);
-    }
-    handleClose();
+    upsertTransaction();
   }
 
   return (

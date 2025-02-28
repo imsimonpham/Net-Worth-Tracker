@@ -1,32 +1,109 @@
-const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+const isDev = true;
+const API_BASE_URL = isDev ? 
+  'http://localhost:5000' : import.meta.env.VITE_SERVER_API_URL;
 export {API_BASE_URL};
 
+
+//ACCOUNTS
 export const getAccounts = async () => {
   return getData('/accounts/');
 };
 
-export const getTransactions = async () => {
-  return getData('/transactions/')
+export const deleteAccountById = async (id) => {
+  return deleteData(`/accounts/${id}`)
 }
 
-const getData = async (endpoint, method = 'GET', body = null) => {
-  try {
-    const options = { 
-      method, 
-      headers: { 'Content-Type': 'application/json' } 
-    };
-    
-    if (body) options.body = JSON.stringify(body);
+export const updateAccountNameById = async (id, body) => {
+  return updateData(`/accounts/name/${id}`, body);
+}
 
+export const createNewAccount = async (body) => {
+  return createData(`/accounts`, body);
+}
+
+//TRANSACTIONS
+export const getTransactions = async () => {
+  return getData('/transactions/');
+}
+
+export const createNewTransaction = async (body) => {
+  return createData(`/transactions`, body);
+}
+
+export const updateTransaction = async (id, body) => {
+  return updateData(`/transactions/${id}`, body);
+}
+
+export const deleteTransactionById = async (id) => {
+  return deleteData(`/transactions/${id}`);
+}
+
+const getData = async (endpoint) => {
+  try {
     const res = await fetch(
       `${API_BASE_URL}${endpoint}`, 
-      options)
-    ;
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+      }
+    );
     if (!res.ok) throw new Error(`Error: ${res.status}`);
-    
     return await res.json();
   } catch (err) {
     console.error(err.message);
-    return null; // Ensure function always returns something
+    return null;
   }
 };
+
+const updateData = async (endpoint, body) => {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}${endpoint}`, 
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(body) 
+      }
+    );
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+};
+
+const createData = async (endpoint, body) => {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}${endpoint}`, 
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: body && JSON.stringify(body) 
+      }
+    );
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
+const deleteData = async (endpoint) => {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}${endpoint}`, 
+      {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json'},
+      }
+    );
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
