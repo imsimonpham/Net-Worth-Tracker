@@ -5,20 +5,23 @@ const dotenv = require('dotenv');
 const SQL = require('sql-template-strings');
 
 dotenv.config();
-// const port = process.env.PORT || 5000;
-const port = 5000;
+const port = process.env.PORT || 5000;
 const app = express();
+
+const isDev = true;
 
 //middleware
 app.use(cors()); //allow cross origins
 app.use(express.json()); //allow access to request.body for json data
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Needed for Render (SSL is required for connections)
-  },
-});
+const pool = isDev 
+  ? require('./db') 
+  : new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false, // Required for Render connections
+      },
+    });
 
 //ROUTES
 
