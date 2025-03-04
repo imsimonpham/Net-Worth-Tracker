@@ -75,32 +75,6 @@ export default function TransferPopupForm({handleClose, transaction}){
     e.preventDefault(); 
     if(!isFormDataValid()) return;
     upsertTransaction();
-    // try{
-    //   const body = {
-    //     date: date, 
-    //     transType: 'Transfer', 
-    //     category: 'Transfer', 
-    //     amount: amount, 
-    //     fromAcct: sendingAccount, 
-    //     toAcct: receivingAccount, 
-    //     note: note
-    //   }
-
-    //   const url = transaction 
-    //   ? `${API_BASE_URL}/transactions/${transaction.id}`
-    //   : `${API_BASE_URL}/transactions/`;
-
-    //   const method = transaction ? 'PUT': 'POST'
-    //   const res = await fetch(url, {
-    //     method: method, 
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: JSON.stringify(body)
-    //   })
-
-    //   window.location = '/';
-    // } catch(err) {
-    //   console.error(err.message);
-    // }
   }
 
   return (
@@ -109,7 +83,9 @@ export default function TransferPopupForm({handleClose, transaction}){
         <Col md={6}>
           <Form.Group controlId="transactionDate">
             <Form.Label>Date</Form.Label>
-            <Form.Control type="date" value={date} onChange={handleDateChange}/>
+            <Form.Control 
+              type="date" value={date} onChange={handleDateChange}
+              max={new Date().toISOString().split('T')[0]}/>
             {errors.date && <div className="text-danger">{errors.date}</div>}
           </Form.Group>
         </Col>

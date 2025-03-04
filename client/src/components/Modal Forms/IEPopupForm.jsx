@@ -88,7 +88,9 @@ export default function IEPopupForm({handleClose, transaction}){
         <Col md={6}>
           <Form.Group controlId="transactionDate">
             <Form.Label>Date</Form.Label>
-            <Form.Control type="date" value={date} onChange={handleDateChange}/>
+            <Form.Control 
+              type="date" value={date} onChange={handleDateChange}
+              max={new Date().toISOString().split('T')[0]}/>
             {errors.date && <div className="text-danger">{errors.date}</div>}
           </Form.Group>
         </Col>
