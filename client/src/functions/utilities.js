@@ -26,3 +26,7 @@ export function formatDateForUI(stringDate) {
     timeZone: 'UTC',
   });
 }
+
+export function getAccountById(accounts, id){
+  return accounts.find(account => account.id === Number(id));
+}

@@ -1,11 +1,12 @@
 import CashAccountList from "../components/UI/Accordions/CashAccountList";
 import TransTable from "../components/UI/Tables/Transactions/TransTable";
 
-export default function Activity(){
+export default function Activity({accounts}){
+
   return (
     <>
-      <CashAccountList/>
-      <TransTable/>
+      <CashAccountList accounts = {accounts}/>
+      <TransTable accounts = {accounts}/>
     </>
   )
 }

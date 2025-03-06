@@ -1,19 +1,8 @@
 import React, {useEffect, useState} from "react";
 import CashAccountRow from "./CashAccountRow";
 import {Accordion} from 'react-bootstrap';
-import { getAccounts } from "../../../functions/data";
 
-export default function CashAccountList(){
-  const [accounts, setAccounts] = useState([]);
-
-  const loadAccounts = async () => {
-    const accounts = await getAccounts();
-    setAccounts(accounts);
-  };
-  
-  useEffect(()=> {
-    loadAccounts();
-  }, []);
+export default function CashAccountList({accounts}){
 
   return (
     <div className="account-list section-primary mb-3">

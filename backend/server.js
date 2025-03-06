@@ -45,15 +45,15 @@ app.post('/transactions', async (req, res) => {
     const transType = req.body.transType;
     const category = req.body.category;
     const amount = req.body.amount;
-    const fromAcct = req.body.fromAcct;
-    const toAcct = req.body.toAcct;
+    const fromAcctId = req.body.fromAcctId;
+    const toAcctId = req.body.toAcctId;
     const note = req.body.note;
     
     const newTrans = await pool.query(SQL`
       INSERT INTO transaction 
-        ("date", "transType", "category", "amount", "fromAcct", "toAcct", "note")
+        ("date", "transType", "category", "amount", "fromAcctId", "toAcctId", "note")
       VALUES 
-        (${date}, ${transType}, ${category}, ${amount}, ${fromAcct}, ${toAcct}, ${note})
+        (${date}, ${transType}, ${category}, ${amount}, ${fromAcctId}, ${toAcctId}, ${note})
       RETURNING *
     `)
     res.json(newTrans.rows[0]);
@@ -96,19 +96,19 @@ app.put('/transactions/:id', async (req, res) => {
     const transType = req.body.transType;
     const category = req.body.category;
     const amount = req.body.amount;
-    const fromAcct = req.body.fromAcct;
-    const toAcct = req.body.toAcct;
+    const fromAcctId = req.body.fromAcctId;
+    const toAcctId = req.body.toAcctId;
     const note = req.body.note;
 
     const updateTrans = await pool.query(SQL`
       UPDATE transaction
       SET "date" = ${date},
-          "transType" = ${transType},
-          "category" = ${category},
-          "amount" = ${amount},
-          "fromAcct" = ${fromAcct},
-          "toAcct" = ${toAcct},
-          "note" = ${note}
+        "transType" = ${transType},
+        "category" = ${category},
+        "amount" = ${amount},
+        "fromAcctId" = ${fromAcctId},
+        "toAcctId" = ${toAcctId},
+        "note" = ${note}
       WHERE id = ${id};
     `);
 

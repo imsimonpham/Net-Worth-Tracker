@@ -9,10 +9,6 @@ export const getAccounts = async () => {
   return getData('/accounts/');
 };
 
-export const getAccountById = async (id) => {
-  return getData(`/accounts/${id}`);
-}
-
 export const deleteAccountById = async (id) => {
   return deleteData(`/accounts/${id}`)
 }

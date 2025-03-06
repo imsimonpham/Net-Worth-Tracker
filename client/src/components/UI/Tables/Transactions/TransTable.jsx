@@ -4,7 +4,7 @@ import TransRow from './TransRow';
 import { getTransactions, deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
 
-export default function TransTable(){
+export default function TransTable({accounts}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
@@ -97,7 +97,7 @@ export default function TransTable(){
         {filteredTransactions
           .sort((a, b) => new Date(b.date) - new Date(a.date))
           .map((transaction) => (
-            <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} />
+            <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
         ))}
         </tbody>
       </Table>

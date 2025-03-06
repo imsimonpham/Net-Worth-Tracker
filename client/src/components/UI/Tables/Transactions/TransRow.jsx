@@ -1,10 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faRightLeft } from '@fortawesome/free-solid-svg-icons';
-import {formatDateForUI } from '../../../../functions/utilities';
+import {formatDateForUI, getAccountById } from '../../../../functions/utilities';
 import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
 
-export default function TransRow({transaction, deleteTransaction}){
+export default function TransRow({transaction, deleteTransaction, accounts}){
+  const transactionAcctId = 
+    transaction.fromAcctId ? transaction.fromAcctId : transaction.toAcctId;
+  const transactionAcct = getAccountById(accounts, transactionAcctId);
+
   const formatTransTypeString = (transTypeString) => {
     let transType = transTypeString === 'Income' 
     if(transTypeString === 'Income'){
@@ -43,11 +47,11 @@ export default function TransRow({transaction, deleteTransaction}){
       </td>
       <td>{transaction.category}</td>
       <td>{transaction.amount}</td>
-      <td>{transaction.fromAcct}</td>
-      <td>{transaction.toAcct}</td>
+      <td>{transaction.fromAcctId ? transactionAcct.name : ''}</td>
+      <td>{transaction.toAcctId ? transactionAcct.name : ''}</td>
       <td>{transaction.note}</td>
       <td style={{maxWidth: "90px", textAlign: "right"}}>
-        <TransEditButton transaction={transaction} />
+        <TransEditButton transaction={transaction} accounts={accounts}/>
         <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction}/>
       </td>
     </tr>
