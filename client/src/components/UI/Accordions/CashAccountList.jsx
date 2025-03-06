@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import CashAccountRow from "./CashAccountRow";
-import Accordion from 'react-bootstrap/Accordion';
-import { getAccounts } from "../../functions/data";
+import {Accordion} from 'react-bootstrap';
+import { getAccounts } from "../../../functions/data";
 
-export default function AccountList(){
+export default function CashAccountList(){
   const [accounts, setAccounts] = useState([]);
 
   const loadAccounts = async () => {

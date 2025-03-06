@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
 import { convertToFloat, convertDateToSystemFormat } from '../../functions/utilities';
-import { getAccounts, updateTransaction, createNewTransaction } from '../../functions/data';
+import { getAccounts, updateTransactionById, createNewTransaction, getAccountById, updateAccountCashBalanceById } from '../../functions/data';
 
 export default function IEPopupForm({handleClose, transaction}){
-  //variables
+  // variables
   const [date, setDate] = useState(
     transaction !== undefined ? 
     convertDateToSystemFormat(transaction.date) : '');
@@ -19,18 +19,25 @@ export default function IEPopupForm({handleClose, transaction}){
   );
   const [note, setNote] = useState(transaction?.note || '');
 
-  //handle variable changes
+  // handle variable changes
   const handleDateChange = (e) => setDate(e.target.value);
   const handleTransactionTypeChange = (e) => { 
     setTransactionType(e.target.value); 
     handleCategoryChange(e); 
   };
   const handleCategoryChange = (e) => setCategory(e.target.value);
-  const handleAmountChange = (e) => setAmount(e.target.value);
-  const handleAccountChange = (e) => setAccount(e.target.value);
+  const handleAmountChange = (e) => {
+    setAmount(e.target.value);
+    console.log('changing');
+  };
+  const handleAccountChange = (e) => {
+    setAccount(e.target.value);
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    setSelectedAccountObject(getAccountById(selectedOption.id));
+  }
   const handleNoteChange = (e) => setNote(e.target.value);
 
-  // fetch accounts
+  // fetch account(s)
   const [accounts, setAccounts] = useState([]);
   const loadAccounts = async () => {
     const accounts = await getAccounts();
@@ -41,8 +48,7 @@ export default function IEPopupForm({handleClose, transaction}){
     loadAccounts();
   }, []);
 
-
-  //form validation
+  // form validation
   const [errors, setErrors] = useState({});
   const isFormDataValid = () => {
     let newErrors = {};
@@ -54,6 +60,23 @@ export default function IEPopupForm({handleClose, transaction}){
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  }
+  
+  // update account cash balance
+  const [selectedAccountObj, setSelectedAccountObject] = useState(null);
+  const getAccountById = (id) => accounts.find(account => account.id === Number(id));
+
+  const getAccountNewCashBalance = (amount) => {
+    const currentCashBalance = selectedAccountObj.cashBalance;
+    return convertToFloat(currentCashBalance) + parseFloat(amount);
+  }
+
+  const updateAccountCashBalance = async () => {
+    if(!amount || !transactionType) return;
+    const body = {
+      cashBalance : getAccountNewCashBalance(transactionType === 'Income' ? amount : -amount)
+    }
+    await updateAccountCashBalanceById(selectedAccountObj.id, body);
   }
 
   // create new transaction
@@ -69,17 +92,19 @@ export default function IEPopupForm({handleClose, transaction}){
     }
 
     const upsertTransaction = transaction ? 
-      await updateTransaction(transaction.id, body) : 
+      await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
 
     window.location = '/';
     handleClose();
   }
 
+  // submit form
   const onSubmitForm = async(e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
     upsertTransaction();
+    updateAccountCashBalance();
   }
 
   return (
@@ -150,7 +175,7 @@ export default function IEPopupForm({handleClose, transaction}){
                 accounts
                 .filter((account)=> account.type === 'Cash')
                 .map((account)=>(
-                  <option key={account.id} value={account.value}>{account.name}</option>
+                  <option key={account.id} value={account.value} id={account.id}>{account.name}</option>
                 ))
               }
             </Form.Select>

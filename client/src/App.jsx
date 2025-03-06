@@ -1,6 +1,6 @@
 import Popup from './components/Others/Popup';
 import Navbar from './components/Others/Navbar';
-import Activity from './components/Pages/Activity';
+import Activity from './pages/Activity';
 
 export default function App(){
   return (

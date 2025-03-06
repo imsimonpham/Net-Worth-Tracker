@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
-import { getTransactions, deleteTransactionById } from '../../functions/data';
-import TransFilter from '../Customs/TransFilter';
+import { getTransactions, deleteTransactionById } from '../../../../functions/data';
+import TransFilter from './TransFilter';
 
 export default function TransTable(){
   //filter data
@@ -12,7 +12,6 @@ export default function TransTable(){
 
   const [account, setAccount] = useState('All accounts');
   const [transactionType, setTransactionType] = useState('All Transaction Types');
-
 
   //fetch transactions
   const [transactions, setTransactions] = useState([]);

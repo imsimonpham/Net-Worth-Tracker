@@ -1,5 +1,5 @@
 import { Table, Spinner } from 'react-bootstrap';
-import { getAccounts } from '../../functions/data';
+import { getAccounts } from '../../../../functions/data';
 import AccountRow from './AccountRow';
 
 export default function AccountTable ({accounts, deleteAccount}) {

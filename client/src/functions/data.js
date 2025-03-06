@@ -9,16 +9,24 @@ export const getAccounts = async () => {
   return getData('/accounts/');
 };
 
+export const getAccountById = async (id) => {
+  return getData(`/accounts/${id}`);
+}
+
 export const deleteAccountById = async (id) => {
   return deleteData(`/accounts/${id}`)
+}
+
+export const createNewAccount = async (body) => {
+  return createData(`/accounts`, body);
 }
 
 export const updateAccountNameById = async (id, body) => {
   return updateData(`/accounts/name/${id}`, body);
 }
 
-export const createNewAccount = async (body) => {
-  return createData(`/accounts`, body);
+export const updateAccountCashBalanceById = async (id, body) => {
+  return updateData(`/accounts/balance/cash/${id}`, body);
 }
 
 //TRANSACTIONS
@@ -30,7 +38,7 @@ export const createNewTransaction = async (body) => {
   return createData(`/transactions`, body);
 }
 
-export const updateTransaction = async (id, body) => {
+export const updateTransactionById = async (id, body) => {
   return updateData(`/transactions/${id}`, body);
 }
 

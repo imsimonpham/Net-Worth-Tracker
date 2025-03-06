@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import AccountTable from '../Tables/AccountTable';
+import AccountTable from '../UI/Tables/Accounts/AccountTable';
 import { getAccounts, deleteAccountById } from '../../functions/data';
 
 

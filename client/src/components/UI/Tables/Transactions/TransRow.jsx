@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faRightLeft } from '@fortawesome/free-solid-svg-icons';
-import TransEditButton from '../Buttons/TransEditButton';
-import TransDeleteButton from '../Buttons/TransDeleteButton';
-import {formatDateForUI } from '../../functions/utilities';
+import {formatDateForUI } from '../../../../functions/utilities';
+import TransEditButton from '../../Buttons/TransEditButton';
+import TransDeleteButton from '../../Buttons/TransDeleteButton';
 
 export default function TransRow({transaction, deleteTransaction}){
   const formatTransTypeString = (transTypeString) => {

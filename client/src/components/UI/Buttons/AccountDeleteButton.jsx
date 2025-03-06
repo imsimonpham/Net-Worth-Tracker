@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faCheck, faX } from '@fortawesome/free-solid-svg-icons';
-import Button from 'react-bootstrap/esm/Button';
-import { convertToFloat } from '../../functions/utilities';
+import {Button} from 'react-bootstrap';
+import { convertToFloat } from '../../../functions/utilities';
 
 export default function AccountDeleteButton({account, deleteAccount}){
   const [show, setShow] = useState(false);

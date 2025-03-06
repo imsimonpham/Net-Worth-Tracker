@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { convertToFloat, convertDateToSystemFormat } from "../../functions/utilities";
-import { getAccounts, updateTransaction, createNewTransaction } from "../../functions/data";
+import { getAccounts, updateTransactionById, createNewTransaction } from "../../functions/data";
 
 export default function TransferPopupForm({handleClose, transaction}){
   // variables
@@ -64,7 +64,7 @@ export default function TransferPopupForm({handleClose, transaction}){
     }
 
     const upsertTransaction = transaction ? 
-      await updateTransaction(transaction.id, body) : 
+      await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
     
     window.location = '/';

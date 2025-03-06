@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal } from 'react-bootstrap';
-import IEPopupForm from '../Modal Forms/IEPopupForm';
-import TransferPopupForm from '../Modal Forms/TransferPopupForm';
+import IEPopupForm from '../../Forms/IEPopupForm';
+import TransferPopupForm from '../../Forms/TransferPopupForm';
 
-export default function EditButton({transaction}){
+export default function TransEditButton({transaction}){
   const [activeModal, setActiveModal] = useState(null);
   
   const handleShow = (modalType) => setActiveModal(modalType);

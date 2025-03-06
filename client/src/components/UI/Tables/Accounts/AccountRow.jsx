@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import AccountDeleteButton from '../Buttons/AccountDeleteButton';
-import {updateAccountNameById } from '../../functions/data';
+import AccountDeleteButton from '../../Buttons/AccountDeleteButton';
+import {updateAccountNameById } from '../../../../functions/data';
 
 export default function AccountRow({account, deleteAccount}){
   //variables

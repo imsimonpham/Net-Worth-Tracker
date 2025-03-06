@@ -31,7 +31,7 @@ export default function Navbar(){
             </li> */}
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Spendings
+                Activities
               </a>
             </li>
             {/* <li className="nav-item">

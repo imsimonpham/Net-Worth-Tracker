@@ -152,6 +152,19 @@ app.get('/accounts', async (req, res) => {
   }
 })
 
+app.get('/accounts/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const account = await pool.query(SQL`
+      SELECT * FROM account  
+      WHERE id = ${id}
+    `);
+    res.json(account.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+})
+
 //delete account
 app.delete('/accounts/:id', async (req, res) => {
   try {
@@ -178,7 +191,25 @@ app.put('/accounts/name/:id', async (req, res) => {
       WHERE id = ${id};
     `);
 
-    res.json('Account was updated successfully');
+    res.json('Account name was updated successfully');
+  } catch (err) {
+    console.error(err.message);
+  }
+})
+
+//update account cash balance 
+app.put('/accounts/balance/cash/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const cashBalance = req.body.cashBalance;
+
+    const updateAcct = await pool.query(SQL`
+      UPDATE account
+      SET "cashBalance" = ${cashBalance}
+      WHERE id = ${id};
+    `);
+
+    res.json('Account cash balance was updated successfully');
   } catch (err) {
     console.error(err.message);
   }
