@@ -21,10 +21,6 @@ export const updateAccountNameById = async (id, body) => {
   return updateData(`/accounts/name/${id}`, body);
 }
 
-export const updateAccountCashBalanceById = async (id, body) => {
-  return updateData(`/accounts/balance/cash/${id}`, body);
-}
-
 //TRANSACTIONS
 export const getTransactions = async () => {
   return getData('/transactions/');

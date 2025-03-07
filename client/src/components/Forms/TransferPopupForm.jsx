@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { convertToFloat, convertDateToSystemFormat } from "../../functions/utilities";
-import { getAccounts, updateTransactionById, createNewTransaction } from "../../functions/data";
+import { convertToFloat, convertDateToSystemFormat, getAccountById } from "../../functions/utilities";
+import {updateTransactionById, createNewTransaction } from "../../functions/data";
 
-export default function TransferPopupForm({handleClose, transaction}){
+export default function TransferPopupForm({handleClose, transaction, accounts}){
   // variables
   const [date, setDate] = useState(
     transaction !== undefined ? 
@@ -11,31 +11,47 @@ export default function TransferPopupForm({handleClose, transaction}){
   const [amount, setAmount] = useState(
     transaction !== undefined ? 
     convertToFloat(transaction.amount) : 0);
-  const [sendingAccount, setSendingAccount] = useState(
-    transaction && transaction.fromAcct || ''
+  const [sendingAccountId, setSendingAccountId] = useState(
+    transaction && transaction.fromAcctId || ''
   );
-  const [receivingAccount, setReceivingAccount] = useState(
-    transaction && transaction.toAcct || ''
+  const [sendingAccountName, setSendingAccountName] = useState(
+    sendingAccountId ? getAccountById(accounts, sendingAccountId).name : ''
+  );
+  const [receivingAccountId, setReceivingAccountId] = useState(
+    transaction && transaction.toAcctId || ''
+  );
+  const [receivingAccountName, setReceivingAccountName] = useState(
+    receivingAccountId ? getAccountById(accounts, receivingAccountId).name : ''
   );
   const [note, setNote] = useState(transaction?.note || '');
 
   // handle variable changes
   const handleDateChange = (e) => setDate(e.target.value);
   const handleAmountChange = (e) => setAmount(e.target.value);
-  const handleAccountSelection = (e) => setSendingAccount(e.target.value);
-  const handleReceivingAccountChange = (e) => setReceivingAccount(e.target.value);
+  const handleSendingAccountChange = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const selectedAccount = getAccountById(accounts, selectedOption.id);
+    setSendingAccountId(selectedOption.id);
+    setSendingAccountName(selectedAccount.name);
+  }
+  const handleReceivingAccountChange = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const selectedAccount = getAccountById(accounts, selectedOption.id);
+    setReceivingAccountId(selectedOption.id);
+    setReceivingAccountName(selectedAccount.name);
+  }
   const handleNoteChange = (e) => setNote(e.target.value);
 
    // fetch accounts
-   const [accounts, setAccounts] = useState([]);
-   const loadAccounts = async () => {
-    const accounts = await getAccounts();
-    setAccounts(accounts);
-   }
+  //  const [accounts, setAccounts] = useState([]);
+  //  const loadAccounts = async () => {
+  //   const accounts = await getAccounts();
+  //   setAccounts(accounts);
+  //  }
  
-   useEffect(()=> {
-     loadAccounts();
-   }, []);
+  //  useEffect(()=> {
+  //    loadAccounts();
+  //  }, []);
 
   // form validation 
   const [errors, setErrors] = useState({}); 
@@ -44,8 +60,8 @@ export default function TransferPopupForm({handleClose, transaction}){
 
     if(!date) newErrors.date = 'Date is required';
     if(!amount || amount <= 0) newErrors.amount = 'Amount must be greater than zero'; 
-    if(!sendingAccount) newErrors.sendingAccount = 'Sending account is required';
-    if(!receivingAccount) newErrors.receivingAccount = 'Receiving account is required';
+    if(!sendingAccountId) newErrors.sendingAccountId = 'Sending account is required';
+    if(!receivingAccountId) newErrors.receivingAccountId = 'Receiving account is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -58,8 +74,8 @@ export default function TransferPopupForm({handleClose, transaction}){
       transType: 'Transfer', 
       category: 'Transfer', 
       amount: amount, 
-      fromAcct: sendingAccount, 
-      toAcct: receivingAccount, 
+      fromAcctId: sendingAccountId, 
+      toAcctId: receivingAccountId, 
       note: note
     }
 
@@ -104,15 +120,15 @@ export default function TransferPopupForm({handleClose, transaction}){
             <Form.Label>Sending Account</Form.Label>
             <Form.Select 
               aria-label="Sending Account"
-              value={sendingAccount}
-              onChange={handleAccountSelection}
+              value={sendingAccountName}
+              onChange={handleSendingAccountChange}
             >
               <option value="">Select an account</option>
               {accounts.map((account)=>(
-                <option key={account.id} value={account.value}>{account.name}</option>
+                <option key={account.id} value={account.name} id={account.id}>{account.name}</option>
               ))}
             </Form.Select>
-            {errors.sendingAccount && <div className="text-danger">{errors.sendingAccount}</div>}
+            {errors.sendingAccountId && <div className="text-danger">{errors.sendingAccountId}</div>}
           </Form.Group>
         </Col>
       </Row>
@@ -123,19 +139,17 @@ export default function TransferPopupForm({handleClose, transaction}){
             <Form.Label>Receiving Account</Form.Label>
             <Form.Select 
               aria-label="Receiving Account"
-              value={receivingAccount}
+              value={receivingAccountName}
               onChange={handleReceivingAccountChange}
             >
               <option value="">Select an account</option>
-              { 
-                accounts
-                .filter((account)=> account.name !== sendingAccount)
+              { accounts
+                .filter((account)=> account.id !== Number(sendingAccountId))
                 .map((account)=>(
-                  <option key={account.id} value={account.value}>{account.name}</option>
-                ))
-              }
+                  <option key={account.id} value={account.name} id={account.id}>{account.name}</option>
+                ))}
             </Form.Select>
-            {errors.receivingAccount && <div className="text-danger">{errors.receivingAccount}</div>}
+            {errors.receivingAccountId && <div className="text-danger">{errors.receivingAccountId}</div>}
           </Form.Group>
         </Col>
       </Row>

@@ -197,24 +197,6 @@ app.put('/accounts/name/:id', async (req, res) => {
   }
 })
 
-//update account cash balance 
-app.put('/accounts/balance/cash/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const cashBalance = req.body.cashBalance;
-
-    const updateAcct = await pool.query(SQL`
-      UPDATE account
-      SET "cashBalance" = ${cashBalance}
-      WHERE id = ${id};
-    `);
-
-    res.json('Account cash balance was updated successfully');
-  } catch (err) {
-    console.error(err.message);
-  }
-})
-
 //START APP
 app.listen(port, () => {
   console.log(`server has started on port ${port}`)

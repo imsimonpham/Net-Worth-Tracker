@@ -35,7 +35,7 @@ export default function TransEditButton({transaction, accounts}){
           {
             activeModal === 'Transfer' && 
             <TransferPopupForm 
-              handleClose={handleClose} transaction={transaction}
+              handleClose={handleClose} transaction={transaction} accounts={accounts}
             />
           }
         </Modal.Body>
