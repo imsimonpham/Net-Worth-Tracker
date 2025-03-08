@@ -1,6 +1,6 @@
 import Popup from './components/Others/Popup';
 import Navbar from './components/Others/Navbar';
-import Activity from './Pages/Activity';
+import Activity from './pages/Activity';
 import React, {useState, useEffect} from "react";
 import { getAccounts } from './functions/data';
 

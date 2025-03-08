@@ -1,4 +1,4 @@
-import { Table, Spinner } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { getAccounts } from '../../../../functions/data';
 import AccountRow from './AccountRow';
 
@@ -16,16 +16,12 @@ export default function AccountTable ({accounts, deleteAccount}) {
         </tr>
       </thead>
       <tbody>
-        {!accounts ? (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        ) : accounts.map((account)=> (
+        {accounts.map(account=> (
           <AccountRow 
-            key={account.id} 
-            account={account} 
-            deleteAccount={deleteAccount} 
-            getAccounts={getAccounts}/>
+          key={account.id} 
+          account={account} 
+          deleteAccount={deleteAccount} 
+          getAccounts={getAccounts}/>
         ))}
       </tbody>
     </Table>

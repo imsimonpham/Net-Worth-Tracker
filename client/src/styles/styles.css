@@ -54,6 +54,10 @@ p {
   vertical-align: middle;
 }
 
+.text-dark{
+  color: var(--text-dark) !important;
+}
+
 /* FONT-SIZE */
 .btn, select, input, a, input:focus, p{
   font-size: var(--fs-normal) !important;
@@ -287,3 +291,6 @@ input:focus{
   background-color: var(--bg-input);
   color: var(--text-light);
 }
+
+/* CHARTS */
+
