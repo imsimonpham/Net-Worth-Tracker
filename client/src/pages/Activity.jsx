@@ -6,7 +6,7 @@ export default function Activity({accounts}){
 
   return (
     <>
-      <IEChartArea/>
+      <IEChartArea accounts = {accounts}/>
       <CashAccountList accounts = {accounts}/>
       <TransTable accounts = {accounts}/>
     </>

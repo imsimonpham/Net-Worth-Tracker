@@ -12,7 +12,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const ExpensePieChart = ({ expenseData }) => {
+const CashAccountPieChart = ({ cashAccountData }) => {
   return (
     <ResponsiveContainer width="100%" height={350}>
       <PieChart margin={{ top: 20, right: 20, bottom: 120, left: 20 }}>
@@ -28,16 +28,16 @@ const ExpensePieChart = ({ expenseData }) => {
           }}
         />
         <Pie
-          data={expenseData}
+          data={cashAccountData}
           cx="50%"
           cy="50%"
           outerRadius={80}
-          dataKey="value"
-          nameKey="category"
+          dataKey="cashBalance"
+          nameKey="name"
           labelLine={false}
         >
-          {expenseData.map((entry) => (
-            <Cell key={`cell-${entry.category}`} fill={entry.color} />
+          {cashAccountData.map((entry) => (
+            <Cell key={`cell-${entry.name}`} fill={entry.color} />
           ))}
         </Pie>
       </PieChart>
@@ -45,4 +45,4 @@ const ExpensePieChart = ({ expenseData }) => {
   );
 };
 
-export default ExpensePieChart;
+export default CashAccountPieChart;

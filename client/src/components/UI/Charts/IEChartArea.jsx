@@ -2,8 +2,10 @@ import {Row, Col} from 'react-bootstrap';
 import IEChart from './IECharts/IEChart';
 import IncomePieChart from './IECharts/IncomePieChart';
 import ExpensePiechart from './IECharts/ExpensePieChart';
+import CashAccountPieChart from './IECharts/CashAccountPieChart';
+import { getColorFromId, convertToFloat } from '../../../functions/utilities';
 
-export default function IEChartArea (){
+export default function IEChartArea ({accounts}){
   const transData = [
     { name: 'January', income: 4000, expenses: 2400, netSavings: 1600 },
     { name: 'February', income: 3000, expenses: 1398, netSavings: 1602 },
@@ -43,11 +45,15 @@ export default function IEChartArea (){
     { category: 'Pet Supplies', value: 100, color: '#e08585' },
     { category: 'Rent', value: 1200, color: '#8c8c8c' },
     { category: 'Transportation', value: 250, color: '#9c704d' }
-];
+  ];
+
+  const cashAccountData = accounts.map(account => ({
+    ...account,
+    cashBalance: convertToFloat(account.cashBalance),
+    color: getColorFromId(account.id)
+  }));
 
 
-
-  
   return (
     <div className="section-primary mb-3">
       <IEChart transData={transData}/>
@@ -59,7 +65,7 @@ export default function IEChartArea (){
           <ExpensePiechart expenseData={expenseData}/>
         </Col>
         <Col sm={4}>
-          
+          <CashAccountPieChart cashAccountData={cashAccountData}/>
         </Col>
       </Row>
     </div>

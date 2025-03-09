@@ -30,3 +30,9 @@ export function formatDateForUI(stringDate) {
 export function getAccountById(accounts, id){
   return accounts.find(account => account.id === Number(id));
 }
+
+export const getColorFromId = (id) => {
+  const hue = (id * 137) % 360; // Spread hues evenly
+  return `hsl(${hue}, 60%, 65%)`; // Reduce lightness for a darker pastel look
+};
+
