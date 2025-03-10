@@ -4,6 +4,7 @@ import IncomePieChart from './IECharts/IncomePieChart';
 import ExpensePiechart from './IECharts/ExpensePieChart';
 import CashAccountPieChart from './IECharts/CashAccountPieChart';
 import { getColorFromId, convertToFloat } from '../../../functions/utilities';
+import { useRef, useEffect, useState } from "react";
 
 export default function IEChartArea ({accounts}){
   const transData = [
@@ -53,19 +54,21 @@ export default function IEChartArea ({accounts}){
     color: getColorFromId(account.id)
   }));
 
+  const [legendHeight, setLegendHeight] = useState(0);
+
 
   return (
-    <div className="section-primary mb-3">
+    <div className="mb-3">
       <IEChart transData={transData}/>
       <Row className="d-flex justify-content-between">
         <Col sm={4}>
-          <IncomePieChart incomeData={incomeData}/>
+          <IncomePieChart incomeData={incomeData} legendHeight={legendHeight}/>
         </Col>
         <Col sm={4}>
-          <ExpensePiechart expenseData={expenseData}/>
+          <ExpensePiechart expenseData={expenseData} setLegendHeight={setLegendHeight}/>
         </Col>
         <Col sm={4}>
-          <CashAccountPieChart cashAccountData={cashAccountData}/>
+          <CashAccountPieChart cashAccountData={cashAccountData} legendHeight={legendHeight}/>
         </Col>
       </Row>
     </div>

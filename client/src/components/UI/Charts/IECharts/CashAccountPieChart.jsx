@@ -12,36 +12,35 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const CashAccountPieChart = ({ cashAccountData }) => {
+const CashAccountPieChart = ({ cashAccountData, legendHeight }) => {
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <PieChart margin={{ top: 20, right: 20, bottom: 120, left: 20 }}>
-        <Tooltip content={CustomTooltip} />
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            paddingTop: 20,
-            maxHeight: 100,
-            overflow: 'auto',
-          }}
-        />
-        <Pie
-          data={cashAccountData}
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          dataKey="cashBalance"
-          nameKey="name"
-          labelLine={false}
-        >
-          {cashAccountData.map((entry) => (
-            <Cell key={`cell-${entry.name}`} fill={entry.color} />
-          ))}
-        </Pie>
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="section-primary">
+      <h5 className="text-center mt-2">Cash Accounts</h5>
+      <ResponsiveContainer width="100%" height={320}>
+        <PieChart>
+          <Tooltip content={CustomTooltip} />
+          <Legend
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+            height={legendHeight}
+          />
+          <Pie
+            data={cashAccountData}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            dataKey="cashBalance"
+            nameKey="name"
+            labelLine={false}
+          >
+            {cashAccountData.map((entry) => (
+              <Cell key={`cell-${entry.name}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

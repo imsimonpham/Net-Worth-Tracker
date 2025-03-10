@@ -1,9 +1,11 @@
 import {ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, ComposedChart, Line } from 'recharts';
 
 const IEChart = ({transData}) => {
+  const currentYear = new Date().getFullYear();
   return (
-    <>
-      <ResponsiveContainer width="100%" height={250} className="mb-5">
+    <div className="section-primary mb-3">
+      <h5 className="text-center mb-2">{currentYear}'s Income and Expenses</h5>
+      <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={transData}>
           <XAxis dataKey="name" />
           <YAxis />
@@ -14,7 +16,7 @@ const IEChart = ({transData}) => {
           <Line type="monotone" dataKey="netSavings" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
-    </>
+    </div>
   )
 }
 

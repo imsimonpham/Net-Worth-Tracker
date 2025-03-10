@@ -1,5 +1,5 @@
-import React from 'react';
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import React, { useRef, useEffect, useState } from "react";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -12,36 +12,55 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const ExpensePieChart = ({ expenseData }) => {
+const ExpensePieChart = ({ expenseData, setLegendHeight }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const getLegendHeight = () => {
+      if (containerRef.current) {
+        const legend = containerRef.current.querySelector(".recharts-legend-wrapper");
+        if (legend) {
+          if (legend.offsetHeight > 40) 
+            setLegendHeight(legend.offsetHeight);
+           else {
+            legend.style.minHeight = "40px";
+            setLegendHeight(legend.offsetHeight);
+           }
+        }
+      }
+    };
+    const timeout = setTimeout(getLegendHeight, 100);
+
+    return () => clearTimeout(timeout);
+  }, [expenseData]);
+
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <PieChart margin={{ top: 20, right: 20, bottom: 120, left: 20 }}>
-        <Tooltip content={CustomTooltip} />
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            paddingTop: 20,
-            maxHeight: 100,
-            overflow: 'auto',
-          }}
-        />
-        <Pie
-          data={expenseData}
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          dataKey="value"
-          nameKey="category"
-          labelLine={false}
-        >
-          {expenseData.map((entry) => (
-            <Cell key={`cell-${entry.category}`} fill={entry.color} />
-          ))}
-        </Pie>
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="section-primary" ref={containerRef}>
+      <h5 className="text-center mt-2">This month's expenses</h5>
+      <ResponsiveContainer width="100%" height={320}>
+        <PieChart>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+          />
+          <Pie
+            data={expenseData}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            dataKey="value"
+            nameKey="category"
+            labelLine={false}
+          >
+            {expenseData.map((entry) => (
+              <Cell key={`cell-${entry.category}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

@@ -12,36 +12,35 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const IncomePieChart = ({ incomeData }) => {
+const IncomePieChart = ({ incomeData, legendHeight }) => {
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <PieChart margin={{ top: 20, right: 20, bottom: 120, left: 20 }}>
-        <Tooltip content={CustomTooltip} />
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            paddingTop: 20,
-            maxHeight: 100,
-            overflow: 'auto',
-          }}
-        />
-        <Pie
-          data={incomeData}
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          dataKey="value"
-          nameKey="category"
-          labelLine={false}
-        >
-          {incomeData.map((entry) => (
-            <Cell key={`cell-${entry.category}`} fill={entry.color} />
-          ))}
-        </Pie>
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="section-primary">
+      <h5 className="text-center mt-2">This month's income</h5>
+      <ResponsiveContainer width="100%" height={320}>
+        <PieChart>
+          <Tooltip content={CustomTooltip} />
+          <Legend
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+            height={legendHeight}
+          />
+          <Pie
+            data={incomeData}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            dataKey="value"
+            nameKey="category"
+            labelLine={false}
+          >
+            {incomeData.map((entry) => (
+              <Cell key={`cell-${entry.category}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
