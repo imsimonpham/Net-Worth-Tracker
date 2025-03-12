@@ -6,10 +6,12 @@ export default function AddAccountForm ({handleClose}) {
   // variables
   const [accountName, setAccountName] = useState('');
   const [accountType, setAccountType] = useState('Cash');
+  const [cashBalance, setCashBalance] = useState('');
 
   // handle variable changes
   const handleAccountNameChange = (e) =>  setAccountName(e.target.value);
   const handleAccountType = (e) =>  setAccountType(e.target.value);
+  const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -17,6 +19,7 @@ export default function AddAccountForm ({handleClose}) {
     let newErrors = {};
 
     if(!accountName) newErrors.accountName = 'Account Name is required';
+    if(!cashBalance) newErrors.cashBalance = 'Initial Cash Balance is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -26,7 +29,7 @@ export default function AddAccountForm ({handleClose}) {
   const createAccount = async () => {
     const body = {
       name: accountName, 
-      cashBalance: 0, 
+      cashBalance: cashBalance, 
       investmentBalance: 0,
       type: accountType,
       isActive: true
@@ -38,6 +41,9 @@ export default function AddAccountForm ({handleClose}) {
     e.preventDefault();
     if(!isFormDataValid()) return;
     createAccount();
+
+    window.location = '/';
+    handleClose();
   }
 
   return (
@@ -69,6 +75,16 @@ export default function AddAccountForm ({handleClose}) {
               <option value="Cash">Cash</option>
               <option value="Investment">Investment</option>
             </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      <Row className="mb-3">
+        <Col md={12}>
+          <Form.Group  controlId="initalBalance">
+            <Form.Label>Initial Balance</Form.Label>
+            <Form.Control type="number" placeholder="$" value={cashBalance} step="any" onChange={handleCashBalanceChange}/>
+            {errors.cashBalance && <div className="text-danger">{errors.cashBalance}</div>}
           </Form.Group>
         </Col>
       </Row>
