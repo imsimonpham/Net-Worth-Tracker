@@ -41,162 +41,256 @@ app.get('/', async (req, res) => {
 //create transaction
 app.post('/transactions', async (req, res) => {
   try {
-    const date = req.body.date;
-    const transType = req.body.transType;
-    const category = req.body.category;
-    const amount = req.body.amount;
-    const fromAcctId = req.body.fromAcctId;
-    const toAcctId = req.body.toAcctId;
-    const note = req.body.note;
-    
-    const newTrans = await pool.query(SQL`
-      INSERT INTO transaction 
-        ("date", "transType", "category", "amount", "fromAcctId", "toAcctId", "note")
+    const { date, transType, category, amount, fromAcctId, toAcctId, note } = req.body;
+
+    const newTrans = await pool.query(
+      `INSERT INTO transaction 
+        ("date", "transType", "category", "amount", "fromAcctId", "toAcctId", "note") 
       VALUES 
-        (${date}, ${transType}, ${category}, ${amount}, ${fromAcctId}, ${toAcctId}, ${note})
-      RETURNING *
-    `)
+        ($1, $2, $3, $4, $5, $6, $7) 
+      RETURNING *`,
+      [date, transType, category, amount, fromAcctId, toAcctId, note]
+    );
+
     res.json(newTrans.rows[0]);
   } catch (err) {
-    console.error(err.message);
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 })
 
 //get transactions
 app.get('/transactions', async (req, res) => {
   try {
-    const allTrans = await pool.query(SQL`
-      SELECT * FROM transaction  
-    `);
+    const allTrans = await pool.query("SELECT * FROM transaction");
     res.json(allTrans.rows);
   } catch (err) {
-    console.error(err.message);
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 })
 
 //delete transaction
 app.delete('/transactions/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const deleteTrans = await pool.query(SQL`
-      DELETE FROM transaction
-      WHERE id = ${id}
-    `)
-    res.json('transaction was deleted sucessfully');
+    const { id } = req.params;
+    const deleteTrans = await pool.query(
+      "DELETE FROM transaction WHERE id = $1",
+      [id]
+    );
+    res.json({ message: "Transaction was deleted successfully" });
   } catch (err) {
-    console.error(err.message);
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 })
 
 //update transaction
 app.put('/transactions/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const date = req.body.date;
-    const transType = req.body.transType;
-    const category = req.body.category;
-    const amount = req.body.amount;
-    const fromAcctId = req.body.fromAcctId;
-    const toAcctId = req.body.toAcctId;
-    const note = req.body.note;
+    const { id } = req.params;
+    const { date, transType, category, amount, fromAcctId, toAcctId, note } = req.body;
 
-    const updateTrans = await pool.query(SQL`
-      UPDATE transaction
-      SET "date" = ${date},
-        "transType" = ${transType},
-        "category" = ${category},
-        "amount" = ${amount},
-        "fromAcctId" = ${fromAcctId},
-        "toAcctId" = ${toAcctId},
-        "note" = ${note}
-      WHERE id = ${id};
-    `);
+    const updateTrans = await pool.query(
+      `UPDATE transaction
+       SET "date" = $1,
+           "transType" = $2,
+           "category" = $3,
+           "amount" = $4,
+           "fromAcctId" = $5,
+           "toAcctId" = $6,
+           "note" = $7
+       WHERE id = $8`,
+      [date, transType, category, amount, fromAcctId, toAcctId, note, id]
+    );
 
-    res.json('Transaction was updated successfully');
+    res.json({ message: "Transaction was updated successfully" });
   } catch (err) {
     console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-})
+});
+
+
+// pull income data for CHARTS
+app.get('/transactions/income/monthly', async (req, res) => {
+  try {
+    const { month, year } = req.query;
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Income'
+        AND "transType" != 'Transfer'
+        AND DATE_TRUNC('month', "date") = DATE_TRUNC('month', MAKE_DATE($1::integer, $2::integer, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year, month];
+    const income = await pool.query(queryText, queryParams);
+    res.json(income.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+app.get('/transactions/income/yearly', async (req, res) => {
+  try {
+    const { year } = req.query;
+
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Income'
+        AND "transType" != 'Transfer'
+        AND DATE_TRUNC('year', "date") = DATE_TRUNC('year', MAKE_DATE($1::integer, 1, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year];
+    const income = await pool.query(queryText, queryParams);
+    res.json(income.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+
+// pull expense data for CHARTS
+app.get('/transactions/expense/monthly', async (req, res) => {
+  try {
+    const { month, year } = req.query;
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Expense'
+        AND "transType" != 'Transfer'
+        AND DATE_TRUNC('month', "date") = DATE_TRUNC('month', MAKE_DATE($1::integer, $2::integer, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year, month];
+    const expense = await pool.query(queryText, queryParams);
+    res.json(expense.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+app.get('/transactions/expense/yearly', async (req, res) => {
+  try {
+    const { year } = req.query;
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Expense'
+        AND "transType" != 'Transfer'
+        AND DATE_TRUNC('year', "date") = DATE_TRUNC('year', MAKE_DATE($1::integer, 1, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year];
+    const expense = await pool.query(queryText, queryParams);
+    res.json(expense.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 
 //ACCOUNTS
 //create account
 app.post('/accounts', async (req, res) => {
   try {
-    const name = req.body.name;
-    const type = req.body.type;
-    const cashBalance = req.body.cashBalance;
-    const isActive = req.body.isActive;
+    const { name, type, cashBalance, isActive } = req.body;
 
-    const newAccount = await pool.query(SQL`
-      INSERT INTO account
+    const newAccount = await pool.query(
+      `INSERT INTO account
         ("name", "type", "cashBalance", "isActive")
       VALUES
-        (${name}, ${type}, ${cashBalance}, ${isActive})  
-      RETURNING *
-    `)
+        ($1, $2, $3, $4)
+      RETURNING *`,
+      [name, type, cashBalance, isActive]
+    );
 
     res.json(newAccount.rows[0]);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
-})
+});
 
 //get accounts
 app.get('/accounts', async (req, res) => {
   try {
-    const allAccounts = await pool.query(SQL`
-      SELECT * FROM account  
-    `);
+    const allAccounts = await pool.query(
+      `SELECT * FROM account`
+    );
     res.json(allAccounts.rows);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
-})
+});
 
 app.get('/accounts/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const account = await pool.query(SQL`
-      SELECT * FROM account  
-      WHERE id = ${id}
-    `);
+    const { id } = req.params;
+    const account = await pool.query(
+      `SELECT * FROM account  
+       WHERE id = $1`,
+      [id]
+    );
     res.json(account.rows);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
-})
+});
 
 //delete account
 app.delete('/accounts/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const deleteAcct = await pool.query(SQL`
-      DELETE FROM account
-      WHERE id = ${id}
-    `)
-    res.json('account was deleted sucessfully');
+    const { id } = req.params;
+    const deleteAcct = await pool.query(
+      `DELETE FROM account
+       WHERE id = $1`,
+      [id]
+    );
+    res.json('account was deleted successfully');
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
-})
+});
 
 //update account name
 app.put('/accounts/name/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const name = req.body.name;
+    const { id } = req.params;
+    const { name } = req.body;
 
-    const updateAcct = await pool.query(SQL`
-      UPDATE account
-      SET "name" = ${name}
-      WHERE id = ${id};
-    `);
+    const updateAcct = await pool.query(
+      `UPDATE account
+       SET "name" = $1
+       WHERE id = $2`,
+      [name, id]
+    );
 
     res.json('Account name was updated successfully');
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
-})
+});
+
 
 //START APP
 app.listen(port, () => {

@@ -5,7 +5,7 @@ import {Accordion} from 'react-bootstrap';
 export default function CashAccountList({accounts}){
 
   return (
-    <div className="account-list section-primary mb-3">
+    <div className="account-list section-primary mb-3 px-3">
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>Cash Accounts</Accordion.Header>

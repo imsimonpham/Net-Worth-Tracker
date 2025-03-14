@@ -26,6 +26,22 @@ export const getTransactions = async () => {
   return getData('/transactions/');
 }
 
+export const getMonthlyIncome = async (year, month) => {
+  return getData(`/transactions/income/monthly?year=${year}&month=${month}`);
+}
+
+export const getYearlyIncome = async (year) => {
+  return getData(`/transactions/income/yearly?year=${year}`);
+}
+
+export const getMonthlyExpenses = async (year, month) => {
+  return getData(`/transactions/expense/monthly?year=${year}&month=${month}`);
+}
+
+export const getYearlyExpenses = async (year) => {
+  return getData(`/transactions/expense/yearly?year=${year}`);
+}
+
 export const createNewTransaction = async (body) => {
   return createData(`/transactions`, body);
 }

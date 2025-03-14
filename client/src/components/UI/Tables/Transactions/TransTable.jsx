@@ -4,7 +4,7 @@ import TransRow from './TransRow';
 import { getTransactions, deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
 
-export default function TransTable({accounts}){
+export default function TransTable({accounts, transactions, setTransactions}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
@@ -12,17 +12,6 @@ export default function TransTable({accounts}){
 
   const [account, setAccount] = useState('All accounts');
   const [transactionType, setTransactionType] = useState('All Transaction Types');
-
-  //fetch transactions
-  const [transactions, setTransactions] = useState([]);
-  const getTrans = async() => {
-    const transactions = await getTransactions();
-    setTransactions(transactions);
-  }
-
-  useEffect(()=>{
-    getTrans();
-  }, [])
 
   //apply filters
   const filterByDate = (transactions, startDate, endDate) => {  
@@ -70,6 +59,7 @@ export default function TransTable({accounts}){
     setTransactions(transactions.filter(
       transaction => transaction.id !== id
     ))
+    window.location = '/';
   }
 
   return(

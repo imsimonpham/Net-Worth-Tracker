@@ -3,12 +3,12 @@ import {ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, ComposedChart, 
 const IEChart = ({transData}) => {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="section-primary mb-3">
+    <div className="mb-3" >
       <h5 className="text-center mb-2">{currentYear}'s Income and Expenses</h5>
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={transData}>
-          <XAxis dataKey="name" />
-          <YAxis />
+          <XAxis dataKey="name"/>
+          <YAxis/>
           <Tooltip content={CustomTooltip}/>
           <Legend content={CustomLegend}/>
           <Bar dataKey="income"  fill="#4d908e"/>

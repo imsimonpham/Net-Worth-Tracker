@@ -12,10 +12,10 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const CashAccountPieChart = ({ cashAccountData, legendHeight }) => {
+const CashAccountPieChart = ({ cashAccountData }) => {
   return (
-    <div className="section-primary">
-      <h5 className="text-center mt-2">Cash Accounts</h5>
+    <div className="section-primary mb-3" >
+      <h5 className="text-center mt-2">Cash Account Breakdown</h5>
       <ResponsiveContainer width="100%" height={320}>
         <PieChart>
           <Tooltip content={CustomTooltip} />
@@ -23,7 +23,6 @@ const CashAccountPieChart = ({ cashAccountData, legendHeight }) => {
             layout="horizontal"
             verticalAlign="bottom"
             align="center"
-            height={legendHeight}
           />
           <Pie
             data={cashAccountData}

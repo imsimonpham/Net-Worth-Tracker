@@ -14,9 +14,9 @@ const CustomTooltip = ({ active, payload }) => {
 
 const IncomePieChart = ({ incomeData, legendHeight }) => {
   return (
-    <div className="section-primary">
-      <h5 className="text-center mt-2">This month's income</h5>
-      <ResponsiveContainer width="100%" height={320}>
+    <div>
+      <h5 className="text-center mt-2">Income breakdown</h5>
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Tooltip content={CustomTooltip} />
           <Legend
@@ -30,11 +30,13 @@ const IncomePieChart = ({ incomeData, legendHeight }) => {
             cx="50%"
             cy="50%"
             outerRadius={80}
-            dataKey="value"
+            dataKey="totalAmount"
             nameKey="category"
             labelLine={false}
           >
-            {incomeData.map((entry) => (
+            {incomeData
+              .filter(entry => entry.totalAmount > 0)
+              .map(entry => (
               <Cell key={`cell-${entry.category}`} fill={entry.color} />
             ))}
           </Pie>

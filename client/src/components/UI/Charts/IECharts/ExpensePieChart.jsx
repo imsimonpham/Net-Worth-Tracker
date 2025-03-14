@@ -14,7 +14,6 @@ const CustomTooltip = ({ active, payload }) => {
 
 const ExpensePieChart = ({ expenseData, setLegendHeight }) => {
   const containerRef = useRef(null);
-
   useEffect(() => {
     const getLegendHeight = () => {
       if (containerRef.current) {
@@ -22,10 +21,10 @@ const ExpensePieChart = ({ expenseData, setLegendHeight }) => {
         if (legend) {
           if (legend.offsetHeight > 40) 
             setLegendHeight(legend.offsetHeight);
-           else {
-            legend.style.minHeight = "40px";
+          else {
+            legend.style.minHeight = "auto";
             setLegendHeight(legend.offsetHeight);
-           }
+          }
         }
       }
     };
@@ -35,9 +34,9 @@ const ExpensePieChart = ({ expenseData, setLegendHeight }) => {
   }, [expenseData]);
 
   return (
-    <div className="section-primary" ref={containerRef}>
-      <h5 className="text-center mt-2">This month's expenses</h5>
-      <ResponsiveContainer width="100%" height={320}>
+    <div className="" ref={containerRef}>
+      <h5 className="text-center mt-2">Expense Breakdown</h5>
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Tooltip content={<CustomTooltip />} />
           <Legend
@@ -50,7 +49,7 @@ const ExpensePieChart = ({ expenseData, setLegendHeight }) => {
             cx="50%"
             cy="50%"
             outerRadius={80}
-            dataKey="value"
+            dataKey="totalAmount"
             nameKey="category"
             labelLine={false}
           >
