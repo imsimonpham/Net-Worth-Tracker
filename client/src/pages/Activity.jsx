@@ -17,7 +17,7 @@ export default function Activity({accounts}){
 
   return (
     <>
-      <IEChartArea accounts = {accounts}/>
+      <IEChartArea accounts = {accounts} transactions={transactions}/>
       {/* <CashAccountList accounts = {accounts}/> */}
       <TransTable accounts = {accounts} transactions={transactions} setTransactions={setTransactions}/>
     </>
