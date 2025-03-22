@@ -5,7 +5,7 @@ import ExpensePiechart from './IECharts/ExpensePieChart';
 import { getColorFromId, convertToFloat} from '../../../functions/utilities';
 import {useEffect, useState } from "react";
 import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses } from '../../../functions/data';
-import {Button, ButtonGroup, Form} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 
 export default function IEChartArea ({accounts, transactions}){
   const transData = [
@@ -30,7 +30,9 @@ export default function IEChartArea ({accounts, transactions}){
   const [totalExpenses, setTotalExpenses] = useState(0);
 
   const getIncomeSourcesForPeriod = async (year, month) => {
-    const incomeSources =  await getMonthlyIncome(year, month); 
+    const incomeSources =  month === 0 
+      ? await getYearlyIncome(year)
+      : await getMonthlyIncome(year, month); 
     const incomeColors = {
       'Investment Gain': '#d8c99b',
       'Miscellaneous': '#d8973c',
@@ -55,7 +57,9 @@ export default function IEChartArea ({accounts, transactions}){
   } 
 
   const getExpensesForPeriod = async (year, month) => {
-    const expenses = await getMonthlyExpenses(year, month); 
+    const expenses =  month === 0 
+      ? await getYearlyExpenses(year)
+      : await getMonthlyExpenses(year, month); 
     const expenseColors = {
       'Car': '#e46a55',
       'Clothing': '#d36a7f',
@@ -90,10 +94,53 @@ export default function IEChartArea ({accounts, transactions}){
     setExpenseData(expense);
   }
 
+  // date filter
+  const years = transactions
+    .map(transaction => new Date(transaction.date).getFullYear())
+    .filter(year => !isNaN(year));
+  const minYear = years.length > 0 ? Math.min(...years) : null;
+  const maxYear = years.length > 0 ? Math.max(...years) : null;
+  const yearOptions = [];
+  for (let year = maxYear; year >= minYear; year--){yearOptions.push(year)};
+  const monthOptions = [
+    { id: 0, name: '----' },
+    { id: 1, name: 'January' },
+    { id: 2, name: 'February' },
+    { id: 3, name: 'March' },
+    { id: 4, name: 'April' },
+    { id: 5, name: 'May' },
+    { id: 6, name: 'June' },
+    { id: 7, name: 'July' },
+    { id: 8, name: 'August' },
+    { id: 9, name: 'September' },
+    { id: 10, name: 'October' },
+    { id: 11, name: 'November' },
+    { id: 12, name: 'December' }
+  ];
+  
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth(); // month index starts at 0
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelctedMonth] = useState(currentMonth + 1);
+  const availableMonths = selectedYear == currentYear 
+  ? monthOptions.filter(month => month.id <= currentMonth + 1) 
+  : monthOptions;
+
+
+  const handleMonthChange = (e) => {
+    const selectedMonthIndex = e.target.selectedIndex;
+    setSelctedMonth(selectedMonthIndex);
+  }
+
+  const handleYearChange = (e) => {
+    setSelectedYear(parseInt(e.target.value));
+    setSelctedMonth(0);
+  }
+
   useEffect(()=> {
-    getIncomeSourcesForPeriod('2025', '3'); 
-    getExpensesForPeriod('2025', '3');
-  }, [])
+    getIncomeSourcesForPeriod(selectedYear, selectedMonth);
+    getExpensesForPeriod(selectedYear, selectedMonth);
+  }, [selectedMonth, selectedYear])
 
   // const expenseData = [
   //   { category: 'Car', totalAmount: 1200, color: '#e46a55' },
@@ -113,26 +160,8 @@ export default function IEChartArea ({accounts, transactions}){
   //   { category: 'Rent', totalAmount: 2000, color: '#8c8c8c' },
   //   { category: 'Transportation', totalAmount: 400, color: '#9c704d' }
   // ];
-
-  const years = transactions
-    .map(transaction => new Date(transaction.date).getFullYear())
-    .filter(year => !isNaN(year));
-  const minYear = years.length > 0 ? Math.min(...years) : null;
-  const maxYear = years.length > 0 ? Math.max(...years) : null;
-  const yearOptions = [];
-  for (let year = maxYear; year >= minYear; year--){yearOptions.push(year)};
-  const monthOptions = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth(); // month index starts at 0
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelctedMonth] = useState(currentMonth);
-  const availableMonths = selectedYear == currentYear ? monthOptions.slice(0, currentMonth + 1): monthOptions;
   
-  console.log(selectedMonth)
+  // console.log(selectedMonth)
   // const cashAccountData = accounts.map(account => ({
   //   ...account,
   //   cashBalance: convertToFloat(account.cashBalance),
@@ -146,19 +175,21 @@ export default function IEChartArea ({accounts, transactions}){
           aria-label="Transaction Month" 
           style={{maxWidth: "80px"}} className="me-3"
           value={selectedYear}
-          onChange={e => setSelectedYear(parseInt(e.target.value))}>
+          onChange={handleYearChange}>
           {yearOptions.map((year, index) => (
             <option key={index} value={year}>{year}</option>
           ))}
         </Form.Select>
         <Form.Select 
           aria-label="Transaction Month" 
-          style={{maxWidth: "120px"}}
-          value={monthOptions[selectedMonth]}
-          onChange={e => setSelctedMonth(monthOptions[parseInt(e.target.value)])}>
-          <option value="">Month</option>
-          {availableMonths.map((month, index) => (
-            <option key={index} value={month}>{month}</option>
+          style={{ maxWidth: "120px" }}
+          value={selectedMonth}
+          onChange={handleMonthChange}
+        >
+          {availableMonths.map((month) => (
+            <option key={month.id} value={month.id}>
+              {month.name}
+            </option>
           ))}
         </Form.Select>
         <Col sm={12}>
