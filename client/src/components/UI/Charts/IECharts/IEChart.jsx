@@ -1,19 +1,19 @@
 import {ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, ComposedChart, Line } from 'recharts';
 
-const IEChart = ({transData}) => {
+const IEChart = ({yearlyData}) => {
   const currentYear = new Date().getFullYear();
   return (
     <div className="mb-3" >
       <h5 className="text-center mb-2">{currentYear}'s Income and Expenses</h5>
       <ResponsiveContainer width="100%" height={250}>
-        <ComposedChart data={transData}>
-          <XAxis dataKey="name"/>
-          <YAxis/>
+        <ComposedChart data={yearlyData}>
+          <XAxis dataKey="month"/>
+          <YAxis />
           <Tooltip content={CustomTooltip}/>
           <Legend content={CustomLegend}/>
-          <Bar dataKey="income"  fill="#4d908e"/>
-          <Bar dataKey="expenses"  fill="#fe6d73"/>
-          <Line type="monotone" dataKey="netSavings" stroke="#ff7300" />
+          <Bar dataKey="income"  fill="#4d908e" maxBarSize={30}/>
+          <Bar dataKey="expenses"  fill="#fe6d73" maxBarSize={30}/>
+          <Line type="monotone" dataKey="balance" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             Expenses: ${payload[1].value}
           </li>
           <li style={{ padding: '2px 0', color: '#ff7300' }}>
-            Net Savings: ${payload[2].value}
+            Balance: ${payload[2].value}
           </li>
         </ul>
       </div>
@@ -71,7 +71,7 @@ const CustomLegend = ({ payload }) => {
                   A5.333333333333333,5.333333333333333,0,1,1,10.666666666666666,16"
               />
             </svg>
-            <span style={{ color: '#ff7300' }}>Net Savings</span>
+            <span style={{ color: '#ff7300' }}>Balance</span>
           </li>
         </ul>
       </div>

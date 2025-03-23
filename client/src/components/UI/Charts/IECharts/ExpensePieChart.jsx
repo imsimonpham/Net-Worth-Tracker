@@ -5,7 +5,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
-        <p>{`${payload[0].name}: $${payload[0].value}`}</p>
+        <p>{`${payload[0].name}: $${payload[0].value} (${payload[0].payload.percentage}%)`}</p>
       </div>
     );
   }

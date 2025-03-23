@@ -20,7 +20,7 @@ export default function App(){
     <div className="container">
       <Navbar className="mb-5"/>
       <Activity accounts={accounts}/>
-      <Popup accounts={accounts}/>
+      <Popup accounts={accounts} setAccounts={setAccounts}/>
     </div>
   )
 }

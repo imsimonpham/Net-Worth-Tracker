@@ -2,37 +2,25 @@ import {Row, Col} from 'react-bootstrap';
 import IEChart from './IECharts/IEChart';
 import IncomePieChart from './IECharts/IncomePieChart';
 import ExpensePiechart from './IECharts/ExpensePieChart';
-import { getColorFromId, convertToFloat} from '../../../functions/utilities';
+import {convertToFloat} from '../../../functions/utilities';
 import {useEffect, useState } from "react";
-import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses } from '../../../functions/data';
+import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses, getYearlyData } from '../../../functions/data';
 import {Form} from 'react-bootstrap';
 
-export default function IEChartArea ({accounts, transactions}){
-  const transData = [
-    { name: 'Jan', income: 4000, expenses: 2400, netSavings: 1600 },
-    { name: 'Feb', income: 3000, expenses: 1398, netSavings: 1602 },
-    { name: 'Mar', income: 2000, expenses: 9800, netSavings: -7800 },
-    { name: 'Apr', income: 2780, expenses: 3908, netSavings: -1128 },
-    { name: 'May', income: 1890, expenses: 4800, netSavings: -2910 },
-    { name: 'Jun', income: 2390, expenses: 3800, netSavings: -1410 },
-    { name: 'Jul', income: 3490, expenses: 4300, netSavings: -810 },
-    { name: 'Aug', income: 4200, expenses: 2900, netSavings: 1300 },
-    { name: 'Sep', income: 3100, expenses: 2700, netSavings: 400 },
-    { name: 'Oct', income: 4500, expenses: 3200, netSavings: 1300 },
-    { name: 'Nov', income: 3800, expenses: 2500, netSavings: 1300 },
-    { name: 'Dec', income: 5000, expenses: 4100, netSavings: 900 },
-  ];
-
+export default function IEChartArea ({transactions}){
   const [legendHeight, setLegendHeight] = useState(0);
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+  const [yearlyData, setYearlyData] = useState([]);
 
+  // HANDLE INCOME DATA
   const getIncomeSourcesForPeriod = async (year, month) => {
     const incomeSources =  month === 0 
       ? await getYearlyIncome(year)
       : await getMonthlyIncome(year, month); 
+
     const incomeColors = {
       'Investment Gain': '#d8c99b',
       'Miscellaneous': '#d8973c',
@@ -40,22 +28,34 @@ export default function IEChartArea ({accounts, transactions}){
       'Side gigs': '#50808e'
     };
   
+    //convert amount to float and add color property
     const income = incomeSources
       .map(income => ({
         ...income, 
+        id: month,
         totalAmount: convertToFloat(income.totalAmount),
         color: incomeColors[income.category] || '#000000'
       }))
 
+    //accumulate amount
     const totalIncomeCal = income.reduce(
       (sum, item) => sum + item.totalAmount,
       0,
     );
 
+    //calculate percentage
+    const updatedIncome = income.map(income => ({
+      ...income,
+      percentage: totalIncomeCal > 0 
+        ? convertToFloat((income.totalAmount / totalIncomeCal * 100).toFixed(2)) 
+        : 0
+    }));
+
     setTotalIncome(totalIncomeCal);
-    setIncomeData(income);
+    setIncomeData(updatedIncome);
   } 
 
+  // HANDLE EXPENSE DATA
   const getExpensesForPeriod = async (year, month) => {
     const expenses =  month === 0 
       ? await getYearlyExpenses(year)
@@ -79,22 +79,61 @@ export default function IEChartArea ({accounts, transactions}){
       'Transportation': '#9c704d'
     }; 
 
+    //convert amount to float and add color property
     const expense = expenses.map(expense => ({
       ...expense, 
       totalAmount: convertToFloat(expense.totalAmount), 
       color: expenseColors[expense.category] || '#000000'
     }))
 
+    //accumulate amount
     const totalExpensesCal = expense.reduce(
       (sum, item) => sum + item.totalAmount,
       0,
     );
 
-    setTotalExpenses(totalExpensesCal);
-    setExpenseData(expense);
-  }
+    //calculate percentage
+    const updatedExpenses = expense.map(expense => ({
+      ...expense,
+      percentage: totalExpensesCal > 0 
+        ? convertToFloat((expense.totalAmount / totalExpensesCal * 100).toFixed(2)) 
+        : 0
+    }));
 
-  // date filter
+    setTotalExpenses(totalExpensesCal);
+    setExpenseData(updatedExpenses);
+  }
+  
+  
+  // HANDLE IE DATA
+  const updateIEData = async (year, month) => {
+    const yearlyData = await getYearlyData(year);
+    
+    let updatedYearlyData = yearlyData.map(data => ({
+      ...data
+    }));
+
+    // Filter if a specific month is selected
+    if (month) {
+      updatedYearlyData = updatedYearlyData.filter(data => Number(data.month) === month);
+    }
+
+    // Convert month number to month name
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    updatedYearlyData = updatedYearlyData.map(data => ({
+      ...data,
+      month: monthNames[Number(data.month) - 1],
+      income: Number(data.income),
+      expenses: Number(data.expenses),
+      balance: Number(data.balance),
+    }));
+
+    setYearlyData(updatedYearlyData);
+    console.log(updatedYearlyData);
+  };
+
+
+  // DATE FILTER
   const years = transactions
     .map(transaction => new Date(transaction.date).getFullYear())
     .filter(year => !isNaN(year));
@@ -118,6 +157,7 @@ export default function IEChartArea ({accounts, transactions}){
     { id: 12, name: 'December' }
   ];
   
+  //get available months based on selected year
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth(); // month index starts at 0
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -140,34 +180,11 @@ export default function IEChartArea ({accounts, transactions}){
   useEffect(()=> {
     getIncomeSourcesForPeriod(selectedYear, selectedMonth);
     getExpensesForPeriod(selectedYear, selectedMonth);
+    updateIEData(selectedYear, selectedMonth);
+    console.log('income: ' + totalIncome);
+    console.log('expense: ' + totalExpenses);
   }, [selectedMonth, selectedYear])
-
-  // const expenseData = [
-  //   { category: 'Car', totalAmount: 1200, color: '#e46a55' },
-  //   { category: 'Clothing', totalAmount: 500, color: '#d36a7f' },
-  //   { category: 'Debt Payments', totalAmount: 1500, color: '#b85f7a' },
-  //   { category: 'Eat out', totalAmount: 700, color: '#e87c47' },
-  //   { category: 'Education', totalAmount: 1000, color: '#e4a349' },
-  //   { category: 'Electricity', totalAmount: 250, color: '#f0a741' },
-  //   { category: 'Entertainment', totalAmount: 600, color: '#f15b4e' },
-  //   { category: 'Groceries', totalAmount: 900, color: '#6fa68d' },
-  //   { category: 'Healthcare', totalAmount: 800, color: '#55a0a9' },
-  //   { category: 'Insurance', totalAmount: 400, color: '#7d8b97' },
-  //   { category: 'Internet', totalAmount: 100, color: '#5f88b1' },
-  //   { category: 'Investment Loss', totalAmount: 300, color: '#8c5a6c' },
-  //   { category: 'Miscellaneous', totalAmount: 250, color: '#a99c6a' },
-  //   { category: 'Pet Supplies', totalAmount: 150, color: '#e08585' },
-  //   { category: 'Rent', totalAmount: 2000, color: '#8c8c8c' },
-  //   { category: 'Transportation', totalAmount: 400, color: '#9c704d' }
-  // ];
   
-  // console.log(selectedMonth)
-  // const cashAccountData = accounts.map(account => ({
-  //   ...account,
-  //   cashBalance: convertToFloat(account.cashBalance),
-  //   color: getColorFromId(account.id)
-  // }));
-
   return (
     <div className="mb-3"> 
       <Row className="section-primary" style={{margin: "0"}}>
@@ -193,7 +210,7 @@ export default function IEChartArea ({accounts, transactions}){
           ))}
         </Form.Select>
         <Col sm={12}>
-          <IEChart transData={transData}/>
+          <IEChart yearlyData={yearlyData}/>
         </Col>
         <Col sm={6}>
           <IncomePieChart incomeData={incomeData} legendHeight={legendHeight}/>

@@ -8,7 +8,7 @@ import AddAccountForm from '../Forms/AddAccountForm';
 import ManageAccountsForm from '../Forms/ManageAccountsForm';
 
 
-export default function Popup({accounts}){
+export default function Popup({accounts, setAccounts}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -71,7 +71,7 @@ export default function Popup({accounts}){
           {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts}/>}
           {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose}/>}
-          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts}/>}
+          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts}/>}
         </Modal.Body>
       </Modal>
     </div>

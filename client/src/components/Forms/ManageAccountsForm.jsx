@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import AccountTable from '../UI/Tables/Accounts/AccountTable';
-import { getAccounts, deleteAccountById } from '../../functions/data';
+import {deleteAccountById } from '../../functions/data';
 
-export default function ManageAccountsForm ({accounts}) {
+export default function ManageAccountsForm ({accounts, setAccounts}) {
   //delete accounts
   const deleteAccount = async (id) => {
     const deleteAcct = await deleteAccountById(id);

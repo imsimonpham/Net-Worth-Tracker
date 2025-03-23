@@ -5,6 +5,9 @@ import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
 
 export default function TransRow({transaction, deleteTransaction, accounts}){
+  if (accounts.length === 0) {
+    return null; 
+  }
   const transactionAcctId = 
     transaction.fromAcctId ? transaction.fromAcctId : transaction.toAcctId;
   const transactionAcct = getAccountById(accounts, transactionAcctId);
