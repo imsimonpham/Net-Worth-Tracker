@@ -84,7 +84,7 @@ export default function TransFilter({
           ))   
         }
       </Form.Select>
-      <Form.Select
+      {/* <Form.Select
         className='dropdown-filter'
         value={transactionType}
         onChange={(e) => setTransactionType(e.target.value)}
@@ -93,7 +93,7 @@ export default function TransFilter({
         <option value="Income">Income</option>
         <option value="Expense">Expense</option>
         <option value="Transfer">Transfer</option>
-      </Form.Select>
+      </Form.Select> */}
     </div>
   )
 }

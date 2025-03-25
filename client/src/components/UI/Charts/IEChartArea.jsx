@@ -129,7 +129,6 @@ export default function IEChartArea ({transactions}){
     }));
 
     setYearlyData(updatedYearlyData);
-    console.log(updatedYearlyData);
   };
 
 
@@ -181,9 +180,7 @@ export default function IEChartArea ({transactions}){
     getIncomeSourcesForPeriod(selectedYear, selectedMonth);
     getExpensesForPeriod(selectedYear, selectedMonth);
     updateIEData(selectedYear, selectedMonth);
-    console.log('income: ' + totalIncome);
-    console.log('expense: ' + totalExpenses);
-  }, [selectedMonth, selectedYear])
+  }, [selectedMonth, selectedYear, totalIncome, totalExpenses])
   
   return (
     <div className="mb-3"> 
@@ -210,7 +207,7 @@ export default function IEChartArea ({transactions}){
           ))}
         </Form.Select>
         <Col sm={12}>
-          <IEChart yearlyData={yearlyData}/>
+          <IEChart yearlyData={yearlyData} totalIncome={totalIncome} totalExpenses={totalExpenses}/>
         </Col>
         <Col sm={6}>
           <IncomePieChart incomeData={incomeData} legendHeight={legendHeight}/>

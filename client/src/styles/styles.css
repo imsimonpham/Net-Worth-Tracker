@@ -44,7 +44,7 @@ body{
   border-radius: .42rem;
 }
 
-p, h4, h5 {
+p, h4, h5, small, span {
   color: var(--text-dark);
   margin-bottom: 0;
 }

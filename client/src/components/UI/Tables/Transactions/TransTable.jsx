@@ -3,6 +3,7 @@ import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
 import { getTransactions, deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
+import { useMediaQuery } from "react-responsive";
 
 export default function TransTable({accounts, transactions, setTransactions}){
   //filter data
@@ -62,6 +63,9 @@ export default function TransTable({accounts, transactions, setTransactions}){
     window.location = '/';
   }
 
+  //mobile display
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   return(
     <div className="section-primary">
       <TransFilter 
@@ -70,27 +74,29 @@ export default function TransTable({accounts, transactions, setTransactions}){
         endDate={endDate} setEndDate={setEndDate}
         setAccount={setAccount}
         transactionType={transactionType} setTransactionType={setTransactionType}/>
-      <Table className="table table-hover">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Transaction Type</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Sending Account</th>
-            <th>Receiving Account</th>
-            <th>Note</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        {filteredTransactions
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .map((transaction) => (
-            <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
-        ))}
-        </tbody>
-      </Table>
+        <Table className="table table-hover">
+          {!isMobile && (
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Transaction Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Sending Account</th>
+                <th>Receiving Account</th>
+                <th>Note</th>
+                <th></th>
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {filteredTransactions
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .map((transaction) => (
+                <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
+            ))}
+          </tbody>
+        </Table>
     </div>
   )
 }
