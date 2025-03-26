@@ -2,9 +2,8 @@ import TransTable from "../components/UI/Tables/Transactions/TransTable";
 import IEChartArea from "../components/UI/Charts/IEChartArea";
 import React, {useState, useEffect} from 'react';
 import { getTransactions } from "../functions/data";
-import { useMediaQuery } from "react-responsive";
 
-export default function Activity({accounts}){
+export default function Activity({accounts, isMobile}){
   //fetch transactions
   const [transactions, setTransactions] = useState([]);
   const getTrans = async() => {
@@ -15,9 +14,6 @@ export default function Activity({accounts}){
   useEffect(()=>{
     getTrans();
   }, [])
-
-  //mobile display
-  const isMobile = useMediaQuery({ maxWidth: 1000 });
 
   return (
     <>

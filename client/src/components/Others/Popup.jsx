@@ -8,7 +8,7 @@ import AddAccountForm from '../Forms/AddAccountForm';
 import ManageAccountsForm from '../Forms/ManageAccountsForm';
 
 
-export default function Popup({accounts, setAccounts}){
+export default function Popup({accounts, setAccounts, isMobile}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -54,7 +54,8 @@ export default function Popup({accounts, setAccounts}){
         className='modal-container' 
         show={activeModal !== null} 
         onHide={handleClose}
-        dialogClassName={activeModal === 'Manage Accounts' ? 'modal-100w' : ''}>
+        dialogClassName={activeModal === 'Manage Accounts' ? 'modal-100w' : ''}
+        style={isMobile ? { width: '100%' } : { width: '65%', left: '50%', transform: 'translateX(-50%)'}}>
         <Modal.Header>
           <Modal.Title className='h5'>
             {activeModal === 'IE' && 'Income/Expense Transaction'}
@@ -71,7 +72,7 @@ export default function Popup({accounts, setAccounts}){
           {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts}/>}
           {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose}/>}
-          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts}/>}
+          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} isMobile={isMobile}/>}
         </Modal.Body>
       </Modal>
     </div>

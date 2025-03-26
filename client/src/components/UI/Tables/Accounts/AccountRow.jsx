@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Accordion  } from 'react-bootstrap';
 import AccountDeleteButton from '../../Buttons/AccountDeleteButton';
 import {updateAccountNameById } from '../../../../functions/data';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSeedling, faSackDollar} from '@fortawesome/free-solid-svg-icons';
 
-export default function AccountRow({account, deleteAccount}){
+export default function AccountRow({account, deleteAccount, isMobile, index, accounts}){
   //variables
   const [isEditing, setIsEditing] = useState(false);
   const [accountName, setAccountName] = useState(account.name);
@@ -26,35 +28,53 @@ export default function AccountRow({account, deleteAccount}){
     const account = await updateAccountNameById(id, body);
   }
 
-  return (
-    <tr>
-      <td>
-        {
-          isEditing ? 
-          (
-            <Form.Control 
-              type="text" 
-              autoFocus
-              value={accountName}
-              onChange={accountNameChange}
-              onBlur={handleBlur}
-            />        
-          ) : (  
-            <span 
-              onClick={handleEditClick} 
-              style={{cursor: "pointer", display: "inline-block",}}>{accountName}
-            </span>
-          )
-        }
-      </td>
-      <td>{account.type}</td>
-      <td>{account.cashBalance}</td>
-      <td>{account.investmentBalance}</td>
-      <td>{account.totalBalance}</td>
-      <td style={{textAlign: "right"}}>
-        <AccountDeleteButton 
-          account={account} deleteAccount={deleteAccount}/>
-      </td>
-    </tr>
-  )
+  if(!isMobile){
+    return (
+      <tr>
+        <td>
+          {
+            isEditing ? 
+            (
+              <Form.Control 
+                type="text" 
+                autoFocus
+                value={accountName}
+                onChange={accountNameChange}
+                onBlur={handleBlur}
+              />        
+            ) : (  
+              <span 
+                onClick={handleEditClick} 
+                style={{cursor: "pointer", display: "inline-block",}}>{accountName}
+              </span>
+            )
+          }
+        </td>
+        <td>{account.type}</td>
+        <td>{account.cashBalance}</td>
+        <td>{account.investmentBalance}</td>
+        <td>{account.totalBalance}</td>
+        <td style={{textAlign: "right"}}>
+          <AccountDeleteButton 
+            account={account} deleteAccount={deleteAccount}/>
+        </td>
+      </tr> 
+    )
+  } else {
+    return (
+      <div key={account.id} className={index !== accounts.length - 1 ? "mb-2" : ""}>
+        <p className="d-flex justify-content-between">
+          <span>
+            {account.type === 'Cash' ? 
+              <FontAwesomeIcon icon={faSackDollar} /> : 
+              <FontAwesomeIcon icon={faSeedling} />
+            } 
+            &nbsp;{account.name}
+          </span>
+          <span>{account.totalBalance}</span>
+        </p> 
+      </div>
+    )
+  }
+
 }

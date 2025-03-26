@@ -3,6 +3,7 @@ import Navbar from './components/Others/Navbar';
 import Activity from './pages/Activity';
 import React, {useState, useEffect} from "react";
 import { getAccounts } from './functions/data';
+import { useMediaQuery } from "react-responsive";
 
 export default function App(){
   const [accounts, setAccounts] = useState([]);
@@ -15,12 +16,15 @@ export default function App(){
   useEffect(()=> {
     loadAccounts();
   }, []);
+
+  //mobile display
+  const isMobile = useMediaQuery({ maxWidth: 1000 });
   
   return (
     <div className="container">
       <Navbar className="mb-5"/>
-      <Activity accounts={accounts}/>
-      <Popup accounts={accounts} setAccounts={setAccounts}/>
+      <Activity accounts={accounts} isMobile={isMobile}/>
+      <Popup accounts={accounts} setAccounts={setAccounts} isMobile={isMobile}/>
     </div>
   )
 }

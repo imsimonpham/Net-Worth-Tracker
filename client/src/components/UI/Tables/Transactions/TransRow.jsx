@@ -65,22 +65,20 @@ export default function TransRow({transaction, deleteTransaction, accounts, isMo
     )
   } else {
     return (
-      <div>
-        <div className="py-0 mb-2 d-flex justify-content-between">
-          <p className="d-flex flex-column">
-            <span>{transaction.category} {formatTransTypeString(transaction.transType, false)}</span>
-            <small>
-              {transaction.fromAcctId 
-              ? getAccountById(accounts, transaction.fromAcctId).name
-              : ''}
-              {transaction.fromAcctId && transaction.toAcctId ? ' \u2192 ' : ''}
-              {transaction.toAcctId 
-              ? getAccountById(accounts, transaction.toAcctId).name
-              : ''}
-            </small>
-          </p>
-          <p>{transaction.amount}</p>
-        </div>
+      <div className="py-0 mb-2 d-flex justify-content-between">
+        <p className="d-flex flex-column">
+          <span>{transaction.category} {formatTransTypeString(transaction.transType, false)}</span>
+          <small>
+            {transaction.fromAcctId 
+            ? getAccountById(accounts, transaction.fromAcctId).name
+            : ''}
+            {transaction.fromAcctId && transaction.toAcctId ? ' \u2192 ' : ''}
+            {transaction.toAcctId 
+            ? getAccountById(accounts, transaction.toAcctId).name
+            : ''}
+          </small>
+        </p>
+        <p>{transaction.amount}</p>
       </div>
     )
   }

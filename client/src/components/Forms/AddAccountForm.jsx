@@ -82,7 +82,7 @@ export default function AddAccountForm ({handleClose}) {
       <Row className="mb-3">
         <Col md={12}>
           <Form.Group  controlId="initalBalance">
-            <Form.Label>Initial Balance</Form.Label>
+            <Form.Label>Initial Cash Balance</Form.Label>
             <Form.Control type="number" placeholder="$" value={cashBalance} step="any" onChange={handleCashBalanceChange}/>
             {errors.cashBalance && <div className="text-danger">{errors.cashBalance}</div>}
           </Form.Group>

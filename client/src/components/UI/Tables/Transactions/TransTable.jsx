@@ -104,7 +104,10 @@ export default function TransTable({accounts, transactions, setTransactions, isM
               {filteredTransactions
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .map((transaction) => (
-                  <TransRow isMobile={isMobile} key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
+                  <TransRow 
+                    isMobile={isMobile} key={transaction.id} 
+                    transaction={transaction} deleteTransaction={deleteTransaction} 
+                    accounts={accounts}/>
               ))}
             </tbody>
           </Table>
@@ -121,7 +124,6 @@ export default function TransTable({accounts, transactions, setTransactions, isM
                     isMobile={isMobile} 
                     key={transaction.id} 
                     transaction={transaction} 
-                    deleteTransaction={deleteTransaction} 
                     accounts={accounts}
                   />
                 ))}
