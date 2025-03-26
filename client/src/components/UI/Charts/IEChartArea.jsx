@@ -7,7 +7,7 @@ import {useEffect, useState } from "react";
 import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses, getYearlyData } from '../../../functions/data';
 import {Form} from 'react-bootstrap';
 
-export default function IEChartArea ({transactions}){
+export default function IEChartArea ({transactions, isMobile}){
   const [legendHeight, setLegendHeight] = useState(0);
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
@@ -184,10 +184,10 @@ export default function IEChartArea ({transactions}){
   
   return (
     <div className="mb-3"> 
-      <Row className="section-primary" style={{margin: "0"}}>
+      <Row className="section-primary" style={{marginLeft: "0", marginRight: "0"}}>
         <Form.Select 
           aria-label="Transaction Month" 
-          style={{maxWidth: "80px"}} className="me-3"
+          style={{maxWidth: "80px"}} className="me-3 mb-3"
           value={selectedYear}
           onChange={handleYearChange}>
           {yearOptions.map((year, index) => (
@@ -196,6 +196,7 @@ export default function IEChartArea ({transactions}){
         </Form.Select>
         <Form.Select 
           aria-label="Transaction Month" 
+          className="mb-3"
           style={{ maxWidth: "120px" }}
           value={selectedMonth}
           onChange={handleMonthChange}
@@ -207,10 +208,10 @@ export default function IEChartArea ({transactions}){
           ))}
         </Form.Select>
         <Col sm={12}>
-          <IEChart yearlyData={yearlyData} totalIncome={totalIncome} totalExpenses={totalExpenses}/>
+          <IEChart yearlyData={yearlyData} totalIncome={totalIncome} totalExpenses={totalExpenses} />
         </Col>
         <Col sm={6}>
-          <IncomePieChart incomeData={incomeData} legendHeight={legendHeight}/>
+          <IncomePieChart incomeData={incomeData} legendHeight={legendHeight} isMobile={isMobile}/>
         </Col>
         <Col sm={6}>
           <ExpensePiechart expenseData={expenseData} setLegendHeight={setLegendHeight}/>

@@ -12,9 +12,9 @@ const CustomTooltip = ({active, payload}) => {
   return null;
 };
 
-const IncomePieChart = ({ incomeData, legendHeight }) => {
+const IncomePieChart = ({ incomeData, legendHeight, isMobile}) => {
   return (
-    <div>
+    <div className={isMobile ? 'mb-3' : ''}>
       <h5 className="text-center mt-2">Income breakdown</h5>
       <ResponsiveContainer width="100%" height={260}>
         <PieChart>

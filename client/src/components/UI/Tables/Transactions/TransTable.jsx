@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
-import { getTransactions, deleteTransactionById } from '../../../../functions/data';
+import {deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
-import { useMediaQuery } from "react-responsive";
+import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 
-export default function TransTable({accounts, transactions, setTransactions}){
+export default function TransTable({accounts, transactions, setTransactions, isMobile}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
@@ -39,10 +39,13 @@ export default function TransTable({accounts, transactions, setTransactions}){
   };
 
   const filterbyAccount = (transactions, account) => {
-    return transactions.filter((transaction)=> {
-      return account === 'All accounts' || (account === transaction.fromAcct ||account === transaction.toAcct)
-    })
+    return transactions.filter((transaction) => {
+      const fromAcct = getAccountById(accounts, transaction.fromAcctId);
+      const toAcct = getAccountById(accounts, transaction.toAcctId);
+      return account === 'All accounts' || (fromAcct?.name === account || toAcct?.name === account);
+    });
   }
+  
 
   const filterByTransactionType = (transactions, transactionType) => {
     return transactions.filter((transaction) => {
@@ -64,7 +67,14 @@ export default function TransTable({accounts, transactions, setTransactions}){
   }
 
   //mobile display
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const groupedTransactions = filteredTransactions.reduce((acc, transaction) => {
+    const date = formatDateForUI(transaction.date);
+    if (!acc[date]) {
+      acc[date] = []; // Initialize an array if it doesn't exist
+    }
+    acc[date].push(transaction);
+    return acc;
+  }, {});
 
   return(
     <div className="section-primary">
@@ -73,9 +83,11 @@ export default function TransTable({accounts, transactions, setTransactions}){
         startDate={startDate} setStartDate={setStartDate}
         endDate={endDate} setEndDate={setEndDate}
         setAccount={setAccount}
-        transactionType={transactionType} setTransactionType={setTransactionType}/>
-        <Table className="table table-hover">
-          {!isMobile && (
+        transactionType={transactionType} setTransactionType={setTransactionType}
+        isMobile={isMobile}/>
+      {
+        !isMobile ? 
+          <Table className="table table-hover">
             <thead>
               <tr>
                 <th>Date</th>
@@ -88,15 +100,35 @@ export default function TransTable({accounts, transactions, setTransactions}){
                 <th></th>
               </tr>
             </thead>
-          )}
-          <tbody>
-            {filteredTransactions
-              .sort((a, b) => new Date(b.date) - new Date(a.date))
-              .map((transaction) => (
-                <TransRow key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
+            <tbody>
+              {filteredTransactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map((transaction) => (
+                  <TransRow isMobile={isMobile} key={transaction.id} transaction={transaction} deleteTransaction={deleteTransaction} accounts={accounts}/>
+              ))}
+            </tbody>
+          </Table>
+        :
+          <div>
+            {Object.keys(groupedTransactions)
+              .sort((a, b) => new Date(b) - new Date(a)).map((date) => (
+              <div 
+                key={date} className="mb-3 pt-1" 
+                style={{borderTop: "1px solid #474B5A"}}>
+                <p className="fw-bold">{date}</p>
+                {groupedTransactions[date].map((transaction) => (
+                  <TransRow 
+                    isMobile={isMobile} 
+                    key={transaction.id} 
+                    transaction={transaction} 
+                    deleteTransaction={deleteTransaction} 
+                    accounts={accounts}
+                  />
+                ))}
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+      }      
     </div>
   )
 }

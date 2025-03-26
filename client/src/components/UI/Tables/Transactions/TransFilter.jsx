@@ -7,7 +7,7 @@ export default function TransFilter({
   startDate, setStartDate,
   endDate, setEndDate, 
   setAccount, 
-  transactionType, setTransactionType }){
+  transactionType, setTransactionType, isMobile}){
 
   //fetch accounts
   const [accounts, setAccounts] = useState([]);
@@ -43,7 +43,7 @@ export default function TransFilter({
   };
 
   return (
-    <div className='mb-3 d-flex'>
+    <div className='mb-3 d-flex flex-wrap'>
       <Dropdown className="me-3">
         <Dropdown.Toggle>
           {dateString || 'Last 30 days'}
@@ -84,8 +84,8 @@ export default function TransFilter({
           ))   
         }
       </Form.Select>
-      {/* <Form.Select
-        className='dropdown-filter'
+      <Form.Select
+        className={isMobile ? 'dropdown-filter mt-2' : 'dropdown-filter'}
         value={transactionType}
         onChange={(e) => setTransactionType(e.target.value)}
       >
@@ -93,7 +93,7 @@ export default function TransFilter({
         <option value="Income">Income</option>
         <option value="Expense">Expense</option>
         <option value="Transfer">Transfer</option>
-      </Form.Select> */}
+      </Form.Select>
     </div>
   )
 }

@@ -3,22 +3,18 @@ import { faArrowLeft, faArrowRight, faRightLeft } from '@fortawesome/free-solid-
 import {formatDateForUI, getAccountById } from '../../../../functions/utilities';
 import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
-import { useMediaQuery } from "react-responsive";
 
-export default function TransRow({transaction, deleteTransaction, accounts}){
+export default function TransRow({transaction, deleteTransaction, accounts, isMobile}){
   if (accounts.length === 0) {
     return null; 
   }
-  const transactionAcctId = 
-    transaction.fromAcctId ? transaction.fromAcctId : transaction.toAcctId;
-  const transactionAcct = getAccountById(accounts, transactionAcctId);
 
-  const formatTransTypeString = (transTypeString) => {
+  const formatTransTypeString = (transTypeString, showTypeString) => {
     let transType = transTypeString === 'Income' 
     if(transTypeString === 'Income'){
       transType = (
         <>
-          {transTypeString}
+          {showTypeString ? transTypeString : ''}
           &nbsp;
           <FontAwesomeIcon className="middle-align" icon={faArrowLeft} style={{ color: "#63E6BE" }} />
         </>
@@ -26,7 +22,7 @@ export default function TransRow({transaction, deleteTransaction, accounts}){
     } else if(transTypeString === 'Expense') {
       transType = (
         <>
-          {transTypeString}
+          {showTypeString ? transTypeString : ''}
           &nbsp;
           <FontAwesomeIcon className='middle-align' icon={faArrowRight} style={{color: "#dc3545",}} />
         </>
@@ -34,7 +30,7 @@ export default function TransRow({transaction, deleteTransaction, accounts}){
     } else if (transTypeString === 'Transfer'){
       transType = (
         <>
-          {transTypeString}
+          {showTypeString ? transTypeString : ''}
           &nbsp;
           <FontAwesomeIcon className='middle-align' icon={faRightLeft} style={{color: "#0d6efd",}} />
         </>
@@ -43,37 +39,49 @@ export default function TransRow({transaction, deleteTransaction, accounts}){
     return transType;
   }
 
-  //mobile display
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-
-  if (isMobile) {
+  if(!isMobile){
+    return (
+      <tr>
+        <td>{formatDateForUI(transaction.date)}</td>
+        <td>{formatTransTypeString(transaction.transType, true)}</td>
+        <td>{transaction.category}</td>
+        <td>{transaction.amount}</td>
+        <td>
+          {transaction.fromAcctId 
+          ? getAccountById(accounts, transaction.fromAcctId).name
+          : ''}
+        </td>
+        <td>
+          {transaction.toAcctId 
+          ? getAccountById(accounts, transaction.toAcctId).name
+          : ''}
+        </td>
+        <td>{transaction.note}</td>
+        <td style={{ maxWidth: "90px", textAlign: "right" }}>
+          <TransEditButton transaction={transaction} accounts={accounts} />
+          <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction} />
+        </td>
+      </tr>
+    )
+  } else {
     return (
       <div>
-        <p className="d-flex justify-content-between py-0">
-          <span>{formatDateForUI(transaction.date)}</span>
-          <span>{transactionAcct.name}</span>
-        </p>
-        <p className="d-flex justify-content-between py-0 mb-3">
-          <span>{transaction.category}</span>
-          <span>{transaction.amount}</span>
-        </p>
+        <div className="py-0 mb-2 d-flex justify-content-between">
+          <p className="d-flex flex-column">
+            <span>{transaction.category} {formatTransTypeString(transaction.transType, false)}</span>
+            <small>
+              {transaction.fromAcctId 
+              ? getAccountById(accounts, transaction.fromAcctId).name
+              : ''}
+              {transaction.fromAcctId && transaction.toAcctId ? ' \u2192 ' : ''}
+              {transaction.toAcctId 
+              ? getAccountById(accounts, transaction.toAcctId).name
+              : ''}
+            </small>
+          </p>
+          <p>{transaction.amount}</p>
+        </div>
       </div>
-    );
+    )
   }
-
-  return (
-    <tr>
-      <td>{formatDateForUI(transaction.date)}</td>
-      <td>{formatTransTypeString(transaction.transType)}</td>
-      <td>{transaction.category}</td>
-      <td>{transaction.amount}</td>
-      <td>{transaction.fromAcctId ? transactionAcct.name : ''}</td>
-      <td>{transaction.toAcctId ? transactionAcct.name : ''}</td>
-      <td>{transaction.note}</td>
-      <td style={{ maxWidth: "90px", textAlign: "right" }}>
-        <TransEditButton transaction={transaction} accounts={accounts} />
-        <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction} />
-      </td>
-    </tr>
-  );
 }

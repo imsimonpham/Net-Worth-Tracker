@@ -3,10 +3,11 @@ import {ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, ComposedChart, 
 const IEChart = ({yearlyData, totalIncome, totalExpenses}) => {
   return (
     <div className="mb-3" >
-      <h5 className="text-center mb-2"> Income and Expenses</h5>
+      <h5 className="text-center mb-2">Income and Expenses</h5>
       <p className="text-center mb-2">
         Total income: <span style={{color:"#4d908e"}}>${totalIncome}</span>&nbsp; 
-        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses}</span>
+        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses}</span>&nbsp;
+        Balance: <span style={{color:"#ff7300"}}>${totalIncome - totalExpenses}</span>
       </p>
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={yearlyData}>
