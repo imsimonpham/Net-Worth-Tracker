@@ -1,47 +1,29 @@
-export default function Navbar(){
+import { Link } from 'react-router-dom';
+import {Container, Nav, Navbar} from 'react-bootstrap';
+
+export default function NavBar({path}) {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark-custom mb-5">
-      <div className="container-fluid">
-        {/* Logo on the left */}
-        <a className="navbar-brand" href="#">
-          {/* <img src="https://via.placeholder.com/100x40?text=Logo" alt="Logo" /> */}
-          <h3>Networth Tracker</h3>
-        </a>
-
-        {/* Navbar toggler for mobile responsiveness */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        {/* Navbar content (tabs) */}
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            {/* <li className="nav-item">
-              <a className="nav-link" href="#">
-                Overview
-              </a>
-            </li> */}
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Activities
-              </a>
-            </li>
-            {/* <li className="nav-item">
-              <a className="nav-link" href="#">
-                Investments
-              </a>
-            </li> */}
-          </ul>
-        </div>
-      </div>
-    </nav>
-    )
-  }
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand as={Link} to="/">
+          <h3>Net Worth Tracker</h3>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            <Nav.Link 
+              as={Link} to="/portfolio" 
+              style={path === "/portfolio" ? {fontWeight: "bold" } : {}}>
+              Portfolio
+            </Nav.Link>
+            <Nav.Link 
+              as={Link} to="/spendings" 
+              style={path === "/spendings" ? {fontWeight: "bold" } : {}}>
+              Spendings
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}

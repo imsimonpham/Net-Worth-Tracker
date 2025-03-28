@@ -3,7 +3,7 @@ import IEChartArea from "../components/UI/Charts/IEChartArea";
 import React, {useState, useEffect} from 'react';
 import { getTransactions } from "../functions/data";
 
-export default function Activity({accounts, isMobile}){
+export default function Spendings({accounts, isMobile}){
   //fetch transactions
   const [transactions, setTransactions] = useState([]);
   const getTrans = async() => {

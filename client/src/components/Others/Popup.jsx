@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import {Button, Modal, Accordion} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear } from '@fortawesome/free-solid-svg-icons';
+import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear, faTicket } from '@fortawesome/free-solid-svg-icons';
 import IEPopupForm from '../Forms/IEPopupForm';
 import TransferPopupForm from '../Forms/TransferPopupForm';
 import AddAccountForm from '../Forms/AddAccountForm'; 
 import ManageAccountsForm from '../Forms/ManageAccountsForm';
 
 
-export default function Popup({accounts, setAccounts, isMobile}){
+export default function Popup({accounts, setAccounts, isMobile, path}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -22,24 +22,37 @@ export default function Popup({accounts, setAccounts, isMobile}){
             <FontAwesomeIcon style={{width: '40px'}} icon={faUserGear} />
           </Accordion.Header>
           <Accordion.Body>
-            <Button  
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction mb-3'  
-              onClick={()=>handleShow('IE')}>
-              <FontAwesomeIcon icon={faDollarSign} />
-            </Button>
-            <Button 
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction mb-3' 
-              onClick={()=>handleShow('Transfer')}>
-              <FontAwesomeIcon icon={faRightLeft} />
-            </Button>
-            <Button 
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction mb-3' 
-              onClick={()=>handleShow('Add Acount')}>
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
+            {
+              path === '/spendings' 
+              ? 
+                <>
+                  <Button  
+                    style={{width: '40px', height: '40px'}}
+                    className='btn btn-transaction mb-3'  
+                    onClick={()=>handleShow('IE')}>
+                    <FontAwesomeIcon icon={faDollarSign} />
+                  </Button>
+                  <Button 
+                    style={{width: '40px', height: '40px'}}
+                    className='btn btn-transaction mb-3' 
+                    onClick={()=>handleShow('Transfer')}>
+                    <FontAwesomeIcon icon={faRightLeft} />
+                  </Button>
+                  <Button 
+                    style={{width: '40px', height: '40px'}}
+                    className='btn btn-transaction mb-3' 
+                    onClick={()=>handleShow('Add Acount')}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </Button>
+                </>
+              :
+                <Button 
+                style={{width: '40px', height: '40px'}}
+                className='btn btn-transaction mb-3' 
+                >
+                <FontAwesomeIcon icon={faTicket} />
+                </Button>
+            }
             <Button 
               style={{width: '40px', height: '40px'}}
               className='btn btn-transaction' 

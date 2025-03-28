@@ -21,6 +21,7 @@
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
     "react-responsive": "^10.0.1",
+    "react-router-dom": "^6.30.0",
     "recharts": "^2.15.1"
   },
   "devDependencies": {

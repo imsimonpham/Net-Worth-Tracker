@@ -3,6 +3,8 @@ const API_BASE_URL = isDev ?
   'http://localhost:5000' : import.meta.env.VITE_SERVER_API_URL;
 export {API_BASE_URL};
 
+const API_TWELVEDATA_BASE_URL = import.meta.env.VITE_TWELVEDATA_API_URL;
+const API_TWELVEDATA_KEY = import.meta.env.VITE_TWELVEDATA_API_KEY;
 
 //ACCOUNTS
 export const getAccounts = async () => {
@@ -58,6 +60,30 @@ export const deleteTransactionById = async (id) => {
   return deleteData(`/transactions/${id}`);
 }
 
+// TWELVE DATA
+export const getTwelveData = async (symbol, isCrypto) => {
+  try{
+    const interval = '1min'; 
+    const outputsize = 1;
+    const cryptoExchangeParam = isCrypto ? '&exchange=synthetic' : '';
+    const res = await fetch(
+      `${API_TWELVEDATA_BASE_URL}?symbol=${symbol}${cryptoExchangeParam}&interval=${interval}&outputsize=${outputsize}&apikey=${API_TWELVEDATA_KEY}`, 
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+      }
+    ) 
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
+
+
+///////////////////
 const getData = async (endpoint) => {
   try {
     const res = await fetch(
