@@ -6,6 +6,7 @@ import IEPopupForm from '../Forms/IEPopupForm';
 import TransferPopupForm from '../Forms/TransferPopupForm';
 import AddAccountForm from '../Forms/AddAccountForm'; 
 import ManageAccountsForm from '../Forms/ManageAccountsForm';
+import HoldingForm from '../Forms/HoldingForm';
 
 
 export default function Popup({accounts, setAccounts, isMobile, path}){
@@ -49,7 +50,7 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
                 <Button 
                 style={{width: '40px', height: '40px'}}
                 className='btn btn-transaction mb-3' 
-                >
+                onClick={()=>handleShow('Holdings')}>
                 <FontAwesomeIcon icon={faTicket} />
                 </Button>
             }
@@ -75,6 +76,7 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
             {activeModal === 'Transfer' && 'Transfer between accounts'}
             {activeModal === 'Add Acount' && 'New account'}
             {activeModal === 'Manage Accounts' && 'Manage accounts'}
+            {activeModal === 'Holdings' && 'Manage Holdings'}
           </Modal.Title>
           <Button className='btn btn-x' onClick={handleClose}>
             <FontAwesomeIcon icon={faX} style={{color: "#99999F"}}/>
@@ -86,6 +88,7 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
           {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose}/>}
           {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} isMobile={isMobile}/>}
+          {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} accounts={accounts}/>}
         </Modal.Body>
       </Modal>
     </div>
