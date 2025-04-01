@@ -2,8 +2,17 @@ import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 import HoldingsRow from './HoldingsRow';
+import { deleteHoldingById } from '../../../../functions/data';
 
-export default function HoldingsTable({isMobile, stock, accounts, holdings, exchange}){
+export default function HoldingsTable({isMobile, accounts, holdings, exchangeRateData, setHoldings, marketData}){
+  //delete holding
+  const deleteHolding = async (id) => {
+    const deleteTrans = await deleteHoldingById(id);
+    setHoldings(holdings.filter(
+      holding => holding.id !== id
+    ))
+    window.location = '/';
+  }
 
   return(
     <div className="section-primary">
@@ -26,8 +35,9 @@ export default function HoldingsTable({isMobile, stock, accounts, holdings, exch
           {holdings.map((holding, index) => (
             <HoldingsRow 
               key={holding.ticker} isMobile={isMobile} 
-              holding={holding} stock={stock[holding.ticker]} 
-              accounts={accounts} exchange={exchange}/>
+              holding={holding} 
+              accounts={accounts} exchangeRateData={exchangeRateData} 
+              deleteHolding={deleteHolding} marketData={marketData}/>
           ))}
         </tbody>
       </Table>

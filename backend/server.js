@@ -164,6 +164,20 @@ app.put('/holdings/:id', async (req, res) => {
   }
 });
 
+// delete holding
+app.delete('/holdings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteHolding = await pool.query(
+      "DELETE FROM holding WHERE id = $1",
+      [id]
+    );
+    res.json({ message: "Holding was deleted successfully" });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+})
 
 // CHARTS
 // pull income data for CHARTS

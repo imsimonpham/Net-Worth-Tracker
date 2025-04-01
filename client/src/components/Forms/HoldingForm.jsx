@@ -4,6 +4,9 @@ import {createNewHolding, updateHolding } from '../../functions/data';
 import { getAccountById, convertToFloat } from '../../functions/utilities';
 
 export default function HoldingForm ({handleClose, accounts, holding, isReadOnly}) {
+  if(!isReadOnly){
+    isReadOnly = false;
+  }
   // variables
   const [tickerSymbol, setTickerSymbol] = useState(holding ? holding.ticker : '');
   const [holdingType, setHoldingType] = useState(holding ? holding.type : '');
@@ -80,7 +83,8 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
             <Form.Control type="text" 
               value={tickerSymbol} 
               onChange={handleTickerSymbolChange} 
-              disabled={isReadOnly} />
+              disabled={isReadOnly} 
+              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}/>
               {errors.tickerSymbol && 
                 <div className="text-danger">{errors.tickerSymbol}</div>}
           </Form.Group>
@@ -92,6 +96,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
               aria-label="Currency"
               value={currency}
               disabled={isReadOnly}
+              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}
               onChange={handleCurrencyChange}
             >
               <option value="">----</option>
@@ -108,6 +113,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
               aria-label="Holding Type"
               value={holdingType}
               disabled={isReadOnly}
+              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}
               onChange={handleHoldingTypeChange}
             >
               <option value="">----</option>
@@ -128,6 +134,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
               aria-label="Investment Account"
               value={accountName}
               disabled={isReadOnly}
+              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}
               onChange={handleAccountChange}
             >
               <option value="">Select an account</option>

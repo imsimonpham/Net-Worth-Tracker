@@ -10,7 +10,7 @@ export default function AccountDeleteButton({account, deleteAccount}){
     if(convertToFloat(account.totalBalance) === 0)
       setShow(true);
     else 
-      alert("The account must have a zero balance before it can be deleted.")
+      alert('The account must have a zero balance before it can be deleted.')
   }
 
   return (

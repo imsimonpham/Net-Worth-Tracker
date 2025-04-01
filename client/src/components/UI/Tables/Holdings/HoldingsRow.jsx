@@ -5,18 +5,29 @@ import {convertToFloat, formatDateForUI, getAccountById } from '../../../../func
 import HoldingDeleteButton from '../../Buttons/HoldingDeleteButton';
 import HoldingEditButton from '../../Buttons/HoldingsEditButton';
 
-export default function HoldingsRow({isMobile, holding, stock, accounts, exchange}){
+export default function HoldingsRow({isMobile, holding, accounts, exchange, deleteHolding, marketData, exchangeRateData}){
   if (accounts.length === 0) {
     return null; 
   }
-  // console.log(accounts)
-  // console.log(stock)
 
-  const exchangeRate = holding.currency === 'USD' ? exchange.values[0].low : 1;
-  const marketPrice = parseFloat((stock.values[0].low));
+  // console.log(marketData[holding.ticker])
+
+  const exchangeRate = holding.currency === 'USD' ? exchangeRateData?.values?.[0]?.low || 1 : 1;
+
+  const getMarketPrice = (holding) => {
+    if (marketData && marketData[holding.ticker]) {
+      return parseFloat(parseFloat(marketData[holding.ticker].values[0].low).toFixed(2));
+    } 
+    return ''; 
+  };
+
+  
+  const marketPrice = getMarketPrice(holding);
+  const formattedPrice = typeof marketPrice === 'number' 
+  ? `$${marketPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+  : 'not available';
   const totalCost = convertToFloat(holding.totalCost);
-
-  const generateProfitString = (marketPrice, shares, totalCost) => {
+  const generateProfitString = (marketPrice, shares, totalCost) => {   
     const profit = ((marketPrice * shares - totalCost)*exchangeRate).toFixed(2);
     const isProfitPositive = profit > 0;
     const profitPercentage = ((profit / totalCost) * 100).toFixed(2); 
@@ -45,14 +56,18 @@ export default function HoldingsRow({isMobile, holding, stock, accounts, exchang
       <td>{holding.shares}</td>
       <td>{holding.avgPrice}</td>
       <td>{holding.totalCost}</td>
-      <td><span style={{color: "#00aff5"}}>${stock.values[0].low}</span></td>
+      <td>
+        <span style={{color: "#00aff5"}}>
+          {formattedPrice}
+        </span>
+      </td>
       <td>{holding.currency}</td>
       <td>
         {generateProfitString(marketPrice, holding.shares, totalCost)}
       </td>
-      <td style={{ maxWidth: "90px", textAlign: "right" }}>
+      <td style={{ maxWidth: "auto", textAlign: "right" }}>
         <HoldingEditButton holding={holding} accounts={accounts}/>
-        <HoldingDeleteButton/>
+        <HoldingDeleteButton deleteHolding={deleteHolding} holding={holding}/>
       </td>
     </tr>
   )

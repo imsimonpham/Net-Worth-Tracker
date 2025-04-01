@@ -73,14 +73,17 @@ export const updateHolding = async (id, body) => {
   return updateData(`/holdings/${id}`, body); 
 }
 
+export const deleteHoldingById = async (id) => {
+  return deleteData(`/holdings/${id}`);
+}
+
 // TWELVE DATA
-export const getTwelveData = async (symbol, isCrypto) => {
+export const getTwelveData = async (symbol) => {
   try{
     const interval = '1min'; 
     const outputsize = 1;
-    const cryptoExchangeParam = isCrypto ? '&exchange=synthetic' : '';
     const res = await fetch(
-      `${API_TWELVEDATA_BASE_URL}?symbol=${symbol}${cryptoExchangeParam}&interval=${interval}&outputsize=${outputsize}&apikey=${API_TWELVEDATA_KEY}`, 
+      `${API_TWELVEDATA_BASE_URL}?symbol=${symbol}&interval=${interval}&outputsize=${outputsize}&apikey=${API_TWELVEDATA_KEY}`, 
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json'},
