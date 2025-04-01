@@ -1,15 +1,19 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import {createNewAccount } from '../../functions/data';
+import {createNewHolding, updateHolding } from '../../functions/data';
+import { getAccountById, convertToFloat } from '../../functions/utilities';
 
-export default function HoldingForm ({handleClose, accounts}) {
+export default function HoldingForm ({handleClose, accounts, holding, isReadOnly}) {
   // variables
-  const [tickerSymbol, setTickerSymbol] = useState('');
-  const [holdingType, setHoldingType] = useState('');
-  const [accountId, setAccountId] = useState('');
-  const [accountName, setAccountName] = useState('');
-  const [shares, setShares] = useState(0);
-  const [avgPrice, setAvgPrice] = useState(0);
+  const [tickerSymbol, setTickerSymbol] = useState(holding ? holding.ticker : '');
+  const [holdingType, setHoldingType] = useState(holding ? holding.type : '');
+  const [accountId, setAccountId] = useState(holding ? holding.acctId : '');
+  const [accountName, setAccountName] = useState(
+    accountId ? getAccountById(accounts, accountId).name : '');
+  const [cashBalance, setCashBalance] = useState(accountId ? convertToFloat(getAccountById(accounts, accountId).cashBalance) : 0);
+  const [shares, setShares] = useState(holding ? holding.shares : 0);
+  const [avgPrice, setAvgPrice] = useState(holding ? convertToFloat(holding.avgPrice) : 0);
+  const [currency, setCurrency] = useState(holding ? holding.currency : '');
 
   // handle variable changes
   const handleTickerSymbolChange = (e) => setTickerSymbol(e.target.value.toUpperCase());
@@ -17,11 +21,15 @@ export default function HoldingForm ({handleClose, accounts}) {
   const handleAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
+    const cashBalance = selectedAccount.cashBalance; 
     setAccountId(selectedOption.id);
     setAccountName(selectedAccount.name);
+    setCashBalance(convertToFloat(cashBalance));
   }
   const handleSharesChange = (e) => setShares(e.target.value);
   const handleAvgPriceChange = (e) => setAvgPrice(e.target.value);
+  const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
+  const handleCurrencyChange = (e) => setCurrency(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -31,6 +39,7 @@ export default function HoldingForm ({handleClose, accounts}) {
     if(!tickerSymbol) newErrors.tickerSymbol = 'Ticker symbol is required';
     if(!holdingType) newErrors.holdingType = 'Holding type is required';
     if(!accountId) newErrors.accountId = 'Investment account is required';
+    if(!currency) newErrors.currency = 'Currency is required';
     if(!shares && shares <= 0) newErrors.shares = 'Number of shares must be greater zero';
     if(!avgPrice && avgPrice <= 0) newErrors.avgPrice = 'Average price must be greater zero';
 
@@ -38,38 +47,58 @@ export default function HoldingForm ({handleClose, accounts}) {
     return Object.keys(newErrors).length === 0;
   }
 
-  //create new account
-  // const createAccount = async () => {
-  //   const body = {
-  //     name: accountName, 
-  //     cashBalance: cashBalance, 
-  //     investmentBalance: 0,
-  //     type: accountType,
-  //     isActive: true
-  //   };
-  //   const newAccount = await createNewAccount(body);
-  // }
-
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
-    if(!isFormDataValid()) return;
-    createAccount();
+  //create a new holding
+  const upsertHolding = async () => {
+    const body = {
+      ticker: tickerSymbol, 
+      type: holdingType, 
+      acctId: accountId,
+      shares: shares,
+      avgPrice: avgPrice,
+      currency: currency
+    };
+    const upsertHolding = holding ? 
+      await updateHolding(holding.id, body) : 
+      await createNewHolding(body)
 
     window.location = '/';
     handleClose();
   }
 
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    if(!isFormDataValid()) return;
+    upsertHolding();
+  }
+
   return (
     <Form className='transaction-form' onSubmit={onSubmitForm}>
       <Row className="mb-3">
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group controlId="tickerSymbol">
             <Form.Label>Ticker Symbol</Form.Label>
             <Form.Control type="text" 
               value={tickerSymbol} 
-              onChange={handleTickerSymbolChange}/>
+              onChange={handleTickerSymbolChange} 
+              disabled={isReadOnly} />
               {errors.tickerSymbol && 
                 <div className="text-danger">{errors.tickerSymbol}</div>}
+          </Form.Group>
+        </Col>
+        <Col md={3}>
+          <Form.Group controlId="currency">
+            <Form.Label>Currency</Form.Label>
+            <Form.Select 
+              aria-label="Currency"
+              value={currency}
+              disabled={isReadOnly}
+              onChange={handleCurrencyChange}
+            >
+              <option value="">----</option>
+              <option value="CAD">CAD</option>
+              <option value="USD">USD</option>
+            </Form.Select>
+            {errors.currency && <div className="text-danger">{errors.currency}</div>}
           </Form.Group>
         </Col>
         <Col md={6}>
@@ -78,9 +107,10 @@ export default function HoldingForm ({handleClose, accounts}) {
             <Form.Select 
               aria-label="Holding Type"
               value={holdingType}
+              disabled={isReadOnly}
               onChange={handleHoldingTypeChange}
             >
-              <option value="">Select an option</option>
+              <option value="">----</option>
               <option value="Crypto">Crypto</option>
               <option value="ETF">ETF</option>
               <option value="Stock">Stock</option>
@@ -91,12 +121,13 @@ export default function HoldingForm ({handleClose, accounts}) {
       </Row>
 
       <Row className="mb-3">
-        <Col md={12}>
+        <Col md={6}>
           <Form.Group controlId="investmentAccount">
             <Form.Label>Investment Account</Form.Label>
             <Form.Select 
               aria-label="Investment Account"
               value={accountName}
+              disabled={isReadOnly}
               onChange={handleAccountChange}
             >
               <option value="">Select an account</option>
@@ -109,6 +140,14 @@ export default function HoldingForm ({handleClose, accounts}) {
                 ))}
             </Form.Select>
             {errors.accountId && <div className="text-danger">{errors.accountId}</div>}
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group controlId="cashBalance">
+            <Form.Label>Cash Balance</Form.Label>
+            <Form.Control type="number"
+              value={cashBalance} 
+              onChange={handleCashBalanceChange}/>
           </Form.Group>
         </Col>
       </Row>

@@ -111,7 +111,61 @@ app.put('/transactions/:id', async (req, res) => {
   }
 });
 
+// HOLDINGS
 
+// get all holdings
+app.get('/holdings', async (req, res) => {
+  try {
+    const allHoldings = await pool.query("SELECT * FROM holding");
+    res.json(allHoldings.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+// create a new holding
+app.post('/holdings', async (req, res) => {
+  try {
+    const {ticker, type, acctId, shares, avgPrice, currency} = req.body; 
+    const newHolding = await pool.query(
+      `INSERT INTO holding
+        ("ticker", "type", "acctId", "shares", "avgPrice", "currency")
+      VALUES  
+        ($1, $2, $3, $4, $5, $6)
+      RETURNING *`,
+      [ticker, type, acctId, shares, avgPrice, currency]
+    ); 
+    res.json(newHolding.command.rows[0]);
+  } catch (err) { 
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+// update holding
+app.put('/holdings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shares, avgPrice} = req.body;
+
+    const updateHolding = await pool.query(
+      `UPDATE holding
+       SET "shares" = $1,
+           "avgPrice" = $2
+       WHERE id = $3`,
+      [shares, avgPrice, id]
+    );
+
+    res.json({ message: "Holding data was updated successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// CHARTS
 // pull income data for CHARTS
 app.get('/transactions/income/monthly', async (req, res) => {
   try {

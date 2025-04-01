@@ -3,25 +3,7 @@ import {Table} from 'react-bootstrap';
 import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 import HoldingsRow from './HoldingsRow';
 
-export default function HoldingsTable({isMobile, stock, accounts}){
-  const holdings = [
-    {
-      ticker: 'TSLA', 
-      acctId: 15,
-      type: 'Stock',
-      shares: 2, 
-      avgPrice: '$270.00',
-      totalCost: '$540.00',
-    }, 
-    {
-      ticker: 'NVDA', 
-      acctId: 15,
-      type: 'Stock',
-      shares: 2, 
-      avgPrice: '$120.00',
-      totalCost: '$240.00',
-    }
-  ]
+export default function HoldingsTable({isMobile, stock, accounts, holdings, exchange}){
 
   return(
     <div className="section-primary">
@@ -35,14 +17,17 @@ export default function HoldingsTable({isMobile, stock, accounts}){
             <th>Average Price</th>
             <th>Total Cost</th>
             <th>Market Price</th>
-            <th>Total Profit</th>
+            <th>Currency</th>
+            <th>Total Profit (CAD)</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {holdings.map((holding, index) => (
             <HoldingsRow 
-              key={holding.ticker} isMobile={isMobile} holding={holding} stock={stock[holding.ticker]} accounts={accounts}/>
+              key={holding.ticker} isMobile={isMobile} 
+              holding={holding} stock={stock[holding.ticker]} 
+              accounts={accounts} exchange={exchange}/>
           ))}
         </tbody>
       </Table>

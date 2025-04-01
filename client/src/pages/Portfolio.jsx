@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import { getTwelveData } from '../functions/data';
+import { getTwelveData, getHoldings} from '../functions/data';
 import HoldingsTable from '../components/UI/Tables/Holdings/HoldingsTable';
 
 export default function Portfolio({isMobile, accounts}){
+  const [holdings, setHoldings] = useState([]);
+
   const getMarketPrice = async (symbol, isCrypto) => {
     try {
-      console.log('yolo')
       const price = await getTwelveData(symbol, isCrypto);
-      console.log("Market Price Data:", price); // Only 1 log
+      console.log( price); // Only 1 log
     } catch (error) {
         console.error("Error fetching market price:", error);
     }
@@ -17,7 +18,14 @@ export default function Portfolio({isMobile, accounts}){
   //   getMarketPrice('TSLA,NVDA', false);
   // }, []);
 
- 
+ const getAllHoldings = async () => {
+  const holdings = await getHoldings();
+  setHoldings(holdings);
+ }
+
+ useEffect(() => {
+  getAllHoldings();
+  }, []);
 
   const stock = {
     TSLA: {
@@ -35,7 +43,7 @@ export default function Portfolio({isMobile, accounts}){
           datetime: "2025-03-27 12:22:00",
           open: "284.7",
           high: "285.13",
-          low: "290.33",
+          low: "288.00",
           close: "284.37",
           volume: "10591"
         }
@@ -57,7 +65,7 @@ export default function Portfolio({isMobile, accounts}){
           datetime: "2025-03-27 12:22:00",
           open: "112.86",
           high: "112.91",
-          low: "112.77",
+          low: "105.00",
           close: "112.8",
           volume: "11245"
         }
@@ -78,13 +86,13 @@ export default function Portfolio({isMobile, accounts}){
     },
     status: "ok",
     values: [
-        {
-          close: "3.34448",
-          datetime: "2025-03-27 14:29:00",
-          high: "3.34448",
-          low: "3.34448",
-          open: "3.34448"
-        }
+      {
+        close: "3.34448",
+        datetime: "2025-03-27 14:29:00",
+        high: "3.34448",
+        low: "3.34448",
+        open: "3.34448"
+      }
     ]
   }
 
@@ -110,7 +118,10 @@ export default function Portfolio({isMobile, accounts}){
 
   return (
     <>
-      <HoldingsTable isMobile={isMobile} stock={stock} accounts={accounts}/>
+      <HoldingsTable 
+        isMobile={isMobile} stock={stock} 
+        accounts={accounts} holdings={holdings}
+        exchange={exchange}/>
     </>
   )
 }

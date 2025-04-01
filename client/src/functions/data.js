@@ -60,6 +60,19 @@ export const deleteTransactionById = async (id) => {
   return deleteData(`/transactions/${id}`);
 }
 
+// HOLDING
+export const getHoldings = async () => {
+  return getData('/holdings/');
+}
+
+export const createNewHolding = async (body) => {
+  return createData(`/holdings`, body);
+}
+
+export const updateHolding = async (id, body) => {
+  return updateData(`/holdings/${id}`, body); 
+}
+
 // TWELVE DATA
 export const getTwelveData = async (symbol, isCrypto) => {
   try{
@@ -80,8 +93,6 @@ export const getTwelveData = async (symbol, isCrypto) => {
     return null;
   }
 }
-
-
 
 ///////////////////
 const getData = async (endpoint) => {

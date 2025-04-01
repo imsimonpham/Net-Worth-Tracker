@@ -39,12 +39,6 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
                     onClick={()=>handleShow('Transfer')}>
                     <FontAwesomeIcon icon={faRightLeft} />
                   </Button>
-                  <Button 
-                    style={{width: '40px', height: '40px'}}
-                    className='btn btn-transaction mb-3' 
-                    onClick={()=>handleShow('Add Acount')}>
-                    <FontAwesomeIcon icon={faPlus} />
-                  </Button>
                 </>
               :
                 <Button 
@@ -54,6 +48,12 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
                 <FontAwesomeIcon icon={faTicket} />
                 </Button>
             }
+            <Button 
+              style={{width: '40px', height: '40px'}}
+              className='btn btn-transaction mb-3' 
+              onClick={()=>handleShow('Add Acount')}>
+              <FontAwesomeIcon icon={faPlus} />
+            </Button>
             <Button 
               style={{width: '40px', height: '40px'}}
               className='btn btn-transaction' 
