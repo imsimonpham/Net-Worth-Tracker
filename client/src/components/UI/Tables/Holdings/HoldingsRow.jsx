@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { faCaretUp, faCaretDown} from '@fortawesome/free-solid-svg-icons';
-import {convertToFloat, formatDateForUI, getAccountById } from '../../../../functions/utilities';
+import {convertToFloat, formatDateForUI, getAccountById, isMultiTicker } from '../../../../functions/utilities';
 import HoldingDeleteButton from '../../Buttons/HoldingDeleteButton';
 import HoldingEditButton from '../../Buttons/HoldingsEditButton';
 
@@ -10,13 +10,14 @@ export default function HoldingsRow({isMobile, holding, accounts, exchange, dele
     return null; 
   }
 
-  // console.log(marketData[holding.ticker])
+  // set ticker based on if data has multiple tickers
+  const ticker = isMultiTicker(marketData) && holding ?  marketData[holding.ticker] : marketData;
 
   const exchangeRate = holding.currency === 'USD' ? exchangeRateData?.values?.[0]?.low || 1 : 1;
 
   const getMarketPrice = (holding) => {
-    if (marketData && marketData[holding.ticker]) {
-      return parseFloat(parseFloat(marketData[holding.ticker].values[0].low).toFixed(2));
+    if ((marketData && ticker) && (ticker.meta.symbol === holding.ticker)) {
+      return parseFloat(parseFloat(ticker.values[0].low).toFixed(2));
     } 
     return ''; 
   };

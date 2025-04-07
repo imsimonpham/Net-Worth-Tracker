@@ -35,3 +35,19 @@ export const getColorFromId = (id) => {
   const hue = (id * 137) % 360; // Spread hues evenly
   return `hsl(${hue}, 60%, 65%)`; // Reduce lightness for a darker pastel look
 };
+
+export const isMultiTicker = (data) => {
+  const keys = Object.keys(data);
+  const knownSingleKeys = ['meta', 'status', 'values'];
+  return !keys.every((key) => knownSingleKeys.includes(key));
+};
+
+export const areTickersPresent = (data, tickerString) => { 
+  const tickers = tickerString.split(',');
+
+  if (tickers.length === 1) {
+    return data.meta?.symbol === tickers[0];
+  }
+  return tickers.every((ticker) => data.hasOwnProperty(ticker));
+};
+

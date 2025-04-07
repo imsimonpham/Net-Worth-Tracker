@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import { getTwelveData, getHoldings} from '../functions/data';
 import HoldingsTable from '../components/UI/Tables/Holdings/HoldingsTable';
+import { areTickersPresent } from '../functions/utilities';
 
 export default function Portfolio({isMobile, accounts}){
+  const dataInterval = 500000;
   const [holdings, setHoldings] = useState([]);
   const getAllHoldings = async () => {
     const holdings = await getHoldings();
@@ -32,67 +34,60 @@ export default function Portfolio({isMobile, accounts}){
 
   const getMarketData = async (tickerString) => {
     if (tickerString) {
+      console.log('ticker string')
       const data = await getTwelveData(tickerString);
       // Only update state and localStorage if the data is valid (not an error message)
-      if (data && !data.message?.includes('out of credits')) { // Adjust condition based on API response
+      if (data && data.code !== 429) { 
         setMarketData(data);
         localStorage.setItem('marketData', JSON.stringify(data));
       }
-    }
+      return data;
+    } 
+    return null;
   };
   
   const getExchangeData = async (tickerString) => {
     if (tickerString) {
       const data = await getTwelveData(tickerString);
       // Only update state and localStorage if the data is valid (not an error message)
-      if (data && !data.message?.includes('out of credits')) { // Adjust condition based on API response
+      if (data && data.code !== 429) { 
         setExchangeRateData(data);
         localStorage.setItem('exchangeRateData', JSON.stringify(data));
       }
+      return data;
+    }
+    return null;
+  };
+
+  const getData = () => {
+    const lastFetchTime = localStorage.getItem('lastFetchTime');
+    const currentTime = Date.now();
+  
+    if ((!lastFetchTime || (currentTime - lastFetchTime > dataInterval)) && tickerString) {
+      localStorage.setItem('lastFetchTime', currentTime);
+      getMarketData(tickerString);
+      getExchangeData(exchangeTickerString);
+      console.log('getting data...');
     }
   };
 
   useEffect(() => {
     // Only fetch immediately if no valid data exists in localStorage
-    const storedMarketData = localStorage.getItem('marketData');
-    const storedExchangeData = localStorage.getItem('exchangeRateData');
-  
-    const hasValidMarketData = storedMarketData && JSON.parse(storedMarketData)?.values; // Adjust based on your data structure
-    const hasValidExchangeData = storedExchangeData && JSON.parse(storedExchangeData)?.values; // Adjust based on your data structure
-  
-    if (tickerString && !hasValidMarketData) {
+
+    if(tickerString && !areTickersPresent(marketData, tickerString)){
+      console.log('yolo');
+      getExchangeData(exchangeTickerString);
       getMarketData(tickerString);
     }
-    if (exchangeTickerString && !hasValidExchangeData) {
-      getExchangeData(exchangeTickerString);
-    }
-    // Set lastFetchTime even if we skip the fetch, to track the last check
-    if (!hasValidMarketData || !hasValidExchangeData) {
-      localStorage.setItem('lastFetchTime', Date.now());
-    }
-  
+
     // Set up the interval for subsequent fetches every 60 seconds
-    const interval = setInterval(() => {
-      const lastFetchTime = localStorage.getItem('lastFetchTime');
-      const currentTime = Date.now();
-      const oneMinuteInMs = 60000;
-  
-      if (!lastFetchTime || currentTime - lastFetchTime > oneMinuteInMs) {
-        if (tickerString) {
-          getMarketData(tickerString);
-        }
-        if (exchangeTickerString) {
-          getExchangeData(exchangeTickerString);
-        }
-        localStorage.setItem('lastFetchTime', currentTime);
-      }
-    }, 60000); // Check every 60 seconds
-  
-    return () => clearInterval(interval); // Clean up interval
+    const interval = setInterval(getData, dataInterval);
+    return () => clearInterval(interval);
   }, [tickerString, exchangeTickerString]);
   
+  // console.log(Date.now())
 
-  // const marketData = {
+  // const testData = {
   //   "BTC/USD": {
   //     meta: {
   //       symbol: "BTC/USD",
@@ -178,6 +173,9 @@ export default function Portfolio({isMobile, accounts}){
   //     status: "ok"
   //   }
   // };
+
+  // console.log(testData);
+
 
   // const exchangeRateData = {
   //   meta: {
