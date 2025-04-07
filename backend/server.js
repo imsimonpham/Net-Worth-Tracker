@@ -6,8 +6,9 @@ const SQL = require('sql-template-strings');
 
 const isDev = true;
 
-dotenv.config();
+dotenv.config({ path: '../client/.env' });
 const port = process.env.PORT || 5000;
+const googlesheets_api_url = process.env.GOOGLESHEETS_API_URL;
 const app = express();
 
 //middleware
@@ -127,14 +128,14 @@ app.get('/holdings', async (req, res) => {
 // create a new holding
 app.post('/holdings', async (req, res) => {
   try {
-    const {ticker, type, acctId, shares, avgPrice, currency} = req.body; 
+    const {ticker, type, acctId, shares, avgPrice, currency, totalDividend} = req.body; 
     const newHolding = await pool.query(
       `INSERT INTO holding
-        ("ticker", "type", "acctId", "shares", "avgPrice", "currency")
+        ("ticker", "type", "acctId", "shares", "avgPrice", "currency", "totalDividend")
       VALUES  
-        ($1, $2, $3, $4, $5, $6)
+        ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`,
-      [ticker, type, acctId, shares, avgPrice, currency]
+      [ticker, type, acctId, shares, avgPrice, currency, totalDividend]
     ); 
     res.json(newHolding.command.rows[0]);
   } catch (err) { 
@@ -147,17 +148,38 @@ app.post('/holdings', async (req, res) => {
 app.put('/holdings/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { shares, avgPrice} = req.body;
+    const { shares, avgPrice, totalDividend} = req.body;
 
     const updateHolding = await pool.query(
       `UPDATE holding
        SET "shares" = $1,
-           "avgPrice" = $2
-       WHERE id = $3`,
-      [shares, avgPrice, id]
+           "avgPrice" = $2,
+           "totalDividend" = $3
+       WHERE id = $4`,
+      [shares, avgPrice, totalDividend, id]
     );
 
     res.json({ message: "Holding data was updated successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// add dividend to a holding
+app.put('/holdings/dividend/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {dividend} = req.body;
+
+    const addDividend = await pool.query(
+      `UPDATE holding
+       SET "totalDividend" = "totalDividend" + $1::money
+       WHERE id = $2`,
+      [dividend, id]
+    );
+
+    res.json({ message: "Dividend was added to holding successfully" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -379,6 +401,18 @@ app.put('/accounts/name/:id', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
+  }
+});
+
+// market data
+app.get('/market', async (req, res) => {
+  try {
+    const response = await fetch(googlesheets_api_url);
+    const data = await response.json();
+    res.json(data); 
+  } catch (err) {
+    console.error('Error fetching data from API:', err);
+    res.status(500).send('Error fetching data');
   }
 });
 

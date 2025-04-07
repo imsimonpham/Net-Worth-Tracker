@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
-import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 import HoldingsRow from './HoldingsRow';
 import { deleteHoldingById } from '../../../../functions/data';
 
-export default function HoldingsTable({isMobile, accounts, holdings, exchangeRateData, setHoldings, marketData}){
+export default function HoldingsTable({isMobile, accounts, holdings, setHoldings, marketData}){
+  
   //delete holding
   const deleteHolding = async (id) => {
     const deleteTrans = await deleteHoldingById(id);
@@ -27,7 +27,9 @@ export default function HoldingsTable({isMobile, accounts, holdings, exchangeRat
             <th>Total Cost</th>
             <th>Market Price</th>
             <th>Currency</th>
-            <th>Total Profit (CAD)</th>
+            <th>Capital Gain (CAD)</th>
+            <th>Total Dividend</th>
+            <th>Total Return</th>
             <th></th>
           </tr>
         </thead>
@@ -35,9 +37,9 @@ export default function HoldingsTable({isMobile, accounts, holdings, exchangeRat
           {holdings.map((holding, index) => (
             <HoldingsRow 
               key={holding.ticker} isMobile={isMobile} 
-              holding={holding} 
-              accounts={accounts} exchangeRateData={exchangeRateData} 
-              deleteHolding={deleteHolding} marketData={marketData}/>
+              holding={holding} deleteHolding={deleteHolding}
+              accounts={accounts} marketData = {marketData}
+            />
           ))}
         </tbody>
       </Table>

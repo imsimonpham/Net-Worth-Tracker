@@ -33,8 +33,10 @@ export default function IEPopupForm({handleClose, transaction, accounts}){
   const handleAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
-    setAccountId(selectedOption.id);
-    setAccountName(selectedAccount.name);
+    if(selectedAccount !== undefined){
+      setAccountId(selectedOption.id);
+      setAccountName(selectedAccount.name);
+    } 
   }
 
   const handleNoteChange = (e) => setNote(e.target.value);
@@ -148,7 +150,7 @@ export default function IEPopupForm({handleClose, transaction, accounts}){
               onChange={handleAccountChange}
             >
               <option value="">Select an account</option>
-              { accounts
+              {accounts
                 .filter((account)=> account.type === 'Cash')
                 .map((account)=>(
                   <option key={account.id} value={account.name} id={account.id}>{account.name}</option>

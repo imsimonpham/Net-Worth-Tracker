@@ -3,9 +3,6 @@ const API_BASE_URL = isDev ?
   'http://localhost:5000' : import.meta.env.VITE_SERVER_API_URL;
 export {API_BASE_URL};
 
-const API_TWELVEDATA_BASE_URL = import.meta.env.VITE_TWELVEDATA_API_URL;
-const API_TWELVEDATA_KEY = import.meta.env.VITE_TWELVEDATA_API_KEY;
-
 //ACCOUNTS
 export const getAccounts = async () => {
   return getData('/accounts/');
@@ -77,25 +74,14 @@ export const deleteHoldingById = async (id) => {
   return deleteData(`/holdings/${id}`);
 }
 
-// TWELVE DATA
-export const getTwelveData = async (symbol) => {
-  try{
-    const interval = '1min'; 
-    const outputsize = 1;
-    const res = await fetch(
-      `${API_TWELVEDATA_BASE_URL}?symbol=${symbol}&interval=${interval}&outputsize=${outputsize}&apikey=${API_TWELVEDATA_KEY}`, 
-      {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json'},
-      }
-    ) 
-    if (!res.ok) throw new Error(`Error: ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error(err.message);
-    return null;
-  }
+export const addDividendById= async (id, body) => {
+  return updateData(`/holdings/dividend/${id}`, body)
 }
+
+// GET DATA FROM GOOGLE SHEET
+export const getGoogleSheetData = async () => {
+  return getData('/market/');
+};
 
 ///////////////////
 const getData = async (endpoint) => {

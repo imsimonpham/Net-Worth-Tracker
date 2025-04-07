@@ -31,27 +31,20 @@ export default function TransferPopupForm({handleClose, transaction, accounts}){
   const handleSendingAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
-    setSendingAccountId(selectedOption.id);
-    setSendingAccountName(selectedAccount.name);
+    if(selectedAccount !== undefined){
+      setSendingAccountId(selectedOption.id);
+      setSendingAccountName(selectedAccount.name);
+    } 
   }
   const handleReceivingAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
-    setReceivingAccountId(selectedOption.id);
-    setReceivingAccountName(selectedAccount.name);
+    if(selectedAccount !== undefined){
+      setReceivingAccountId(selectedOption.id);
+      setReceivingAccountName(selectedAccount.name);
+    } 
   }
   const handleNoteChange = (e) => setNote(e.target.value);
-
-   // fetch accounts
-  //  const [accounts, setAccounts] = useState([]);
-  //  const loadAccounts = async () => {
-  //   const accounts = await getAccounts();
-  //   setAccounts(accounts);
-  //  }
- 
-  //  useEffect(()=> {
-  //    loadAccounts();
-  //  }, []);
 
   // form validation 
   const [errors, setErrors] = useState({}); 

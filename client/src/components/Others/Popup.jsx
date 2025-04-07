@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import {Button, Modal, Accordion} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear, faTicket } from '@fortawesome/free-solid-svg-icons';
+import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear, faTicket, faChartPie } from '@fortawesome/free-solid-svg-icons';
 import IEPopupForm from '../Forms/IEPopupForm';
 import TransferPopupForm from '../Forms/TransferPopupForm';
 import AddAccountForm from '../Forms/AddAccountForm'; 
 import ManageAccountsForm from '../Forms/ManageAccountsForm';
 import HoldingForm from '../Forms/HoldingForm';
+import DividendForm from '../Forms/DividendForm';
 
-
-export default function Popup({accounts, setAccounts, isMobile, path}){
+export default function Popup({accounts, setAccounts, isMobile, path, holdings}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -26,28 +26,34 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
             {
               path === '/spendings' 
               ? 
+                <Button  
+                  style={{width: '40px', height: '40px'}}
+                  className='btn btn-transaction mb-3'  
+                  onClick={()=>handleShow('IE')}>
+                  <FontAwesomeIcon icon={faDollarSign} />
+                </Button>
+              :
                 <>
-                  <Button  
+                  <Button 
                     style={{width: '40px', height: '40px'}}
-                    className='btn btn-transaction mb-3'  
-                    onClick={()=>handleShow('IE')}>
-                    <FontAwesomeIcon icon={faDollarSign} />
+                    className='btn btn-transaction mb-3' 
+                    onClick={()=>handleShow('Holdings')}>
+                    <FontAwesomeIcon icon={faTicket} />
                   </Button>
                   <Button 
                     style={{width: '40px', height: '40px'}}
                     className='btn btn-transaction mb-3' 
-                    onClick={()=>handleShow('Transfer')}>
-                    <FontAwesomeIcon icon={faRightLeft} />
+                    onClick={()=>handleShow('Add Dividend')}>
+                    <FontAwesomeIcon icon={faChartPie} />
                   </Button>
                 </>
-              :
-                <Button 
-                style={{width: '40px', height: '40px'}}
-                className='btn btn-transaction mb-3' 
-                onClick={()=>handleShow('Holdings')}>
-                <FontAwesomeIcon icon={faTicket} />
-                </Button>
             }
+            <Button 
+              style={{width: '40px', height: '40px'}}
+              className='btn btn-transaction mb-3' 
+              onClick={()=>handleShow('Transfer')}>
+              <FontAwesomeIcon icon={faRightLeft} />
+            </Button>
             <Button 
               style={{width: '40px', height: '40px'}}
               className='btn btn-transaction mb-3' 
@@ -77,6 +83,7 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
             {activeModal === 'Add Acount' && 'New account'}
             {activeModal === 'Manage Accounts' && 'Manage accounts'}
             {activeModal === 'Holdings' && 'Manage Holdings'}
+            {activeModal === 'Add Dividend' && 'Add Dividend'}
           </Modal.Title>
           <Button className='btn btn-x' onClick={handleClose}>
             <FontAwesomeIcon icon={faX} style={{color: "#99999F"}}/>
@@ -89,6 +96,7 @@ export default function Popup({accounts, setAccounts, isMobile, path}){
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose}/>}
           {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} isMobile={isMobile}/>}
           {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} accounts={accounts}/>}
+          {activeModal === 'Add Dividend' && <DividendForm handleClose={handleClose} accounts={accounts} holdings={holdings}/>}
         </Modal.Body>
       </Modal>
     </div>
