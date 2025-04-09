@@ -201,6 +201,41 @@ app.delete('/holdings/:id', async (req, res) => {
   }
 })
 
+// DIVIDENDS
+
+// create new dividend
+app.post('/dividends', async (req, res) => {
+  try {
+    const {date, holdingId, acctId, amount} = req.body;
+
+    const newDividend = await pool.query(
+      `INSERT INTO dividend 
+        ("date", "holdingId", "acctId", "amount") 
+      VALUES 
+        ($1, $2, $3, $4) 
+      RETURNING *`,
+      [date, holdingId, acctId, amount]
+    );
+
+    res.json(newDividend.rows[0]);
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+// get all dividends
+app.get('/dividends', async (req, res) => {
+  try {
+    const allDividends = await pool.query("SELECT * FROM dividend");
+    res.json(allDividends.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+
 // CHARTS
 // pull income data for CHARTS
 app.get('/transactions/income/monthly', async (req, res) => {

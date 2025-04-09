@@ -17,6 +17,11 @@ export default function NavBar({path}) {
               Portfolio
             </Nav.Link>
             <Nav.Link 
+              as={Link} to="/dividends" 
+              style={path === "/dividends" ? {fontWeight: "bold" } : {}}>
+              Dividends
+            </Nav.Link>
+            <Nav.Link 
               as={Link} to="/spendings" 
               style={path === "/spendings" ? {fontWeight: "bold" } : {}}>
               Spendings

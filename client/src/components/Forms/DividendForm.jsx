@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import {addDividendById } from '../../functions/data';
+import {addDividendById, createNewDividend } from '../../functions/data';
 import { getHoldingById, convertToFloat } from '../../functions/utilities';
 
 export default function DividendForm ({handleClose, accounts, isReadOnly, holdings}) {
@@ -8,56 +8,71 @@ export default function DividendForm ({handleClose, accounts, isReadOnly, holdin
     isReadOnly = false;
   }
   // variables
+  const [date, setDate] = useState('');
+  const [acctId, setAcctId] = useState('');
   const [holdingId, setHoldingID] = useState('');
   const [holdingTicker, setHoldingTicker] = useState(
     holdingId ? getHoldingById(holdings, holdingId).ticker : '');
-  const [dividend, setDividend] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   // handle variable changes
+  const handleDateChange = (e) => setDate(e.target.value);
   const handleHoldingChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedHolding = getHoldingById(holdings, selectedOption.id);
     if(selectedHolding !== undefined){
       setHoldingID(selectedOption.id);
       setHoldingTicker(selectedHolding.ticker);
+      setAcctId(selectedHolding.acctId);
     }
   };
-  const handleDividendChange = (e) => setDividend(e.target.value);
+  const handleAmountChange = (e) => setAmount(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
   const isFormDataValid = () => {
     let newErrors = {};
-
+    if(!date) newErrors.date = 'Date is required';
     if(!holdingId) newErrors.holdingId = 'Holding is required';
-    if(!dividend) newErrors.dividend = 'Dividend is required';
+    if(!amount) newErrors.amount = 'Dividend is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
 
-  //create a new holding
-  const addDividend = async () => {
+  //create new dividend
+  const createDividend = async () => {
     const body = {
-      dividend: dividend
-    };
+      date: date, 
+      holdingId: holdingId,
+      acctId: acctId, 
+      amount: amount
+    }
 
-    const addDividend = await addDividendById(holdingId, body) 
-
-    // window.location = '/';
+    const createDividend = await createNewDividend(body); 
+    window.location = '/';
     handleClose();
   }
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-    addDividend();
+    createDividend();
   }
 
   return (
     <Form className='transaction-form' onSubmit={onSubmitForm}>
       <Row className="mb-3">
-        <Col md={12}>
+        <Col md={6}>
+          <Form.Group controlId="dividendDate">
+            <Form.Label>Date</Form.Label>
+            <Form.Control 
+              type="date" value={date} onChange={handleDateChange}
+              max={new Date().toISOString().split('T')[0]}/>
+            {errors.date && <div className="text-danger">{errors.date}</div>}
+          </Form.Group>
+        </Col>
+        <Col md={6}>
           <Form.Group controlId="transactionAccount">
             <Form.Label>Transaction Account</Form.Label>
             <Form.Select 
@@ -82,11 +97,10 @@ export default function DividendForm ({handleClose, accounts, isReadOnly, holdin
           <Form.Group controlId="dividend">
             <Form.Label>Dividend</Form.Label>
             <Form.Control type="number"
-              value={dividend} 
-              onChange={handleDividendChange}/>    
+              value={amount} 
+              onChange={handleAmountChange}/>    
           </Form.Group>
-          {errors.dividend && 
-                <div className="text-danger">{errors.dividend}</div>}
+          {errors.amount && <div className="text-danger">{errors.amount}</div>}
         </Col>
       </Row>
 

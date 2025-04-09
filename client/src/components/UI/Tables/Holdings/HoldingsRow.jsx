@@ -30,17 +30,6 @@ export default function HoldingsRow({isMobile, holding, accounts, deleteHolding,
     marketPrice = 0;
   }
 
-  // const exchangeRate = holding.currency === 'USD' ? marketData?.exchange.marketPrice : 1;
-
-  // const getMarketPrice = (holding) => {
-  //   if ((marketData && ticker) && (ticker.meta.symbol === holding.ticker)) {
-  //     return parseFloat(parseFloat(ticker.values[0].low).toFixed(2));
-  //   } 
-  //   return ''; 
-  // };
-
-  
-  // const marketPrice = getMarketPrice(holding);
   const formattedPrice = marketPrice > 0
   ? `$${marketPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
   : 'not available';

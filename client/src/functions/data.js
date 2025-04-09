@@ -78,6 +78,15 @@ export const addDividendById= async (id, body) => {
   return updateData(`/holdings/dividend/${id}`, body)
 }
 
+// DVIDENDS
+export const createNewDividend = async (body) => {
+  return createData(`/dividends`, body);
+}
+
+export const getAllDividends = async () => {
+  return getData('/dividends/');
+}
+
 // GET DATA FROM GOOGLE SHEET
 export const getGoogleSheetData = async () => {
   return getData('/market/');

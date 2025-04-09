@@ -23,31 +23,32 @@ export default function Popup({accounts, setAccounts, isMobile, path, holdings})
             <FontAwesomeIcon style={{width: '40px'}} icon={faUserGear} />
           </Accordion.Header>
           <Accordion.Body>
-            {
-              path === '/spendings' 
-              ? 
+              {path === '/spendings' && (
                 <Button  
-                  style={{width: '40px', height: '40px'}}
+                  style={{ width: '40px', height: '40px' }}
                   className='btn btn-transaction mb-3'  
-                  onClick={()=>handleShow('IE')}>
+                  onClick={() => handleShow('IE')}>
                   <FontAwesomeIcon icon={faDollarSign} />
                 </Button>
-              :
-                <>
-                  <Button 
-                    style={{width: '40px', height: '40px'}}
-                    className='btn btn-transaction mb-3' 
-                    onClick={()=>handleShow('Holdings')}>
-                    <FontAwesomeIcon icon={faTicket} />
-                  </Button>
-                  <Button 
-                    style={{width: '40px', height: '40px'}}
-                    className='btn btn-transaction mb-3' 
-                    onClick={()=>handleShow('Add Dividend')}>
-                    <FontAwesomeIcon icon={faChartPie} />
-                  </Button>
-                </>
-            }
+              )}
+
+              {path === '/portfolio' && (
+                <Button 
+                  style={{ width: '40px', height: '40px' }}
+                  className='btn btn-transaction mb-3' 
+                  onClick={() => handleShow('Holdings')}>
+                  <FontAwesomeIcon icon={faTicket} />
+                </Button>
+              )}
+
+              {path === '/dividends' && (
+                <Button 
+                  style={{ width: '40px', height: '40px' }}
+                  className='btn btn-transaction mb-3' 
+                  onClick={() => handleShow('Add Dividend')}>
+                  <FontAwesomeIcon icon={faChartPie} />
+                </Button>
+              )}
             <Button 
               style={{width: '40px', height: '40px'}}
               className='btn btn-transaction mb-3' 

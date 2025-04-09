@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation  } from 'react-router-dom';
 import NavBar from './components/Others/NavBar';
 import Spendings from './pages/Spendings';
 import Portfolio from './pages/Portfolio';
+import Dividends from './pages/Dividends';
 import React, {useState, useEffect} from "react";
 import { getAccounts } from './functions/data';
 import { useMediaQuery } from "react-responsive";
@@ -53,6 +54,7 @@ export default function App(){
       <NavBar className="mb-5" path={path}/>
       <Routes>
         <Route path="/portfolio" element={<Portfolio accounts={accounts} holdings={holdings} marketData={marketData}/>} />
+        <Route path="/dividends" element={<Dividends accounts={accounts} holdings={holdings}/>} />
         <Route path="/spendings" element={<Spendings accounts={accounts} isMobile={isMobile}/>}/>
         {/* Optionally redirect the root to one of your pages */}
         <Route path="/" element={<Navigate to="/portfolio" replace/>} />
