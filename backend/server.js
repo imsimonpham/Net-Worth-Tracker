@@ -8,7 +8,7 @@ const isDev = true;
 
 dotenv.config({ path: '../client/.env' });
 const port = process.env.PORT || 5000;
-const googlesheets_api_url = process.env.GOOGLESHEETS_API_URL;
+const googlesheets_api_url = process.env.VITE_GOOGLESHEETS_API_URL;
 const app = express();
 
 //middleware

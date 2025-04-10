@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import {createNewAccount } from '../../functions/data';
 
-export default function AddAccountForm ({handleClose}) {
+export default function AddAccountForm ({handleClose, getAccounts}) {
   // variables
   const [accountName, setAccountName] = useState('');
   const [accountType, setAccountType] = useState('Cash');
@@ -35,15 +35,15 @@ export default function AddAccountForm ({handleClose}) {
       isActive: true
     };
     const newAccount = await createNewAccount(body);
+
+    handleClose();
   }
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-    createAccount();
-
-    window.location = '/';
-    handleClose();
+    await createAccount();
+    await getAccounts();
   }
 
   return (

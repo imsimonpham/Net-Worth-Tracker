@@ -1,12 +1,11 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import {createNewHolding, updateHolding } from '../../functions/data';
-import { getAccountById, convertToFloat } from '../../functions/utilities';
+import { getAccountById, convertToFloat, isTickerIncluded } from '../../functions/utilities';
 
-export default function HoldingForm ({handleClose, accounts, holding, getHoldings, isReadOnly}) {
-  if(!isReadOnly){
-    isReadOnly = false;
-  }
+export default function HoldingForm ({handleClose, accounts, holding, holdings, getHoldings, marketData, isReadOnly, isEditing}) {
+  if(!isReadOnly) isReadOnly = false;
+  if(!isEditing) isEditing = false;
   // variables
   const [tickerSymbol, setTickerSymbol] = useState(holding ? holding.ticker : '');
   const [holdingType, setHoldingType] = useState(holding ? holding.type : '');
@@ -20,8 +19,16 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
   const [totalDividend, setTotalDividend] = useState(holding ? convertToFloat(holding.totalDividend) : 0);
 
   // handle variable changes
-  const handleTickerSymbolChange = (e) => setTickerSymbol(e.target.value.toUpperCase());
-  const handleHoldingTypeChange = (e) =>  setHoldingType(e.target.value);
+  const handleTickerSymbolChange = (e) => {
+    const selectedTicker = e.target.value;
+    const selectedTickerData = marketData.price.find((data) => data.ticker === selectedTicker);
+    if (selectedTickerData) {
+      setTickerSymbol(selectedTicker); 
+      setCurrency(selectedTickerData.currency);
+      setHoldingType(selectedTickerData.type);
+    }
+  };
+  // const handleHoldingTypeChange = (e) =>  setHoldingType(e.target.value);
   const handleAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
@@ -35,7 +42,7 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
   const handleSharesChange = (e) => setShares(e.target.value);
   const handleAvgPriceChange = (e) => setAvgPrice(e.target.value);
   const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
-  const handleCurrencyChange = (e) => setCurrency(e.target.value);
+  // const handleCurrencyChange = (e) => setCurrency(e.target.value);
   // const handleTotalDividendChange = (e) => setTotalDividend(e.target.value);
 
   //form validation
@@ -43,7 +50,7 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
   const isFormDataValid = () => {
     let newErrors = {};
 
-    if(!tickerSymbol) newErrors.tickerSymbol = 'Ticker symbol is required';
+    if (!tickerSymbol) newErrors.tickerSymbol = 'Ticker symbol is required';
     if(!holdingType) newErrors.holdingType = 'Holding type is required';
     if(!accountId) newErrors.accountId = 'Investment account is required';
     if(!currency) newErrors.currency = 'Currency is required';
@@ -63,7 +70,7 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
       acctId: accountId,
       shares: shares,
       avgPrice: avgPrice,
-      currndency: currency,
+      currency: currency,
       totalDivide: totalDividend
     };
     const upsertHolding = holding ? 
@@ -77,25 +84,51 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
     e.preventDefault();
     if(!isFormDataValid()) return;
     await upsertHolding();
-    getHoldings();
+    await getHoldings();
   }
 
   return (
     <Form className='transaction-form' onSubmit={onSubmitForm}>
       <Row className="mb-3">
-        <Col md={4}>
+        <Col md={12}>
           <Form.Group controlId="tickerSymbol">
             <Form.Label>Ticker Symbol</Form.Label>
-            <Form.Control type="text" 
+            {/* <Form.Control type="text" 
               value={tickerSymbol} 
               onChange={handleTickerSymbolChange} 
               disabled={isReadOnly} 
-              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}/>
-              {errors.tickerSymbol && 
-                <div className="text-danger">{errors.tickerSymbol}</div>}
+              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}/> */}
+              <Form.Select aria-label="Category" 
+                value={tickerSymbol} onChange={handleTickerSymbolChange}
+                disabled={isReadOnly} 
+                style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}>
+              <option value="">Select a ticker</option>
+              {
+                marketData && marketData.price && marketData.price.length > 0 ? (
+                  marketData.price
+                    .filter((data) => {
+                      if (!isEditing) {
+                        // only filter out tickers that already exist in holdings when creating a new holding
+                        return !holdings.some((holding) => holding.ticker === data.ticker);
+                      }
+                      return true; // If we're editing, don't filter anything
+                    })
+                    .map((data) => (
+                      <option key={data.id} value={data.ticker}>
+                        {data.ticker}
+                      </option>
+                    ))
+                ) : (
+                  <option disabled>Loading...</option>
+                )
+              }
+              </Form.Select>  
+              {errors.tickerSymbol && (
+                <div className="text-danger">{errors.tickerSymbol}</div>
+              )}
           </Form.Group>
         </Col>
-        <Col md={4}>
+        {/* <Col md={4}>
           <Form.Group controlId="currency">
             <Form.Label>Currency</Form.Label>
             <Form.Select 
@@ -129,7 +162,7 @@ export default function HoldingForm ({handleClose, accounts, holding, getHolding
             </Form.Select>
             {errors.holdingType && <div className="text-danger">{errors.holdingType}</div>}
           </Form.Group>
-        </Col>
+        </Col> */}
       </Row>
 
       <Row className="mb-3">

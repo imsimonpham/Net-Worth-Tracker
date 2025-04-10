@@ -37,6 +37,7 @@ export default function HoldingsTable({accounts, holdings, setHoldings, getHoldi
               key={holding.ticker} 
               getHoldings={getHoldings}
               holding={holding} deleteHolding={deleteHolding}
+              holdings={holdings}
               accounts={accounts} marketData = {marketData}
               isMobile={isMobile} 
             />

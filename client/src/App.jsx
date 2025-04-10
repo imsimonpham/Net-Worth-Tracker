@@ -93,6 +93,7 @@ export default function App(){
         getHoldings={getHoldings}
         path={path} holdings={holdings}  
         getDividends={getDividends}
+        marketData={marketData}
         isMobile={isMobile} 
       />
     </div>
