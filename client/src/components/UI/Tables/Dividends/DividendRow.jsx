@@ -2,7 +2,7 @@ import {formatDateForUI, getAccountById, getHoldingById} from '../../../../funct
 import DividendEditButton from '../../Buttons/DividendEditButton';
 import DividendDeleteButton from '../../Buttons/DividendDeleteButton';
 
-export default function DividendRow({dividend, isMobile, accounts, holdings,getDividends}){
+export default function DividendRow({dividend, accounts, holdings,getDividends, deleteDividend, isMobile}){
   const holding = holdings ? getHoldingById(holdings, dividend.holdingId) : null;
   const account = accounts ? getAccountById(accounts, dividend.acctId) : null;
 
@@ -20,7 +20,7 @@ export default function DividendRow({dividend, isMobile, accounts, holdings,getD
           holdings={holdings}
           getDividends={getDividends}
         />
-        <DividendDeleteButton />
+        <DividendDeleteButton dividend={dividend} deleteDividend={deleteDividend} />
       </td>
     </tr>
   );

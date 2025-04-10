@@ -234,6 +234,8 @@ app.get('/dividends', async (req, res) => {
   }
 })
 
+// update dividend
+
 app.put('/dividends/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -253,6 +255,21 @@ app.put('/dividends/:id', async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// delete dividend
+app.delete('/dividends/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteDividend = await pool.query(
+      "DELETE FROM dividend WHERE id = $1",
+      [id]
+    );
+    res.json({ message: "Delete was deleted successfully" });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+})
 
 
 // CHARTS

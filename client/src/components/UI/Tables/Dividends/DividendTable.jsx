@@ -1,7 +1,16 @@
 import { Table } from 'react-bootstrap';
 import DividendRow from './DividendRow';
+import { deleteDividendById } from '../../../../functions/data';
 
 export default function DividendTable ({dividends, setDividends, isMobile, accounts, holdings, getDividends}) {
+  //delete dividend
+  const deleteDividend = async (id) => {
+    const deleteDividend = await deleteDividendById(id);
+    setDividends(dividends.filter(
+      dividend => dividend.id !== id
+    ))
+  }
+  
   return (
     <div className="section-primary">
       <Table className="table table-hover">
@@ -23,7 +32,8 @@ export default function DividendTable ({dividends, setDividends, isMobile, accou
               <DividendRow 
                 isMobile={isMobile} key={dividend.id} 
                 dividend={dividend} accounts={accounts}
-                holdings={holdings} getDividends={getDividends}
+                holdings={holdings} 
+                getDividends={getDividends} deleteDividend={deleteDividend}
               />
           ))}
         </tbody>

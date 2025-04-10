@@ -91,6 +91,10 @@ export const updateDividend = async (id, body) => {
   return updateData(`/dividends/${id}`, body); 
 }  
 
+export const deleteDividendById = async (id) => {
+  return deleteData(`/dividends/${id}`);
+}
+
 // GET DATA FROM GOOGLE SHEET
 export const getGoogleSheetData = async () => {
   return getData('/market/');
