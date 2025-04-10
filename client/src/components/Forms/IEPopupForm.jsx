@@ -5,15 +5,15 @@ import { convertToFloat, convertDateToSystemFormat } from '../../functions/utili
 import { updateTransactionById, createNewTransaction} from '../../functions/data';
 import { getAccountById } from '../../functions/utilities';
 
-export default function IEPopupForm({handleClose, transaction, accounts}){
+export default function IEPopupForm({handleClose, transaction, accounts, getTransactions}){
   // variables
   const [date, setDate] = useState(
-    transaction !== undefined ? 
+    transaction ? 
     convertDateToSystemFormat(transaction.date) : '');
   const [transactionType, setTransactionType] = useState(transaction?.transType ||'Income');
   const [category, setCategory] = useState(transaction?.category ||'');
   const [amount, setAmount] = useState(
-    transaction !== undefined ? 
+    transaction ? 
     convertToFloat(transaction.amount) : 0);
   const [accountId, setAccountId] = useState(
     transaction && (transaction.fromAcctId || transaction.toAcctId) || ''  
@@ -71,7 +71,6 @@ export default function IEPopupForm({handleClose, transaction, accounts}){
       await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
 
-    window.location = '/';
     handleClose();
   }
 
@@ -79,7 +78,8 @@ export default function IEPopupForm({handleClose, transaction, accounts}){
   const onSubmitForm = async(e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-    upsertTransaction();
+    await upsertTransaction();
+    await getTransactions();
   }
 
   return (

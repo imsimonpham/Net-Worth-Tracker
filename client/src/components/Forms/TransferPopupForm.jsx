@@ -3,13 +3,13 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { convertToFloat, convertDateToSystemFormat, getAccountById } from "../../functions/utilities";
 import {updateTransactionById, createNewTransaction } from "../../functions/data";
 
-export default function TransferPopupForm({handleClose, transaction, accounts}){
+export default function TransferPopupForm({handleClose, transaction, getTransactions, accounts}){
   // variables
   const [date, setDate] = useState(
-    transaction !== undefined ? 
+    transaction ? 
     convertDateToSystemFormat(transaction.date) : '');
   const [amount, setAmount] = useState(
-    transaction !== undefined ? 
+    transaction ? 
     convertToFloat(transaction.amount) : 0);
   const [sendingAccountId, setSendingAccountId] = useState(
     transaction && transaction.fromAcctId || ''
@@ -76,14 +76,14 @@ export default function TransferPopupForm({handleClose, transaction, accounts}){
       await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
     
-    window.location = '/';
     handleClose();
   }
 
   const onSubmitForm = async(e) => {
     e.preventDefault(); 
     if(!isFormDataValid()) return;
-    upsertTransaction();
+    await upsertTransaction();
+    await getTransactions();
   }
 
   return (

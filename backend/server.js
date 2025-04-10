@@ -135,9 +135,9 @@ app.post('/holdings', async (req, res) => {
       VALUES  
         ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`,
-      [ticker, type, acctId, shares, avgPrice, currency, totalDividend]
+      [ticker, type, acctId, shares, avgPrice, currency, 0]
     ); 
-    res.json(newHolding.command.rows[0]);
+    res.json(newHolding.rows[0]);
   } catch (err) { 
     console.error(err.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -148,15 +148,14 @@ app.post('/holdings', async (req, res) => {
 app.put('/holdings/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { shares, avgPrice, totalDividend} = req.body;
+    const { shares, avgPrice} = req.body;
 
     const updateHolding = await pool.query(
       `UPDATE holding
        SET "shares" = $1,
-           "avgPrice" = $2,
-           "totalDividend" = $3
-       WHERE id = $4`,
-      [shares, avgPrice, totalDividend, id]
+           "avgPrice" = $2
+       WHERE id = $3`,
+      [shares, avgPrice, id]
     );
 
     res.json({ message: "Holding data was updated successfully" });
@@ -167,24 +166,24 @@ app.put('/holdings/:id', async (req, res) => {
 });
 
 // add dividend to a holding
-app.put('/holdings/dividend/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {dividend} = req.body;
+// app.put('/holdings/dividend/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {dividend} = req.body;
 
-    const addDividend = await pool.query(
-      `UPDATE holding
-       SET "totalDividend" = "totalDividend" + $1::money
-       WHERE id = $2`,
-      [dividend, id]
-    );
+//     const addDividend = await pool.query(
+//       `UPDATE holding
+//        SET "totalDividend" = "totalDividend" + $1::money
+//        WHERE id = $2`,
+//       [dividend, id]
+//     );
 
-    res.json({ message: "Dividend was added to holding successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     res.json({ message: "Dividend was added to holding successfully" });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 // delete holding
 app.delete('/holdings/:id', async (req, res) => {
@@ -234,6 +233,26 @@ app.get('/dividends', async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 })
+
+app.put('/dividends/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date, amount} = req.body;
+
+    const updateDividend = await pool.query(
+      `UPDATE dividend
+       SET "date" = $1,
+           "amount" = $2
+       WHERE id = $3`,
+      [date, amount, id]
+    );
+
+    res.json({ message: "Dividend was updated successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 // CHARTS

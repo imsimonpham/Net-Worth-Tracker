@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal } from 'react-bootstrap';
+import DividendForm from '../../Forms/DividendForm';
 
-export default function DividendEditButton({}){
+export default function DividendEditButton({dividend, holdings, getDividends}){
   const [activeModal, setActiveModal] = useState(null);
   
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -11,7 +12,7 @@ export default function DividendEditButton({}){
 
   return (
     <>
-      <Button className='btn btn-primary me-3'>
+      <Button className='btn btn-primary me-3' onClick={()=>handleShow('Add Dividend')}>
         <FontAwesomeIcon icon={faPencil} style={{color: "#00aff5"}} />
       </Button>
 
@@ -21,9 +22,9 @@ export default function DividendEditButton({}){
           <Button className='btn btn-x' onClick={handleClose}>
             <FontAwesomeIcon icon={faX} style={{color: "#99999F"}}/>
           </Button>
-        </Modal.Header>
-        
+        </Modal.Header>  
         <Modal.Body>
+          <DividendForm handleClose={handleClose} dividend={dividend} holdings={holdings} getDividends={getDividends}/>
         </Modal.Body>
       </Modal>
     </> 

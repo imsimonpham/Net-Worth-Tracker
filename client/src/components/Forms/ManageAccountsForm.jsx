@@ -2,7 +2,7 @@ import React from 'react';
 import AccountTable from '../UI/Tables/Accounts/AccountTable';
 import {deleteAccountById } from '../../functions/data';
 
-export default function ManageAccountsForm ({accounts, setAccounts, isMobile}) {
+export default function ManageAccountsForm ({accounts, getAccounts, setAccounts, isMobile}) {
   //delete accounts
   const deleteAccount = async (id) => {
     const deleteAcct = await deleteAccountById(id);
@@ -13,7 +13,10 @@ export default function ManageAccountsForm ({accounts, setAccounts, isMobile}) {
   
   return (
     <div className="section-primary">
-      <AccountTable accounts={accounts} deleteAccount={deleteAccount} isMobile={isMobile}/>
+      <AccountTable 
+        accounts={accounts} deleteAccount={deleteAccount} 
+        getAccounts={getAccounts}
+        isMobile={isMobile} />
     </div>
   )
-}
+} 

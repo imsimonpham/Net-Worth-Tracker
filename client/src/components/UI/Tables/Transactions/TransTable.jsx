@@ -5,7 +5,7 @@ import {deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
 import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 
-export default function TransTable({accounts, transactions, setTransactions, isMobile}){
+export default function TransTable({accounts, transactions, setTransactions, getTransactions, isMobile}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
@@ -63,7 +63,6 @@ export default function TransTable({accounts, transactions, setTransactions, isM
     setTransactions(transactions.filter(
       transaction => transaction.id !== id
     ))
-    window.location = '/';
   }
 
   //mobile display
@@ -82,7 +81,8 @@ export default function TransTable({accounts, transactions, setTransactions, isM
         dateRange={dateRange} setDateRange={setDateRange} 
         startDate={startDate} setStartDate={setStartDate}
         endDate={endDate} setEndDate={setEndDate}
-        setAccount={setAccount}
+        setAccount={setAccount} accounts={accounts}
+        getTransactions={getTransactions}
         transactionType={transactionType} setTransactionType={setTransactionType}
         isMobile={isMobile}/>
       {
@@ -106,7 +106,7 @@ export default function TransTable({accounts, transactions, setTransactions, isM
                 .map((transaction) => (
                   <TransRow 
                     isMobile={isMobile} key={transaction.id} 
-                    transaction={transaction} deleteTransaction={deleteTransaction} 
+                    transaction={transaction} deleteTransaction={deleteTransaction}  getTransactions={getTransactions}
                     accounts={accounts}/>
               ))}
             </tbody>
@@ -124,6 +124,7 @@ export default function TransTable({accounts, transactions, setTransactions, isM
                     isMobile={isMobile} 
                     key={transaction.id} 
                     transaction={transaction} 
+                    getTransactions={getTransactions}
                     accounts={accounts}
                   />
                 ))}

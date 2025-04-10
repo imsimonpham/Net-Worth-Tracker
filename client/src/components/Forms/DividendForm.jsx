@@ -1,19 +1,16 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import {addDividendById, createNewDividend } from '../../functions/data';
-import { getHoldingById, convertToFloat } from '../../functions/utilities';
+import {createNewDividend, updateDividend } from '../../functions/data';
+import { getHoldingById, convertToFloat, convertDateToSystemFormat } from '../../functions/utilities';
 
-export default function DividendForm ({handleClose, accounts, isReadOnly, holdings}) {
-  if(!isReadOnly){
-    isReadOnly = false;
-  }
+export default function DividendForm ({handleClose, accounts, holdings, dividend, getDividends}) {
   // variables
-  const [date, setDate] = useState('');
-  const [acctId, setAcctId] = useState('');
-  const [holdingId, setHoldingID] = useState('');
+  const [date, setDate] = useState(dividend ? convertDateToSystemFormat(dividend.date) : '');
+  const [acctId, setAcctId] = useState(dividend ? dividend.acctId : '');
+  const [holdingId, setHoldingID] = useState(dividend ? dividend.holdingId : '');
   const [holdingTicker, setHoldingTicker] = useState(
     holdingId ? getHoldingById(holdings, holdingId).ticker : '');
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(dividend ? convertToFloat(dividend.amount) : 0);
 
   // handle variable changes
   const handleDateChange = (e) => setDate(e.target.value);
@@ -41,7 +38,7 @@ export default function DividendForm ({handleClose, accounts, isReadOnly, holdin
   }
 
   //create new dividend
-  const createDividend = async () => {
+  const upsertDividend = async () => {
     const body = {
       date: date, 
       holdingId: holdingId,
@@ -49,15 +46,18 @@ export default function DividendForm ({handleClose, accounts, isReadOnly, holdin
       amount: amount
     }
 
-    const createDividend = await createNewDividend(body); 
-    window.location = '/';
+    const createDividend = dividend 
+    ? await updateDividend(dividend.id, body) 
+    : await createNewDividend(body)
+
     handleClose();
   }
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-    createDividend();
+    await upsertDividend();
+    await getDividends();
   }
 
   return (

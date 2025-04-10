@@ -1,8 +1,7 @@
 import { Table } from 'react-bootstrap';
-import { getAccounts } from '../../../../functions/data';
 import AccountRow from './AccountRow';
 
-export default function AccountTable ({accounts, deleteAccount, isMobile}) {
+export default function AccountTable ({accounts, getAccounts, deleteAccount, isMobile}) {
   if(!isMobile){
     return (
       <Table className="table" borderless>
@@ -20,9 +19,8 @@ export default function AccountTable ({accounts, deleteAccount, isMobile}) {
           {accounts.map(account=> (
             <AccountRow 
             key={account.id} 
-            account={account} 
+            account={account}  getAccounts={getAccounts}
             deleteAccount={deleteAccount} 
-            getAccounts={getAccounts}
             isMobile={isMobile}/>
           ))}
         </tbody>
@@ -34,11 +32,10 @@ export default function AccountTable ({accounts, deleteAccount, isMobile}) {
         {accounts.map((account, index)=> (
           <AccountRow 
           key={account.id} 
-          account={account}  
-          getAccounts={getAccounts}
-          isMobile={isMobile}
-          index={index}
-          accounts={accounts}/>
+          accounts={accounts}
+          account={account} getAccounts={getAccounts}      
+          index={index}   
+          isMobile={isMobile}/>
         ))}
       </div>
     )

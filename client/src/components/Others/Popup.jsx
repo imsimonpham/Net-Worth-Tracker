@@ -9,7 +9,7 @@ import ManageAccountsForm from '../Forms/ManageAccountsForm';
 import HoldingForm from '../Forms/HoldingForm';
 import DividendForm from '../Forms/DividendForm';
 
-export default function Popup({accounts, setAccounts, isMobile, path, holdings}){
+export default function Popup({accounts, setAccounts, getAccounts, getTransactions, holdings, getDividends, getHoldings, path, isMobile}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -92,12 +92,12 @@ export default function Popup({accounts, setAccounts, isMobile, path, holdings})
         </Modal.Header>
         
         <Modal.Body>
-          {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts}/>}
-          {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts}/>}
+          {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions}/>}
+          {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose}/>}
-          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} isMobile={isMobile}/>}
-          {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} accounts={accounts}/>}
-          {activeModal === 'Add Dividend' && <DividendForm handleClose={handleClose} accounts={accounts} holdings={holdings}/>}
+          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} getAccounts={getAccounts} isMobile={isMobile}/>}
+          {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} getHoldings={getHoldings} accounts={accounts}/>}
+          {activeModal === 'Add Dividend' && <DividendForm handleClose={handleClose} accounts={accounts} holdings={holdings} getDividends={getDividends}/>}
         </Modal.Body>
       </Modal>
     </div>

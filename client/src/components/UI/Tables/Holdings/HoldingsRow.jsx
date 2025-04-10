@@ -1,17 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { faCaretUp, faCaretDown} from '@fortawesome/free-solid-svg-icons';
-import {convertToFloat, formatDateForUI, getAccountById, isMultiTicker } from '../../../../functions/utilities';
+import {convertToFloat, formatDateForUI, getAccountById } from '../../../../functions/utilities';
 import HoldingDeleteButton from '../../Buttons/HoldingDeleteButton';
 import HoldingEditButton from '../../Buttons/HoldingsEditButton';
 
-export default function HoldingsRow({isMobile, holding, accounts, deleteHolding, marketData}){
+export default function HoldingsRow({holding, getHoldings, deleteHolding, accounts, marketData, isMobile}){
   if (accounts.length === 0) {
     return null; 
   }
-
-  // set ticker based on if data has multiple tickers
-  // const ticker = isMultiTicker(marketData) && holding ?  marketData[holding.ticker] : marketData;
 
   let exchangeRate;
   let marketPrice;
@@ -32,9 +29,10 @@ export default function HoldingsRow({isMobile, holding, accounts, deleteHolding,
 
   const formattedPrice = marketPrice > 0
   ? `$${marketPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-  : 'not available';
+  : 'loading...';
   const totalCost = convertToFloat(holding.totalCost);
   const totalDividend = convertToFloat(holding.totalDividend);
+  
   const generateGLString = (marketPrice, shares, totalCost) => { 
     const gl = ((marketPrice * shares - totalCost)*exchangeRate).toFixed(2);
     const isGLPositive = gl > 0;
@@ -44,14 +42,19 @@ export default function HoldingsRow({isMobile, holding, accounts, deleteHolding,
     const iconColor = isGLPositive ? "#63E6BE" : "#dc3545";
   
     return (
-      <div>
-        <div style={{ color: iconColor }}>
-          <FontAwesomeIcon icon={icon} className="middle-align" style={{ color: iconColor }} />
-          &nbsp;{gLPercentage}%
-        </div>
-        <div style={{ color: iconColor }}>
-          {glString}
-        </div>
+      <div style={{ color: iconColor }}>
+        {marketPrice > 0 
+         ? <>
+              <div>
+                <FontAwesomeIcon icon={icon} className="middle-align" />
+                &nbsp;{gLPercentage}%
+              </div>
+              <div>
+                {glString}
+              </div>
+            </>
+          : 'calculating...'
+        }
       </div>
     );
   };
@@ -65,14 +68,21 @@ export default function HoldingsRow({isMobile, holding, accounts, deleteHolding,
     const iconColor = isGLPositive ? "#63E6BE" : "#dc3545";
   
     return (
-      <div>
-        <div style={{ color: iconColor }}>
-          <FontAwesomeIcon icon={icon} className="middle-align" style={{ color: iconColor }} />
-          &nbsp;{gLPercentage}%
-        </div>
-        <div style={{ color: iconColor }}>
-          {glString}
-        </div>
+      <div style={{ color: iconColor }}>
+        {marketPrice > 0 
+          ? 
+            <>
+              <div>
+                <FontAwesomeIcon icon={icon} className="middle-align" />
+                &nbsp;{gLPercentage}%
+              </div>
+              <div>
+                {glString}
+              </div>
+            </>
+          : 
+            'calculating...'
+        }     
       </div>
     );
   }; 
@@ -95,7 +105,7 @@ export default function HoldingsRow({isMobile, holding, accounts, deleteHolding,
       <td>{holding.totalDividend}</td>
       <td>{generateReturnString(marketPrice, holding.shares, totalCost, totalDividend)}</td>
       <td style={{ maxWidth: "auto", textAlign: "right" }}>
-        <HoldingEditButton holding={holding} accounts={accounts}/>
+        <HoldingEditButton holding={holding} accounts={accounts} getHoldings={getHoldings}/>
         <HoldingDeleteButton deleteHolding={deleteHolding} holding={holding}/>
       </td>
     </tr>

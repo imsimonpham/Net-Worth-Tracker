@@ -4,7 +4,7 @@ const API_BASE_URL = isDev ?
 export {API_BASE_URL};
 
 //ACCOUNTS
-export const getAccounts = async () => {
+export const getAllAccounts = async () => {
   return getData('/accounts/');
 };
 
@@ -21,7 +21,7 @@ export const updateAccountNameById = async (id, body) => {
 }
 
 //TRANSACTIONS
-export const getTransactions = async () => {
+export const getAllTransactions = async () => {
   return getData('/transactions/');
 }
 
@@ -58,7 +58,7 @@ export const deleteTransactionById = async (id) => {
 }
 
 // HOLDING
-export const getHoldings = async () => {
+export const getAllHoldings = async () => {
   return getData('/holdings/');
 }
 
@@ -74,9 +74,9 @@ export const deleteHoldingById = async (id) => {
   return deleteData(`/holdings/${id}`);
 }
 
-export const addDividendById= async (id, body) => {
-  return updateData(`/holdings/dividend/${id}`, body)
-}
+// export const addDividendById= async (id, body) => {
+//   return updateData(`/holdings/dividend/${id}`, body)
+// }
 
 // DVIDENDS
 export const createNewDividend = async (body) => {
@@ -86,6 +86,10 @@ export const createNewDividend = async (body) => {
 export const getAllDividends = async () => {
   return getData('/dividends/');
 }
+
+export const updateDividend = async (id, body) => {
+  return updateData(`/dividends/${id}`, body); 
+}  
 
 // GET DATA FROM GOOGLE SHEET
 export const getGoogleSheetData = async () => {

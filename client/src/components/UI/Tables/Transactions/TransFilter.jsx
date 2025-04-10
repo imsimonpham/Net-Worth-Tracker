@@ -1,24 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import { Form, Dropdown } from 'react-bootstrap';
-import { getAccounts} from '../../../../functions/data';
 import { formatDateForUI } from '../../../../functions/utilities';
 
 export default function TransFilter({ 
+  accounts,
   startDate, setStartDate,
   endDate, setEndDate, 
   setAccount, 
   transactionType, setTransactionType, isMobile}){
-
-  //fetch accounts
-  const [accounts, setAccounts] = useState([]);
-  const loadAccounts = async () => {
-    const accounts = await getAccounts();
-    setAccounts(accounts);
-  };
-    
-  useEffect(()=> {
-    loadAccounts();
-  }, []);
 
   //date range
   const [dateString, setDateString] = useState('');

@@ -1,13 +1,15 @@
 import React from 'react';
 import HoldingsTable from '../components/UI/Tables/Holdings/HoldingsTable';
 
-export default function Portfolio({isMobile, accounts, holdings, marketData}){
+export default function Portfolio({accounts, holdings, setHoldings, getHoldings,  marketData, isMobile}){
   return (
     <>
       <HoldingsTable 
-        isMobile={isMobile}  
+        getHoldings={getHoldings}
+        setHoldings={setHoldings}
         accounts={accounts} holdings={holdings}
         marketData={marketData}
+        isMobile={isMobile}  
       />
     </>
   )

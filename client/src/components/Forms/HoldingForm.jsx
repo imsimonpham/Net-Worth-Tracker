@@ -3,7 +3,7 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 import {createNewHolding, updateHolding } from '../../functions/data';
 import { getAccountById, convertToFloat } from '../../functions/utilities';
 
-export default function HoldingForm ({handleClose, accounts, holding, isReadOnly}) {
+export default function HoldingForm ({handleClose, accounts, holding, getHoldings, isReadOnly}) {
   if(!isReadOnly){
     isReadOnly = false;
   }
@@ -36,7 +36,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
   const handleAvgPriceChange = (e) => setAvgPrice(e.target.value);
   const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
   const handleCurrencyChange = (e) => setCurrency(e.target.value);
-  const handleTotalDividendChange = (e) => setTotalDividend(e.target.value);
+  // const handleTotalDividendChange = (e) => setTotalDividend(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -49,7 +49,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
     if(!currency) newErrors.currency = 'Currency is required';
     if(!shares && shares <= 0) newErrors.shares = 'Number of shares must be greater zero';
     if(!avgPrice && avgPrice <= 0) newErrors.avgPrice = 'Average price must be greater zero';
-    if(!totalDividend) newErrors.totalDividend = 'Total dividend is required';
+    // if(!totalDividend) newErrors.totalDividend = 'Total dividend is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -63,27 +63,27 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
       acctId: accountId,
       shares: shares,
       avgPrice: avgPrice,
-      currency: currency,
-      totalDividend: totalDividend
+      currndency: currency,
+      totalDivide: totalDividend
     };
     const upsertHolding = holding ? 
       await updateHolding(holding.id, body) : 
       await createNewHolding(body)
 
-    window.location = '/';
     handleClose();
   }
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if(!isFormDataValid()) return;
-    upsertHolding();
+    await upsertHolding();
+    getHoldings();
   }
 
   return (
     <Form className='transaction-form' onSubmit={onSubmitForm}>
       <Row className="mb-3">
-        <Col md={6}>
+        <Col md={4}>
           <Form.Group controlId="tickerSymbol">
             <Form.Label>Ticker Symbol</Form.Label>
             <Form.Control type="text" 
@@ -95,7 +95,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
                 <div className="text-danger">{errors.tickerSymbol}</div>}
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={4}>
           <Form.Group controlId="currency">
             <Form.Label>Currency</Form.Label>
             <Form.Select 
@@ -112,10 +112,7 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
             {errors.currency && <div className="text-danger">{errors.currency}</div>}
           </Form.Group>
         </Col>
-      </Row>
-
-      <Row className="mb-3">
-        <Col md={6}>
+        <Col md={4}>
           <Form.Group controlId="holdingType">
             <Form.Label>Type</Form.Label>
             <Form.Select 
@@ -133,6 +130,9 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
             {errors.holdingType && <div className="text-danger">{errors.holdingType}</div>}
           </Form.Group>
         </Col>
+      </Row>
+
+      <Row className="mb-3">
         <Col md={6}>
           <Form.Group controlId="investmentAccount">
             <Form.Label>Investment Account</Form.Label>
@@ -153,6 +153,14 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
                 ))}
             </Form.Select>
             {errors.accountId && <div className="text-danger">{errors.accountId}</div>}
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group controlId="cashBalance">
+            <Form.Label>Cash Balance</Form.Label>
+            <Form.Control type="number"
+              value={cashBalance} 
+              onChange={handleCashBalanceChange}/>
           </Form.Group>
         </Col>
       </Row>
@@ -176,27 +184,6 @@ export default function HoldingForm ({handleClose, accounts, holding, isReadOnly
               onChange={handleAvgPriceChange}/>
               {errors.avgPrice && 
                 <div className="text-danger">{errors.avgPrice}</div>}
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Row className="mb-3">
-        <Col md={6}>
-          <Form.Group controlId="totalDividend">
-            <Form.Label>Total Dividend</Form.Label>
-            <Form.Control type="number"
-              value={totalDividend} 
-              onChange={handleTotalDividendChange}/>
-              {errors.totalDividend && 
-                <div className="text-danger">{errors.totalDividend}</div>}
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group controlId="cashBalance">
-            <Form.Label>Cash Balance</Form.Label>
-            <Form.Control type="number"
-              value={cashBalance} 
-              onChange={handleCashBalanceChange}/>
           </Form.Group>
         </Col>
       </Row>

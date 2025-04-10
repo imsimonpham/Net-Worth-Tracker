@@ -1,7 +1,7 @@
 import { Table } from 'react-bootstrap';
 import DividendRow from './DividendRow';
 
-export default function DividendTable ({dividends, setDividends, isMobile, accounts, holdings}) {
+export default function DividendTable ({dividends, setDividends, isMobile, accounts, holdings, getDividends}) {
   return (
     <div className="section-primary">
       <Table className="table table-hover">
@@ -23,10 +23,9 @@ export default function DividendTable ({dividends, setDividends, isMobile, accou
               <DividendRow 
                 isMobile={isMobile} key={dividend.id} 
                 dividend={dividend} accounts={accounts}
-                holdings={holdings}
+                holdings={holdings} getDividends={getDividends}
               />
           ))}
-          {/* <DividendRow/> */}
         </tbody>
       </Table>
     </div>

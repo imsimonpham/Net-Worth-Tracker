@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Accordion  } from 'react-bootstrap';
+import { Form  } from 'react-bootstrap';
 import AccountDeleteButton from '../../Buttons/AccountDeleteButton';
 import {updateAccountNameById } from '../../../../functions/data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSeedling, faSackDollar} from '@fortawesome/free-solid-svg-icons';
 
-export default function AccountRow({account, deleteAccount, isMobile, index, accounts}){
+export default function AccountRow({account, accounts, getAccounts, deleteAccount, index, isMobile}){
   //variables
   const [isEditing, setIsEditing] = useState(false);
   const [accountName, setAccountName] = useState(account.name);
@@ -26,6 +26,7 @@ export default function AccountRow({account, deleteAccount, isMobile, index, acc
       return;
     } 
     const account = await updateAccountNameById(id, body);
+    await getAccounts();
   }
 
   if(!isMobile){
