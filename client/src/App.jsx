@@ -68,7 +68,7 @@ export default function App(){
       <Routes>
         <Route path="/portfolio" 
           element={<Portfolio 
-                    accounts={accounts} 
+                    accounts={accounts} getAccounts={getAccounts}
                     holdings={holdings} setHoldings={setHoldings}
                     getHoldings={getHoldings}
                     marketData={marketData}/>} />
@@ -85,6 +85,7 @@ export default function App(){
                     getTransactions={getTransactions}
                     accounts={accounts} getAccounts={getAccounts}
                     isMobile={isMobile}/>}/>
+         <Route path="*" element={<Navigate to="/portfolio" replace />} />
       </Routes>
       <Popup 
         accounts={accounts} setAccounts={setAccounts} 

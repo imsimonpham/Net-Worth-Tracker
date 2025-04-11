@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import {createNewHolding, updateHolding } from '../../functions/data';
-import { getAccountById, convertToFloat, isTickerIncluded } from '../../functions/utilities';
+import {createNewHolding, updateHolding, updateAccountCashBalanceById } from '../../functions/data';
+import { getAccountById, convertToFloat } from '../../functions/utilities';
 
-export default function HoldingForm ({handleClose, accounts, holding, holdings, getHoldings, marketData, isReadOnly, isEditing}) {
+export default function HoldingForm ({handleClose, accounts, holding, holdings, getHoldings, getAccounts,  marketData, isReadOnly, isEditing}) {
   if(!isReadOnly) isReadOnly = false;
   if(!isEditing) isEditing = false;
   // variables
@@ -62,7 +62,7 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
 
   //create a new holding
   const upsertHolding = async () => {
-    const body = {
+    const bodyHolding = {
       ticker: tickerSymbol, 
       type: holdingType, 
       acctId: accountId,
@@ -71,9 +71,17 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
       currency: currency,
       totalDivide: totalDividend
     };
-    const upsertHolding = holding ? 
-      await updateHolding(holding.id, body) : 
-      await createNewHolding(body)
+
+    const bodyCashBalance = {
+      cashBalance: cashBalance
+    }
+
+    if(holding) 
+      await updateHolding(holding.id, bodyHolding); 
+    else 
+      await createNewHolding(bodyHolding);
+
+    await updateAccountCashBalanceById(accountId, bodyCashBalance);
 
     handleClose();
   }
@@ -82,7 +90,9 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
     e.preventDefault();
     if(!isFormDataValid()) return;
     await upsertHolding();
+    // to refresh data
     await getHoldings();
+    await getAccounts();
   }
 
   return (

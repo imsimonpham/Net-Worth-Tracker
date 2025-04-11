@@ -20,6 +20,10 @@ export const updateAccountNameById = async (id, body) => {
   return updateData(`/accounts/name/${id}`, body);
 }
 
+export const updateAccountCashBalanceById = async (id, body) => {
+  return updateData(`/accounts/cash/${id}`, body); 
+}
+
 //TRANSACTIONS
 export const getAllTransactions = async () => {
   return getData('/transactions/');

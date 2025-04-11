@@ -3,7 +3,7 @@ import {Table} from 'react-bootstrap';
 import HoldingsRow from './HoldingsRow';
 import { deleteHoldingById } from '../../../../functions/data';
 
-export default function HoldingsTable({accounts, holdings, setHoldings, getHoldings, marketData, isMobile}){ 
+export default function HoldingsTable({accounts, getAccounts, holdings, setHoldings, getHoldings, marketData, isMobile}){ 
   //delete holding
   const deleteHolding = async (id) => {
     const deleteHolding = await deleteHoldingById(id);
@@ -38,7 +38,7 @@ export default function HoldingsTable({accounts, holdings, setHoldings, getHoldi
               getHoldings={getHoldings}
               holding={holding} deleteHolding={deleteHolding}
               holdings={holdings}
-              accounts={accounts} marketData = {marketData}
+              accounts={accounts} getAccounts={getAccounts} marketData = {marketData}
               isMobile={isMobile} 
             />
           ))}

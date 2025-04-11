@@ -5,7 +5,7 @@ import {convertToFloat, formatDateForUI, getAccountById } from '../../../../func
 import HoldingDeleteButton from '../../Buttons/HoldingDeleteButton';
 import HoldingEditButton from '../../Buttons/HoldingsEditButton';
 
-export default function HoldingsRow({holding, holdings, getHoldings, deleteHolding, accounts, marketData, isMobile}){
+export default function HoldingsRow({holding, holdings, getHoldings, deleteHolding, accounts, getAccounts, marketData, isMobile}){
   if (accounts.length === 0) {
     return null; 
   }
@@ -105,7 +105,7 @@ export default function HoldingsRow({holding, holdings, getHoldings, deleteHoldi
       <td>{holding.totalDividend}</td>
       <td>{generateReturnString(marketPrice, holding.shares, totalCost, totalDividend)}</td>
       <td style={{ maxWidth: "auto", textAlign: "right" }}>
-        <HoldingEditButton holding={holding} holdings={holdings} getHoldings={getHoldings} accounts={accounts} marketData={marketData}/>
+        <HoldingEditButton holding={holding} holdings={holdings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData} />
         <HoldingDeleteButton deleteHolding={deleteHolding} holding={holding}/>
       </td>
     </tr>

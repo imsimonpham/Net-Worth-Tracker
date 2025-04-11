@@ -235,7 +235,6 @@ app.get('/dividends', async (req, res) => {
 })
 
 // update dividend
-
 app.put('/dividends/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -455,7 +454,7 @@ app.delete('/accounts/:id', async (req, res) => {
   }
 });
 
-//update account name
+// update account name
 app.put('/accounts/name/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -469,6 +468,26 @@ app.put('/accounts/name/:id', async (req, res) => {
     );
 
     res.json('Account name was updated successfully');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// update account cash balance
+app.put('/accounts/cash/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { cashBalance } = req.body;
+
+    const updateAcct = await pool.query(
+      `UPDATE account
+       SET "cashBalance" = $1
+       WHERE id = $2`,
+      [cashBalance, id]
+    );
+
+    res.json("Account's cash balance was updated successfully");
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
