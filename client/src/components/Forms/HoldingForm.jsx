@@ -28,22 +28,21 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
       setHoldingType(selectedTickerData.type);
     }
   };
-  // const handleHoldingTypeChange = (e) =>  setHoldingType(e.target.value);
+  
   const handleAccountChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedAccount = getAccountById(accounts, selectedOption.id);
-    const cashBalance = selectedAccount.cashBalance; 
-    if(selectedAccount !== undefined){
+    if(selectedAccount){
       setAccountId(selectedOption.id);
       setAccountName(selectedAccount.name);
+      const cashBalance = selectedAccount.cashBalance; 
       setCashBalance(convertToFloat(cashBalance));
     } 
   }
+
   const handleSharesChange = (e) => setShares(e.target.value);
   const handleAvgPriceChange = (e) => setAvgPrice(e.target.value);
   const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
-  // const handleCurrencyChange = (e) => setCurrency(e.target.value);
-  // const handleTotalDividendChange = (e) => setTotalDividend(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -53,10 +52,9 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
     if (!tickerSymbol) newErrors.tickerSymbol = 'Ticker symbol is required';
     if(!holdingType) newErrors.holdingType = 'Holding type is required';
     if(!accountId) newErrors.accountId = 'Investment account is required';
-    if(!currency) newErrors.currency = 'Currency is required';
     if(!shares && shares <= 0) newErrors.shares = 'Number of shares must be greater zero';
     if(!avgPrice && avgPrice <= 0) newErrors.avgPrice = 'Average price must be greater zero';
-    // if(!totalDividend) newErrors.totalDividend = 'Total dividend is required';
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -93,11 +91,6 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
         <Col md={12}>
           <Form.Group controlId="tickerSymbol">
             <Form.Label>Ticker Symbol</Form.Label>
-            {/* <Form.Control type="text" 
-              value={tickerSymbol} 
-              onChange={handleTickerSymbolChange} 
-              disabled={isReadOnly} 
-              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}/> */}
               <Form.Select aria-label="Category" 
                 value={tickerSymbol} onChange={handleTickerSymbolChange}
                 disabled={isReadOnly} 
@@ -128,41 +121,6 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
               )}
           </Form.Group>
         </Col>
-        {/* <Col md={4}>
-          <Form.Group controlId="currency">
-            <Form.Label>Currency</Form.Label>
-            <Form.Select 
-              aria-label="Currency"
-              value={currency}
-              disabled={isReadOnly}
-              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}
-              onChange={handleCurrencyChange}
-            >
-              <option value="">----</option>
-              <option value="CAD">CAD</option>
-              <option value="USD">USD</option>
-            </Form.Select>
-            {errors.currency && <div className="text-danger">{errors.currency}</div>}
-          </Form.Group>
-        </Col>
-        <Col md={4}>
-          <Form.Group controlId="holdingType">
-            <Form.Label>Type</Form.Label>
-            <Form.Select 
-              aria-label="Holding Type"
-              value={holdingType}
-              disabled={isReadOnly}
-              style={isReadOnly ? {opacity: "50%"} : {opacity: "100%"}}
-              onChange={handleHoldingTypeChange}
-            >
-              <option value="">----</option>
-              <option value="Crypto">Crypto</option>
-              <option value="ETF">ETF</option>
-              <option value="Stock">Stock</option>
-            </Form.Select>
-            {errors.holdingType && <div className="text-danger">{errors.holdingType}</div>}
-          </Form.Group>
-        </Col> */}
       </Row>
 
       <Row className="mb-3">
