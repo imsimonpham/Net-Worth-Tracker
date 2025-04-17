@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; 
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import {createNewHolding, updateHolding, updateAccountCashBalanceById } from '../../functions/data';
-import { getAccountById, convertToFloat } from '../../functions/utilities';
+import { getAccountById, convertToFloat, isDataAvailable } from '../../functions/utilities';
 
-export default function HoldingForm ({handleClose, accounts, holding, holdings, getHoldings, getAccounts,  marketData, isReadOnly, isEditing}) {
+export default function HoldingForm ({handleClose, accounts, holding, updatedHoldings, getHoldings, getAccounts,  marketData, isReadOnly, isEditing}) {
   if(!isReadOnly) isReadOnly = false;
   if(!isEditing) isEditing = false;
   // variables
@@ -12,20 +12,26 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
   const [accountId, setAccountId] = useState(holding ? holding.acctId : '');
   const [accountName, setAccountName] = useState(
     accountId ? getAccountById(accounts, accountId).name : '');
+  // const [investmentBalance, setInvestmentBalance] = useState(accountId ? convertToFloat(getAccountById(accounts, accountId).investmentBalance) : 0);
   const [cashBalance, setCashBalance] = useState(accountId ? convertToFloat(getAccountById(accounts, accountId).cashBalance) : 0);
   const [shares, setShares] = useState(holding ? holding.shares : 0);
   const [avgPrice, setAvgPrice] = useState(holding ? convertToFloat(holding.avgPrice) : 0);
-  const [currency, setCurrency] = useState(holding ? holding.currency : '');
-  const [totalDividend, setTotalDividend] = useState(holding ? convertToFloat(holding.totalDividend) : 0);
+  const [exchangeRate, setExchangeRate] = useState(1);
+  const [currency, setCurrency] = useState(holding ? holding.currency : ''); 
+
+  // const [marketPrice, setMarketPrice] = useState(holding? holding.marketPrice : 0);
+  const [marketValueCad, setMarketValueCad] = useState(holding ? holding.marketValueCad : 0);
 
   // handle variable changes
   const handleTickerSymbolChange = (e) => {
     const selectedTicker = e.target.value;
     const selectedTickerData = marketData.price.find((data) => data.ticker === selectedTicker);
-    if (selectedTickerData) {
+    if (selectedTickerData && isDataAvailable(marketData)) {
       setTickerSymbol(selectedTicker); 
       setCurrency(selectedTickerData.currency);
       setHoldingType(selectedTickerData.type);
+      // setExchangeRate(selectedTickerData.currency === 'USD' ?  marketData.exchange[0].marketPrice : 1);
+      // setMarketValueCad(selectedTickerData.marketPrice * selectedTickerData.shares);
     }
   };
   
@@ -40,7 +46,17 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
     } 
   }
 
-  const handleSharesChange = (e) => setShares(e.target.value);
+  const handleSharesChange = (e) => {
+    const inputShares = parseFloat(e.target.value) || 0;
+    setShares(inputShares);
+  
+    // calculate market value in cad
+    const selectedTickerData = marketData.price.find((data) => data.ticker === tickerSymbol);
+    if (selectedTickerData && isDataAvailable(marketData)) {
+      const exchangeRate = selectedTickerData.currency === 'USD' ? marketData.exchange[0].marketPrice : 1;
+      setMarketValueCad(selectedTickerData.marketPrice * inputShares * exchangeRate);
+    }
+  };
   const handleAvgPriceChange = (e) => setAvgPrice(e.target.value);
   const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
 
@@ -68,19 +84,27 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
       acctId: accountId,
       shares: shares,
       avgPrice: avgPrice,
-      currency: currency,
-      totalDivide: totalDividend
+      currency: currency, 
+      marketValueCad: marketValueCad
     };
 
     const bodyCashBalance = {
       cashBalance: cashBalance
     }
 
-    if(holding) 
-      await updateHolding(holding.id, bodyHolding); 
-    else 
-      await createNewHolding(bodyHolding);
+    // const bodyInvestmentBalance = {
+    //   investmentBalance: investmentBalance
+    // }
 
+    // console.log(typeof marketPrice)
+
+    if(holding) {
+      await updateHolding(holding.id, bodyHolding); 
+    }
+    else {
+      await createNewHolding(bodyHolding);     
+    }
+      
     await updateAccountCashBalanceById(accountId, bodyCashBalance);
 
     handleClose();
@@ -112,7 +136,7 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
                     .filter((data) => {
                       if (!isEditing) {
                         // only filter out tickers that already exist in holdings when creating a new holding
-                        return !holdings.some((holding) => holding.ticker === data.ticker);
+                        return !updatedHoldings.some((holding) => holding.ticker === data.ticker);
                       }
                       return true; // If we're editing, don't filter anything
                     })
@@ -158,7 +182,7 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
         </Col>
         <Col md={6}>
           <Form.Group controlId="cashBalance">
-            <Form.Label>Cash Balance</Form.Label>
+            <Form.Label>Cash Balance (CAD)</Form.Label>
             <Form.Control type="number"
               value={cashBalance} 
               onChange={handleCashBalanceChange}/>
@@ -180,6 +204,7 @@ export default function HoldingForm ({handleClose, accounts, holding, holdings, 
         <Col md={6}>
           <Form.Group controlId="tickerSymbol">
             <Form.Label>Average Price</Form.Label>
+            <span>&nbsp;{tickerSymbol ? `(${currency})` : ''}</span>
             <Form.Control type="number" 
               value={avgPrice} 
               onChange={handleAvgPriceChange}/>

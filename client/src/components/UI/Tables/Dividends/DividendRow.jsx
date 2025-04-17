@@ -14,6 +14,7 @@ export default function DividendRow({dividend, accounts, holdings,getDividends, 
       <td>{holding ? holding.shares : 'Loading...'}</td>
       <td>{account ? account.name : 'Loading...'}</td>
       <td>{`${dividend.amount}`}</td>
+      <td>{holding ? holding.currency : 'Loading...'}</td>
       <td style={{ maxWidth: "90px", textAlign: "right" }}>
         <DividendEditButton
           dividend={dividend}

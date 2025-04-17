@@ -40,5 +40,9 @@ export const getColorFromId = (id) => {
   return `hsl(${hue}, 60%, 65%)`; // Reduce lightness for a darker pastel look
 };
 
+export function isDataAvailable(marketData) {
+  return marketData && Object.keys(marketData).length > 0;
+}
+
 
 

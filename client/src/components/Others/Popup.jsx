@@ -9,7 +9,7 @@ import ManageAccountsForm from '../Forms/ManageAccountsForm';
 import HoldingForm from '../Forms/HoldingForm';
 import DividendForm from '../Forms/DividendForm';
 
-export default function Popup({accounts, setAccounts, getAccounts, getTransactions, holdings, getDividends, getHoldings, path, marketData, isMobile}){
+export default function Popup({accounts, setAccounts, getAccounts, getTransactions, updatedHoldings, getDividends, getHoldings, path, marketData, isMobile}){
   const [activeModal, setActiveModal] = useState(null);
 
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -96,7 +96,7 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
           {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose} getAccounts={getAccounts}/>}
           {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} getAccounts={getAccounts} isMobile={isMobile}/>}
-          {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} holdings={holdings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData}/>}
+          {activeModal === 'Holdings' && <HoldingForm handleClose={handleClose} updatedHoldings={updatedHoldings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData}/>}
           {activeModal === 'Add Dividend' && <DividendForm handleClose={handleClose} accounts={accounts} holdings={holdings} getDividends={getDividends}/>}
         </Modal.Body>
       </Modal>

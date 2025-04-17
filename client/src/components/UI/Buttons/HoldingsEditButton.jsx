@@ -4,7 +4,7 @@ import { faX, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal } from 'react-bootstrap';
 import HoldingForm from '../../Forms/HoldingForm';
 
-export default function HoldingEditButton({holding, holdings, getHoldings, accounts, getAccounts, marketData}){
+export default function HoldingEditButton({holding, updatedHoldings, getHoldings, accounts, getAccounts, marketData}){
   const [activeModal, setActiveModal] = useState(null);
   
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -28,7 +28,7 @@ export default function HoldingEditButton({holding, holdings, getHoldings, accou
         <Modal.Body>
           <HoldingForm 
             handleClose={handleClose} holding={holding} 
-            getHoldings={getHoldings} holdings={holdings}
+            getHoldings={getHoldings} updatedHoldings={updatedHoldings}
             marketData={marketData} getAccounts={getAccounts}
             accounts={accounts} isReadOnly={isReadOnly} isEditing={isEditing}/>
         </Modal.Body>

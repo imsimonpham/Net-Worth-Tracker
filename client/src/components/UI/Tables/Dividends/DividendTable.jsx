@@ -22,6 +22,7 @@ export default function DividendTable ({dividends, setDividends, isMobile, accou
             <th>Shares</th>
             <th>Account</th>
             <th>Amount</th>
+            <th>Currency</th>
             <th></th>
           </tr>
         </thead>

@@ -24,6 +24,10 @@ export const updateAccountCashBalanceById = async (id, body) => {
   return updateData(`/accounts/cash/${id}`, body); 
 }
 
+// export const updateAccountInvestmentBalanceById = async (id, body) => {
+//   return updateData(`/accounts/investment/${id}`, body); 
+// }
+
 //TRANSACTIONS
 export const getAllTransactions = async () => {
   return getData('/transactions/');
@@ -72,6 +76,10 @@ export const createNewHolding = async (body) => {
 
 export const updateHolding = async (id, body) => {
   return updateData(`/holdings/${id}`, body); 
+}
+
+export const updateHoldingValueById = async (id, body) => {
+  return updateData(`/holdings/value/${id}`, body); 
 }
 
 export const deleteHoldingById = async (id) => {

@@ -10,6 +10,7 @@ export default function DividendForm ({handleClose, accounts, holdings, dividend
   const [holdingId, setHoldingID] = useState(dividend ? dividend.holdingId : '');
   const [holdingTicker, setHoldingTicker] = useState(
     holdingId ? getHoldingById(holdings, holdingId).ticker : '');
+  const [currency, setCurrency] = useState(holdingId ? getHoldingById(holdings, holdingId).currency : '');
   const [amount, setAmount] = useState(dividend ? convertToFloat(dividend.amount) : 0);
 
   // handle variable changes
@@ -21,6 +22,7 @@ export default function DividendForm ({handleClose, accounts, holdings, dividend
       setHoldingID(selectedOption.id);
       setHoldingTicker(selectedHolding.ticker);
       setAcctId(selectedHolding.acctId);
+      setCurrency(selectedHolding.currency);
     }
   };
   const handleAmountChange = (e) => setAmount(e.target.value);
@@ -43,7 +45,8 @@ export default function DividendForm ({handleClose, accounts, holdings, dividend
       date: date, 
       holdingId: holdingId,
       acctId: acctId, 
-      amount: amount
+      amount: amount, 
+      currency: currency
     }
 
     const createDividend = dividend 
@@ -95,7 +98,10 @@ export default function DividendForm ({handleClose, accounts, holdings, dividend
       <Row className="mb-3">
         <Col md={12}>
           <Form.Group controlId="dividend">
-            <Form.Label>Dividend</Form.Label>
+            <Form.Label>
+              Dividend
+              <span>&nbsp;{currency ? `(${currency})` : ''}</span>
+            </Form.Label>
             <Form.Control type="number"
               value={amount} 
               onChange={handleAmountChange}/>    

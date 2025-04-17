@@ -1,34 +1,32 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { faCaretUp, faCaretDown} from '@fortawesome/free-solid-svg-icons';
-import {convertToFloat, formatDateForUI, getAccountById } from '../../../../functions/utilities';
+import {convertToFloat, getAccountById, isDataAvailable } from '../../../../functions/utilities';
 import HoldingDeleteButton from '../../Buttons/HoldingDeleteButton';
 import HoldingEditButton from '../../Buttons/HoldingsEditButton';
 
-export default function HoldingsRow({holding, holdings, getHoldings, deleteHolding, accounts, getAccounts, marketData, isMobile}){
+export default function HoldingsRow({holding, updatedHoldings, getHoldings, deleteHolding, accounts, getAccounts, marketData, isMobile}){
   if (accounts.length === 0) {
     return null; 
   }
 
   let exchangeRate;
-  let marketPrice;
+
   if(holding.currency === 'USD'){
-    exchangeRate = (marketData && Object.keys(marketData).length > 0) 
+    exchangeRate = (isDataAvailable(marketData)) 
       ? marketData.exchange[0].marketPrice 
       : null;
   } else {
     exchangeRate = 1;
   }
 
-  if(marketData && Object.keys(marketData).length > 0){
-    const ticker = marketData.price.find(item => item.ticker === holding.ticker);
-    marketPrice = ticker.marketPrice;
-  } else {
-    marketPrice = 0;
-  }
-
-  const formattedPrice = marketPrice > 0
+  const marketPrice = isDataAvailable(holding) ? holding.marketPrice : 0;
+  const marketValue = isDataAvailable(holding) ? holding.marketValue : 0;
+  const formattedMarketPrice = marketPrice > 0
   ? `$${marketPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+  : 'loading...';
+  const formattedMarketValue = marketValue > 0
+  ? `$${marketValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
   : 'loading...';
   const totalCost = convertToFloat(holding.totalCost);
   const totalDividend = convertToFloat(holding.totalDividend);
@@ -97,7 +95,12 @@ export default function HoldingsRow({holding, holdings, getHoldings, deleteHoldi
       <td>{holding.totalCost}</td>
       <td>
         <span style={{color: "#00aff5"}}>
-          {formattedPrice}
+          {formattedMarketPrice}
+        </span>
+      </td>
+      <td>
+        <span style={{color: "#00aff5"}}>
+          {formattedMarketValue}
         </span>
       </td>
       <td>{holding.currency}</td>
@@ -105,9 +108,9 @@ export default function HoldingsRow({holding, holdings, getHoldings, deleteHoldi
       <td>{holding.totalDividend}</td>
       <td>{generateReturnString(marketPrice, holding.shares, totalCost, totalDividend)}</td>
       <td style={{ maxWidth: "auto", textAlign: "right" }}>
-        <HoldingEditButton holding={holding} holdings={holdings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData} />
+        <HoldingEditButton holding={holding} updatedHoldings={updatedHoldings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData} />
         <HoldingDeleteButton deleteHolding={deleteHolding} holding={holding}/>
       </td>
-    </tr>
+    </tr>  
   )
 }

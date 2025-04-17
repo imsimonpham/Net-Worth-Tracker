@@ -8,6 +8,7 @@ import React, {useState, useEffect} from "react";
 import { getAllAccounts } from './functions/data';
 import { useMediaQuery } from "react-responsive";
 import { getAllHoldings, getGoogleSheetData, getAllDividends, getAllTransactions } from './functions/data';
+import { isDataAvailable } from './functions/utilities';
 
 export default function App(){
   //get all accounts
@@ -17,18 +18,42 @@ export default function App(){
     setAccounts(accounts);
   };
 
-  //get all holdings and market data
-  const [holdings, setHoldings] = useState([]);
-  const getHoldings = async () => {
-    const holdings = await getAllHoldings();
-    setHoldings(holdings);
-  }
-
+  // get market data
   const [marketData, setMarketData] = useState([]);
   const getMarketData = async () => {
     const data = await getGoogleSheetData();
     setMarketData(data);
   }
+
+  // get all holdings and update them
+  const [holdings, setHoldings] = useState([]);
+  const [updatedHoldings, setUpdatedHoldings] = useState([]);
+  const getHoldings = async () => {
+    const holdings = await getAllHoldings();
+    setHoldings(holdings);
+  }
+
+  const updateHoldingsWithMarketData = (holdings, marketData) => {
+    return holdings.map((holding) => {
+      const { ticker, shares} = holding;
+      
+      const exchangeRate = marketData.exchange[0].marketPrice;
+      const holdingTicker = marketData.price.find((item) => item.ticker === ticker);
+      const marketPrice = holdingTicker.marketPrice;
+  
+      const numShares = parseFloat(shares);
+      const marketValue = numShares * marketPrice;
+      const marketValueCad = marketValue * exchangeRate;
+      
+      return {
+        ...holding,
+        shares: numShares,
+        marketPrice: parseFloat(marketPrice.toFixed(2)),
+        marketValue: parseFloat(marketValue.toFixed(2)),
+        marketValueCad: parseFloat(marketValueCad.toFixed(2))
+      };
+    });
+  };
 
   //get dividends
   const [dividends, setDividends] = useState([]);
@@ -37,7 +62,7 @@ export default function App(){
     setDividends(dividends);
   }
 
-  //fetch transactions
+  //get transactions
   const [transactions, setTransactions] = useState([]);
   const getTransactions = async() => {
     const transactions = await getAllTransactions();
@@ -48,15 +73,18 @@ export default function App(){
     getAccounts();
     getTransactions();
     getDividends();
+    getHoldings();
   }, [])
   
   useEffect(() => {
-    getHoldings();
     getMarketData();
+    if (holdings.length > 0 && isDataAvailable(marketData)) {
+      const updated = updateHoldingsWithMarketData(holdings, marketData);
+      setUpdatedHoldings(updated);
+    }
   }, [marketData]);
 
-
-  //path
+  // path
   const path = useLocation().pathname;
 
   //mobile display
@@ -69,13 +97,14 @@ export default function App(){
         <Route path="/portfolio" 
           element={<Portfolio 
                     accounts={accounts} getAccounts={getAccounts}
-                    holdings={holdings} setHoldings={setHoldings}
+                    updatedHoldings={updatedHoldings} 
+                    setHoldings={setUpdatedHoldings}
                     getHoldings={getHoldings}
                     marketData={marketData}/>} />
 
         <Route path="/dividends" 
           element={<Dividends 
-                    accounts={accounts} holdings={holdings} 
+                    accounts={accounts} updatedHoldings={updatedHoldings} 
                     getDividends={getDividends} setDividends={setDividends} dividends={dividends}/>} />
 
         <Route path="/spendings" 
@@ -92,7 +121,7 @@ export default function App(){
         getAccounts={getAccounts}
         getTransactions={getTransactions}
         getHoldings={getHoldings}
-        path={path} holdings={holdings}  
+        path={path} updatedHoldings={updatedHoldings}  
         getDividends={getDividends}
         marketData={marketData}
         isMobile={isMobile} 
