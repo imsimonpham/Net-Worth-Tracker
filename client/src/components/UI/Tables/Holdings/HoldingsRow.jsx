@@ -107,7 +107,7 @@ export default function HoldingsRow({holding, updatedHoldings, getHoldings, dele
       <td>{generateGLString(marketPrice, holding.shares, totalCost)}</td>
       <td>{holding.totalDividend}</td>
       <td>{generateReturnString(marketPrice, holding.shares, totalCost, totalDividend)}</td>
-      <td style={{ maxWidth: "auto", textAlign: "right" }}>
+      <td style={{ width: "150px", textAlign: "right" }}>
         <HoldingEditButton holding={holding} updatedHoldings={updatedHoldings} getHoldings={getHoldings} accounts={accounts} getAccounts={getAccounts} marketData={marketData} />
         <HoldingDeleteButton deleteHolding={deleteHolding} holding={holding}/>
       </td>
