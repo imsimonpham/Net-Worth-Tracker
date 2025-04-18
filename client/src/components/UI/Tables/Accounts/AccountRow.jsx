@@ -51,10 +51,7 @@ export default function AccountRow({account, accounts, getAccounts, deleteAccoun
             )
           }
         </td>
-        <td>{account.type}</td>
-        <td>{account.cashBalance}</td>
-        <td>{account.investmentBalance}</td>
-        <td>{account.totalBalance}</td>
+        <td>{account.balance}</td>
         <td style={{textAlign: "right"}}>
           <AccountDeleteButton 
             account={account} deleteAccount={deleteAccount}/>

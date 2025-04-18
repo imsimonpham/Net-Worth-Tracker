@@ -8,10 +8,7 @@ export default function AccountTable ({accounts, getAccounts, deleteAccount, isM
         <thead>
           <tr>
             <th className="fw-bold align-middle" style={{width: "20%"}}>Account Name</th>
-            <th className="fw-bold align-middle" style={{width: "15%"}}>Account Type</th>
-            <th className="fw-bold align-middle" style={{width: "15%"}}>Cash Balance</th>
-            <th className="fw-bold align-middle" style={{width: "20%"}}>Investment Balance</th>
-            <th className="fw-bold align-middle" style={{width: "15%"}}>Total Balance</th>
+            <th className="fw-bold align-middle" style={{width: "15%"}}> Balance</th>
             <th className="fw-bold align-middle" style={{width: "15%"}}></th>
           </tr>
         </thead>

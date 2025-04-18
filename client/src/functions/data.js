@@ -24,10 +24,6 @@ export const updateAccountCashBalanceById = async (id, body) => {
   return updateData(`/accounts/cash/${id}`, body); 
 }
 
-// export const updateAccountInvestmentBalanceById = async (id, body) => {
-//   return updateData(`/accounts/investment/${id}`, body); 
-// }
-
 //TRANSACTIONS
 export const getAllTransactions = async () => {
   return getData('/transactions/');
@@ -64,53 +60,6 @@ export const updateTransactionById = async (id, body) => {
 export const deleteTransactionById = async (id) => {
   return deleteData(`/transactions/${id}`);
 }
-
-// HOLDING
-export const getAllHoldings = async () => {
-  return getData('/holdings/');
-}
-
-export const createNewHolding = async (body) => {
-  return createData(`/holdings`, body);
-}
-
-export const updateHolding = async (id, body) => {
-  return updateData(`/holdings/${id}`, body); 
-}
-
-export const updateHoldingValueById = async (id, body) => {
-  return updateData(`/holdings/value/${id}`, body); 
-}
-
-export const deleteHoldingById = async (id) => {
-  return deleteData(`/holdings/${id}`);
-}
-
-// export const addDividendById= async (id, body) => {
-//   return updateData(`/holdings/dividend/${id}`, body)
-// }
-
-// DVIDENDS
-export const createNewDividend = async (body) => {
-  return createData(`/dividends`, body);
-}
-
-export const getAllDividends = async () => {
-  return getData('/dividends/');
-}
-
-export const updateDividend = async (id, body) => {
-  return updateData(`/dividends/${id}`, body); 
-}  
-
-export const deleteDividendById = async (id) => {
-  return deleteData(`/dividends/${id}`);
-}
-
-// GET DATA FROM GOOGLE SHEET
-export const getGoogleSheetData = async () => {
-  return getData('/market/');
-};
 
 ///////////////////
 const getData = async (endpoint) => {

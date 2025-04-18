@@ -112,185 +112,6 @@ app.put('/transactions/:id', async (req, res) => {
   }
 });
 
-// HOLDINGS
-
-// get all holdings
-app.get('/holdings', async (req, res) => {
-  try {
-    const allHoldings = await pool.query("SELECT * FROM holding");
-    res.json(allHoldings.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
-// create a new holding
-app.post('/holdings', async (req, res) => {
-  try {
-    const {ticker, type, acctId, shares, avgPrice, currency, marketValueCad} = req.body; 
-    const newHolding = await pool.query(
-      `INSERT INTO holding
-        ("ticker", "type", "acctId", "shares", "avgPrice", "totalDividend", "currency", "marketValueCad")
-      VALUES  
-        ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING *`,
-      [ticker, type, acctId, shares, avgPrice, 0, currency, marketValueCad]
-    ); 
-    res.json(newHolding.rows[0]);
-  } catch (err) { 
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
-// update holding
-app.put('/holdings/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { shares, avgPrice, marketValueCad} = req.body;
-
-    const updateHolding = await pool.query(
-      `UPDATE holding
-       SET "shares" = $1,
-           "avgPrice" = $2,
-           "marketValueCad" = $3
-       WHERE id = $4`,
-      [shares, avgPrice, marketValueCad, id]
-    );
-
-    res.json({ message: "Holding data was updated successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// update holding value 
-app.put('/holdings/value/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {marketValueCad} = req.body;
-
-    const updateHolding = await pool.query(
-      `UPDATE holding
-       SET "marketValueCad" = $1
-       WHERE id = $2`,
-      [marketValueCad, id]
-    );
-
-    res.json({ message: "Holding data was updated successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// add dividend to a holding
-// app.put('/holdings/dividend/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const {dividend} = req.body;
-
-//     const addDividend = await pool.query(
-//       `UPDATE holding
-//        SET "totalDividend" = "totalDividend" + $1::money
-//        WHERE id = $2`,
-//       [dividend, id]
-//     );
-
-//     res.json({ message: "Dividend was added to holding successfully" });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-// delete holding
-app.delete('/holdings/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteHolding = await pool.query(
-      "DELETE FROM holding WHERE id = $1",
-      [id]
-    );
-    res.json({ message: "Holding was deleted successfully" });
-  } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
-// DIVIDENDS
-
-// create new dividend
-app.post('/dividends', async (req, res) => {
-  try {
-    const {date, holdingId, acctId, amount, currency} = req.body;
-
-    const newDividend = await pool.query(
-      `INSERT INTO dividend 
-        ("date", "holdingId", "acctId", "amount", "currency") 
-      VALUES 
-        ($1, $2, $3, $4, $5) 
-      RETURNING *`,
-      [date, holdingId, acctId, amount, currency]
-    );
-
-    res.json(newDividend.rows[0]);
-  } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
-// get all dividends
-app.get('/dividends', async (req, res) => {
-  try {
-    const allDividends = await pool.query("SELECT * FROM dividend");
-    res.json(allDividends.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
-// update dividend
-app.put('/dividends/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { date, amount} = req.body;
-
-    const updateDividend = await pool.query(
-      `UPDATE dividend
-       SET "date" = $1,
-           "amount" = $2
-       WHERE id = $3`,
-      [date, amount, id]
-    );
-
-    res.json({ message: "Dividend was updated successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// delete dividend
-app.delete('/dividends/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteDividend = await pool.query(
-      "DELETE FROM dividend WHERE id = $1",
-      [id]
-    );
-    res.json({ message: "Delete was deleted successfully" });
-  } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ error: "Internal Server Error" });
-  }
-})
-
 
 // CHARTS
 // pull income data for CHARTS
@@ -413,15 +234,15 @@ app.get('/transactions/yearlyByMonth', async (req, res) => {
 //create account
 app.post('/accounts', async (req, res) => {
   try {
-    const { name, type, cashBalance, isActive } = req.body;
+    const { name, balance, isActive } = req.body;
 
     const newAccount = await pool.query(
       `INSERT INTO account
-        ("name", "type", "cashBalance", "isActive")
+        ("name", "balance", "isActive")
       VALUES
-        ($1, $2, $3, $4)
+        ($1, $2, $3)
       RETURNING *`,
-      [name, type, cashBalance, isActive]
+      [name, balance, isActive]
     );
 
     res.json(newAccount.rows[0]);
@@ -499,51 +320,19 @@ app.put('/accounts/name/:id', async (req, res) => {
 app.put('/accounts/cash/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { cashBalance } = req.body;
+    const { balance } = req.body;
 
     const updateAcct = await pool.query(
       `UPDATE account
-       SET "cashBalance" = $1
+       SET "balance" = $1
        WHERE id = $2`,
-      [cashBalance, id]
+      [balance, id]
     );
 
-    res.json("Account's cash balance was updated successfully");
+    res.json("Account's balance was updated successfully");
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
-  }
-});
-
-// update account investment balance
-app.put('/accounts/investment/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { investmentBalance } = req.body;
-
-    const updateAcct = await pool.query(
-      `UPDATE account
-       SET "investmentBalance" = $1
-       WHERE id = $2`,
-      [investmentBalance, id]
-    );
-
-    res.json("Account's investment balance was updated successfully");
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// market data
-app.get('/market', async (req, res) => {
-  try {
-    const response = await fetch(googlesheets_api_url);
-    const data = await response.json();
-    res.json(data); 
-  } catch (err) {
-    console.error('Error fetching data from API:', err);
-    res.status(500).send('Error fetching data');
   }
 });
 

@@ -151,7 +151,6 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
             >
               <option value="">Select an account</option>
               {accounts
-                .filter((account)=> account.type === 'Cash')
                 .map((account)=>(
                   <option key={account.id} value={account.name} id={account.id}>{account.name}</option>
               ))}

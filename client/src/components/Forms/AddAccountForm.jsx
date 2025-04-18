@@ -5,13 +5,11 @@ import {createNewAccount } from '../../functions/data';
 export default function AddAccountForm ({handleClose, getAccounts}) {
   // variables
   const [accountName, setAccountName] = useState('');
-  const [accountType, setAccountType] = useState('Cash');
-  const [cashBalance, setCashBalance] = useState('');
+  const [balance, setBalance] = useState('');
 
   // handle variable changes
   const handleAccountNameChange = (e) =>  setAccountName(e.target.value);
-  const handleAccountType = (e) =>  setAccountType(e.target.value);
-  const handleCashBalanceChange = (e) => setCashBalance(e.target.value);
+  const handleBalanceChange = (e) => setBalance(e.target.value);
 
   //form validation
   const [errors, setErrors] = useState({});
@@ -19,7 +17,7 @@ export default function AddAccountForm ({handleClose, getAccounts}) {
     let newErrors = {};
 
     if(!accountName) newErrors.accountName = 'Account Name is required';
-    if(!cashBalance) newErrors.cashBalance = 'Initial Cash Balance is required';
+    if(!balance) newErrors.balance = 'Initial Balance is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -29,9 +27,7 @@ export default function AddAccountForm ({handleClose, getAccounts}) {
   const createAccount = async () => {
     const body = {
       name: accountName, 
-      cashBalance: cashBalance, 
-      investmentBalance: 0,
-      type: accountType,
+      balance: balance, 
       isActive: true
     };
     const newAccount = await createNewAccount(body);
@@ -65,26 +61,10 @@ export default function AddAccountForm ({handleClose, getAccounts}) {
 
       <Row className="mb-3">
         <Col md={12}>
-          <Form.Group controlId="accountType">
-            <Form.Label>Account Type</Form.Label>
-            <Form.Select 
-              aria-label="Account Type"
-              value={accountType}
-              onChange={handleAccountType}
-            >
-              <option value="Cash">Cash</option>
-              <option value="Investment">Investment</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Row className="mb-3">
-        <Col md={12}>
           <Form.Group  controlId="initalBalance">
-            <Form.Label>Initial Cash Balance</Form.Label>
-            <Form.Control type="number" placeholder="$" value={cashBalance} step="any" onChange={handleCashBalanceChange}/>
-            {errors.cashBalance && <div className="text-danger">{errors.cashBalance}</div>}
+            <Form.Label>Initial Balance</Form.Label>
+            <Form.Control type="number" placeholder="$" value={balance} step="any" onChange={handleBalanceChange}/>
+            {errors.balance && <div className="text-danger">{errors.balance}</div>}
           </Form.Group>
         </Col>
       </Row>
