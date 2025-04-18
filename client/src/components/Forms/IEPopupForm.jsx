@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
-import { convertToFloat, convertDateToSystemFormat } from '../../functions/utilities';
+import { convertToFloat, convertDateToSystemFormat, getAccountBalanceById } from '../../functions/utilities';
 import { updateTransactionById, createNewTransaction} from '../../functions/data';
 import { getAccountById } from '../../functions/utilities';
 
@@ -20,6 +20,7 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
   );
   const [accountName, setAccountName] = useState(
     accountId ? getAccountById(accounts, accountId).name : '');
+  const [accountBalance, setAccountBalance]  = useState(accountId ? getAccountBalanceById(accounts, accountId) : 0);
   const [note, setNote] = useState(transaction?.note || '');
 
   // handle variable changes
@@ -36,6 +37,7 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
     if(selectedAccount !== undefined){
       setAccountId(selectedOption.id);
       setAccountName(selectedAccount.name);
+      setAccountBalance(convertToFloat(selectedAccount.balance));    
     } 
   }
 
@@ -50,7 +52,8 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
     if (!category) newErrors.category = 'Category is required';
     if (!amount || amount <= 0) newErrors.amount = 'Amount must be greater than zero'; 
     if (!accountId) newErrors.accountId = 'Transaction account is required';
-
+    if(transactionType === 'Expense' && amount > accountBalance)  newErrors.fund = 'Insufficient fund';
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -156,6 +159,7 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
               ))}
             </Form.Select>
             {errors.accountId && <div className="text-danger">{errors.accountId}</div>}
+            {errors.fund && <div className="text-danger">{errors.fund}</div>}
           </Form.Group>
         </Col>
       </Row>

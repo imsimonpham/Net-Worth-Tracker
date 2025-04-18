@@ -31,8 +31,9 @@ export function getAccountById(accounts, id){
   return accounts.find(account => account.id === Number(id));
 }
 
-export function getHoldingById(holdings, id){
-  return holdings.find(holding => holding.id === Number(id));
+export function getAccountBalanceById(accounts, id){
+  const account = accounts.find(account => account.id === Number(id));
+  return convertToFloat(account.balance);
 }
 
 export const getColorFromId = (id) => {

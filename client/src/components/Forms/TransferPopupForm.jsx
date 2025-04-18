@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { convertToFloat, convertDateToSystemFormat, getAccountById } from "../../functions/utilities";
+import { convertToFloat, convertDateToSystemFormat, getAccountById, getAccountBalanceById } from "../../functions/utilities";
 import {updateTransactionById, createNewTransaction } from "../../functions/data";
 
 export default function TransferPopupForm({handleClose, transaction, getTransactions, accounts}){
@@ -23,6 +23,7 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
   const [receivingAccountName, setReceivingAccountName] = useState(
     receivingAccountId ? getAccountById(accounts, receivingAccountId).name : ''
   );
+  const [sendingAccountBalance, setSendingAccountBalance]  = useState(sendingAccountId ? getAccountBalanceById(accounts, sendingAccountId) : 0);
   const [note, setNote] = useState(transaction?.note || '');
 
   // handle variable changes
@@ -34,6 +35,7 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
     if(selectedAccount !== undefined){
       setSendingAccountId(selectedOption.id);
       setSendingAccountName(selectedAccount.name);
+      setSendingAccountBalance(convertToFloat(selectedAccount.balance));
     } 
   }
   const handleReceivingAccountChange = (e) => {
@@ -46,6 +48,8 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
   }
   const handleNoteChange = (e) => setNote(e.target.value);
 
+  
+
   // form validation 
   const [errors, setErrors] = useState({}); 
   const isFormDataValid = () => {
@@ -55,6 +59,7 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
     if(!amount || amount <= 0) newErrors.amount = 'Amount must be greater than zero'; 
     if(!sendingAccountId) newErrors.sendingAccountId = 'Sending account is required';
     if(!receivingAccountId) newErrors.receivingAccountId = 'Receiving account is required';
+    if(amount > sendingAccountBalance)  newErrors.fund = 'Insufficient fund';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -122,6 +127,7 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
               ))}
             </Form.Select>
             {errors.sendingAccountId && <div className="text-danger">{errors.sendingAccountId}</div>}
+            {errors.fund && <div className="text-danger">{errors.fund}</div>}
           </Form.Group>
         </Col>
       </Row>
