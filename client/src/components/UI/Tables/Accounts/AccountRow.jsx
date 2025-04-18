@@ -61,16 +61,30 @@ export default function AccountRow({account, accounts, getAccounts, deleteAccoun
   } else {
     return (
       <div key={account.id} className={index !== accounts.length - 1 ? "mb-2" : ""}>
-        <p className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between">
+          {
+            isEditing ? 
+            (
+              <Form.Control 
+                type="text" 
+                autoFocus
+                value={accountName}
+                onChange={accountNameChange}
+                onBlur={handleBlur}
+                style={{width: "45%"}}
+              />        
+            ) : (  
+              <span 
+                onClick={handleEditClick} 
+                style={{cursor: "pointer", display: "inline-block", width: "45%"}}>{accountName}
+              </span>
+            )
+          }
+          <span>{account.balance}</span>
           <span>
-            {account.type === 'Cash' ? 
-              <FontAwesomeIcon icon={faSackDollar} /> : 
-              <FontAwesomeIcon icon={faSeedling} />
-            } 
-            &nbsp;{account.name}
+            <AccountDeleteButton account={account} deleteAccount={deleteAccount}/>
           </span>
-          <span>{account.totalBalance}</span>
-        </p> 
+        </div> 
       </div>
     )
   }

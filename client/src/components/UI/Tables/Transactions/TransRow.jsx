@@ -4,7 +4,7 @@ import {formatDateForUI, getAccountById } from '../../../../functions/utilities'
 import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
 
-export default function TransRow({transaction, deleteTransaction, getTransactions, accounts, isMobile}){
+export default function TransRow({transaction, deleteTransaction, getTransactions, accounts, getAccounts, isMobile}){
   if (accounts.length === 0) {
     return null; 
   }
@@ -58,8 +58,8 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
         </td>
         <td>{transaction.note}</td>
         <td style={{ maxWidth: "90px", textAlign: "right" }}>
-          <TransEditButton transaction={transaction} accounts={accounts} getTransactions={getTransactions}/>
-          <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction} />
+          <TransEditButton transaction={transaction} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>
+          <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction} getAccounts={getAccounts} getTransactions={getTransactions}/>
         </td>
       </tr>
     )

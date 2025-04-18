@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
 import { convertToFloat, convertDateToSystemFormat, getAccountBalanceById } from '../../functions/utilities';
-import { updateTransactionById, createNewTransaction} from '../../functions/data';
+import { updateTransactionById, createNewTransaction, getAllTransactions} from '../../functions/data';
 import { getAccountById } from '../../functions/utilities';
 
-export default function IEPopupForm({handleClose, transaction, accounts, getTransactions}){
+export default function IEPopupForm({handleClose, transaction, getTransactions, accounts, getAccounts}){
   // variables
   const [date, setDate] = useState(
     transaction ? 
@@ -82,7 +82,10 @@ export default function IEPopupForm({handleClose, transaction, accounts, getTran
     e.preventDefault();
     if(!isFormDataValid()) return;
     await upsertTransaction();
+
+    //refresh data
     await getTransactions();
+    await getAccounts();
   }
 
   return (

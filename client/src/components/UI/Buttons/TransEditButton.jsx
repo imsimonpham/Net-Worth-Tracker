@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 import IEPopupForm from '../../Forms/IEPopupForm';
 import TransferPopupForm from '../../Forms/TransferPopupForm';
 
-export default function TransEditButton({transaction, getTransactions, accounts}){
+export default function TransEditButton({transaction, getTransactions, accounts, getAccounts}){
   const [activeModal, setActiveModal] = useState(null);
   
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -31,7 +31,7 @@ export default function TransEditButton({transaction, getTransactions, accounts}
             <IEPopupForm 
               handleClose={handleClose} 
               transaction={transaction}  getTransactions={getTransactions}
-              accounts={accounts} 
+              accounts={accounts} getAccounts={getAccounts}
             />
           }
           {
@@ -39,7 +39,7 @@ export default function TransEditButton({transaction, getTransactions, accounts}
             <TransferPopupForm 
               handleClose={handleClose} 
               transaction={transaction} getTransactions={getTransactions}
-              accounts={accounts}
+              accounts={accounts} getAccounts={getAccounts}
             />
           }
         </Modal.Body>

@@ -67,8 +67,8 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
         </Modal.Header>
         
         <Modal.Body>
-          {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions}/>}
-          {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions}/>}
+          {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>}
+          {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>}
           {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose} getAccounts={getAccounts}/>}
           {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} getAccounts={getAccounts} isMobile={isMobile}/>}
         </Modal.Body>

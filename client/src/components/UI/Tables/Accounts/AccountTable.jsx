@@ -30,7 +30,8 @@ export default function AccountTable ({accounts, getAccounts, deleteAccount, isM
           <AccountRow 
           key={account.id} 
           accounts={accounts}
-          account={account} getAccounts={getAccounts}      
+          account={account} getAccounts={getAccounts} 
+          deleteAccount={deleteAccount}     
           index={index}   
           isMobile={isMobile}/>
         ))}

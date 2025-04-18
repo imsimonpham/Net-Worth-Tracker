@@ -39,6 +39,8 @@ export default function AddAccountForm ({handleClose, getAccounts}) {
     e.preventDefault();
     if(!isFormDataValid()) return;
     await createAccount();
+
+    //refresh data
     await getAccounts();
   }
 

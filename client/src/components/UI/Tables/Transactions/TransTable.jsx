@@ -5,7 +5,7 @@ import {deleteTransactionById } from '../../../../functions/data';
 import TransFilter from './TransFilter';
 import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
 
-export default function TransTable({accounts, transactions, setTransactions, getTransactions, isMobile}){
+export default function TransTable({accounts, getAccounts, transactions, setTransactions, getTransactions, isMobile}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
@@ -63,6 +63,7 @@ export default function TransTable({accounts, transactions, setTransactions, get
     setTransactions(transactions.filter(
       transaction => transaction.id !== id
     ))
+    getAccounts();
   }
 
   //mobile display
@@ -107,7 +108,7 @@ export default function TransTable({accounts, transactions, setTransactions, get
                   <TransRow 
                     isMobile={isMobile} key={transaction.id} 
                     transaction={transaction} deleteTransaction={deleteTransaction}  getTransactions={getTransactions}
-                    accounts={accounts}/>
+                    accounts={accounts} getAccounts={getAccounts}/>
               ))}
             </tbody>
           </Table>
@@ -125,7 +126,7 @@ export default function TransTable({accounts, transactions, setTransactions, get
                     key={transaction.id} 
                     transaction={transaction} 
                     getTransactions={getTransactions}
-                    accounts={accounts}
+                    accounts={accounts} getAccounts={getAccounts}
                   />
                 ))}
               </div>
