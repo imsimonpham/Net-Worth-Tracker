@@ -126,6 +126,7 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
                     key={transaction.id} 
                     transaction={transaction} 
                     getTransactions={getTransactions}
+                    deleteTransaction={deleteTransaction}
                     accounts={accounts} getAccounts={getAccounts}
                   />
                 ))}

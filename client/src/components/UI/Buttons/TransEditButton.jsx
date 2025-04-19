@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 import IEPopupForm from '../../Forms/IEPopupForm';
 import TransferPopupForm from '../../Forms/TransferPopupForm';
 
-export default function TransEditButton({transaction, getTransactions, accounts, getAccounts}){
+export default function TransEditButton({transaction, getTransactions, accounts, getAccounts, isMobile}){
   const [activeModal, setActiveModal] = useState(null);
   
   const handleShow = (modalType) => setActiveModal(modalType);
@@ -13,7 +13,9 @@ export default function TransEditButton({transaction, getTransactions, accounts,
 
   return (
     <>
-      <Button className='btn btn-primary me-3' onClick={()=>handleShow(transaction.transType)}>
+      <Button 
+        className={isMobile ? 'btn btn-primary me-1' : 'btn btn-primary me-3'} 
+        onClick={()=>handleShow(transaction.transType)}>
         <FontAwesomeIcon icon={faPencil} style={{color: "#00aff5"}} />
       </Button>
 

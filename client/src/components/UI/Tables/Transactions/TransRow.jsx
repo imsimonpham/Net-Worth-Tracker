@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faRightLeft } from '@fortawesome/free-solid-svg-icons';
 import {formatDateForUI, getAccountById } from '../../../../functions/utilities';
 import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
 
+
 export default function TransRow({transaction, deleteTransaction, getTransactions, accounts, getAccounts, isMobile}){
+
   if (accounts.length === 0) {
     return null; 
   }
@@ -39,6 +42,7 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
     return transType;
   }
 
+
   if(!isMobile){
     return (
       <tr>
@@ -58,15 +62,19 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
         </td>
         <td>{transaction.note}</td>
         <td style={{ maxWidth: "90px", textAlign: "right" }}>
-          <TransEditButton transaction={transaction} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>
-          <TransDeleteButton transaction={transaction} deleteTransaction={deleteTransaction} getAccounts={getAccounts} getTransactions={getTransactions}/>
+          <TransEditButton 
+            transaction={transaction} accounts={accounts} 
+            getTransactions={getTransactions} getAccounts={getAccounts}/>
+          <TransDeleteButton 
+            transaction={transaction} deleteTransaction={deleteTransaction} 
+            getAccounts={getAccounts} getTransactions={getTransactions}/>
         </td>
       </tr>
     )
   } else {
     return (
       <div className="py-0 mb-2 d-flex justify-content-between">
-        <p className="d-flex flex-column">
+        <p className="d-flex flex-column" style={{width: "40%"}}>
           <span>{transaction.category} {formatTransTypeString(transaction.transType, false)}</span>
           <small>
             {transaction.fromAcctId 
@@ -78,7 +86,13 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
             : ''}
           </small>
         </p>
-        <p>{transaction.amount}</p>
+        <p>{transaction.amount}</p>   
+        <div style={{width: "35%", textAlign: "right"}}>
+          <TransEditButton transaction={transaction} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts} isMobile={isMobile}/>
+          <TransDeleteButton 
+            transaction={transaction} deleteTransaction={deleteTransaction} 
+            getAccounts={getAccounts} getTransactions={getTransactions}/>
+        </div>
       </div>
     )
   }

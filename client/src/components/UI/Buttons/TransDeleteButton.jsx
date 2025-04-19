@@ -3,12 +3,13 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/esm/Button'
 
 export default function TransDeleteButton({transaction, getTransactions, deleteTransaction, getAccounts}){
+  console.log('deleteTransaction:', typeof deleteTransaction);
   const handleDeleteTransaction = () => {
     deleteTransaction(transaction.id);
-
     //refresh data
     getTransactions();
     getAccounts();
+    
   }
   return (
     <Button className='btn btn-danger' onClick={()=> handleDeleteTransaction()}>
