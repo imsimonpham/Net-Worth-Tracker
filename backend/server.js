@@ -4,11 +4,10 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv'); 
 const SQL = require('sql-template-strings');
 
-const isDev = true;
+const isDev = false;
 
 dotenv.config({ path: '../client/.env' });
 const port = process.env.PORT || 5000;
-const googlesheets_api_url = process.env.VITE_GOOGLESHEETS_API_URL;
 const app = express();
 
 //middleware
