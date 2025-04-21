@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState  } from 'react';
 import {Button, Modal, Accordion} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear} from '@fortawesome/free-solid-svg-icons';
@@ -13,41 +13,43 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
   const handleShow = (modalType) => setActiveModal(modalType);
   const handleClose = () => setActiveModal(null);
 
+  
+
   return (
     <div className="popup">
       <Accordion>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>
-            <FontAwesomeIcon style={{width: '40px'}} icon={faUserGear} />
-          </Accordion.Header>
-          <Accordion.Body>
-            <Button  
-              style={{ width: '40px', height: '40px' }}
-              className='btn btn-transaction mb-3'  
-              onClick={() => handleShow('IE')}>
-              <FontAwesomeIcon icon={faDollarSign} />
-            </Button>
-            <Button 
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction mb-3' 
-              onClick={()=>handleShow('Transfer')}>
-              <FontAwesomeIcon icon={faRightLeft} />
-            </Button>
-            <Button 
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction mb-3' 
-              onClick={()=>handleShow('Add Acount')}>
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-            <Button 
-              style={{width: '40px', height: '40px'}}
-              className='btn btn-transaction' 
-              onClick={()=>handleShow('Manage Accounts')}>
-              <FontAwesomeIcon icon={faGear} />
-            </Button>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header className="drag-handle">
+          <FontAwesomeIcon style={{ width: '40px' }} icon={faUserGear} />
+        </Accordion.Header>
+        <Accordion.Body>
+          <Button
+            style={{ width: '40px', height: '40px' }}
+            className='btn btn-transaction mb-3'
+            onClick={() => handleShow('IE')}>
+            <FontAwesomeIcon icon={faDollarSign} />
+          </Button>
+          <Button
+            style={{ width: '40px', height: '40px' }}
+            className='btn btn-transaction mb-3'
+            onClick={() => handleShow('Transfer')}>
+            <FontAwesomeIcon icon={faRightLeft} />
+          </Button>
+          <Button
+            style={{ width: '40px', height: '40px' }}
+            className='btn btn-transaction mb-3'
+            onClick={() => handleShow('Add Acount')}>
+            <FontAwesomeIcon icon={faPlus} />
+          </Button>
+          <Button
+            style={{ width: '40px', height: '40px' }}
+            className='btn btn-transaction'
+            onClick={() => handleShow('Manage Accounts')}>
+            <FontAwesomeIcon icon={faGear} />
+          </Button>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
 
       <Modal 
         className='modal-container' 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 const CustomTooltip = ({ active, payload }) => {
@@ -12,7 +12,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const ExpensePieChart = ({ expenseData, setLegendHeight, isMobile }) => {
+const InvestmentPieChart = ({ investmentData, setLegendHeight }) => {
   const containerRef = useRef(null);
   useEffect(() => {
     const getLegendHeight = () => {
@@ -31,11 +31,11 @@ const ExpensePieChart = ({ expenseData, setLegendHeight, isMobile }) => {
     const timeout = setTimeout(getLegendHeight, 100);
 
     return () => clearTimeout(timeout);
-  }, [expenseData]);
+  }, [investmentData]);
 
   return (
-    <div className={isMobile ? 'mb-3' : ''} ref={containerRef}>
-      <h5 className="text-center mt-2">Expense Breakdown</h5>
+    <div className="" ref={containerRef}>
+      <h5 className="text-center mt-2">Investment Breakdown</h5>
       <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Tooltip content={<CustomTooltip />} />
@@ -45,7 +45,7 @@ const ExpensePieChart = ({ expenseData, setLegendHeight, isMobile }) => {
             align="center"
           />
           <Pie
-            data={expenseData}
+            data={investmentData}
             cx="50%"
             cy="50%"
             outerRadius={80}
@@ -53,7 +53,7 @@ const ExpensePieChart = ({ expenseData, setLegendHeight, isMobile }) => {
             nameKey="category"
             labelLine={false}
           >
-            {expenseData.map((entry) => (
+            {investmentData.map((entry) => (
               <Cell key={`cell-${entry.category}`} fill={entry.color} />
             ))}
           </Pie>
@@ -63,4 +63,4 @@ const ExpensePieChart = ({ expenseData, setLegendHeight, isMobile }) => {
   );
 };
 
-export default ExpensePieChart;
+export default InvestmentPieChart;

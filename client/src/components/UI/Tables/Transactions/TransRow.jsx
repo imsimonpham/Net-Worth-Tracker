@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faRightLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faRightLeft, faSeedling } from '@fortawesome/free-solid-svg-icons';
 import {formatDateForUI, getAccountById } from '../../../../functions/utilities';
 import TransEditButton from '../../Buttons/TransEditButton';
 import TransDeleteButton from '../../Buttons/TransDeleteButton';
@@ -29,7 +28,16 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
           &nbsp;
           <FontAwesomeIcon className='middle-align' icon={faArrowRight} style={{color: "#dc3545",}} />
         </>
+      )    
+    } else if(transTypeString === 'Investment') {
+      transType = (
+        <>
+          {showTypeString ? transTypeString : ''}
+          &nbsp;
+          <FontAwesomeIcon className='middle-align' icon={faArrowRight} style={{color: "#F7D774",}} />
+        </>
       )
+      
     } else if (transTypeString === 'Transfer'){
       transType = (
         <>

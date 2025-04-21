@@ -45,6 +45,14 @@ export const getYearlyExpenses = async (year) => {
   return getData(`/transactions/expense/yearly?year=${year}`);
 }
 
+export const getMonthlyInvestments = async (year, month) => {
+  return getData(`/transactions/investment/monthly?year=${year}&month=${month}`);
+}
+
+export const getYearlyInvestments = async (year) => {
+  return getData(`/transactions/investment/yearly?year=${year}`);
+}
+
 export const getYearlyData = async (year) => {
   return getData(`/transactions/yearlyByMonth?year=${year}`);
 }

@@ -203,6 +203,52 @@ app.get('/transactions/expense/yearly', async (req, res) => {
   }
 });
 
+// pull investment data for CHARTS
+app.get('/transactions/investment/monthly', async (req, res) => {
+  try {
+    const { month, year } = req.query;
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Investment'
+        AND DATE_TRUNC('month', "date") = DATE_TRUNC('month', MAKE_DATE($1::integer, $2::integer, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year, month];
+    const investment = await pool.query(queryText, queryParams);
+    res.json(investment.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+app.get('/transactions/investment/yearly', async (req, res) => {
+  try {
+    const { year } = req.query;
+    const queryText = `
+      SELECT "category", 
+        SUM("amount") AS "totalAmount"
+      FROM "transaction"
+      WHERE "transType" = 'Investment'
+        AND DATE_TRUNC('year', "date") = DATE_TRUNC('year', MAKE_DATE($1::integer, 1, 1))
+      GROUP BY "category"
+      ORDER BY "totalAmount" DESC;
+    `;
+    const queryParams = [year];
+    const investment = await pool.query(queryText, queryParams);
+    res.json(investment.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+
+
+//
 app.get('/transactions/yearlyByMonth', async (req, res) => {
   try {
     const { year } = req.query;
@@ -211,8 +257,9 @@ app.get('/transactions/yearlyByMonth', async (req, res) => {
         EXTRACT(MONTH FROM "date") AS month,
         SUM(CASE WHEN "transType" = 'Income' THEN "amount"::numeric ELSE 0 END) AS income,
         SUM(CASE WHEN "transType" = 'Expense' THEN "amount"::numeric ELSE 0 END) AS expenses,
+        SUM(CASE WHEN "transType" = 'Investment' THEN "amount"::numeric ELSE 0 END) AS investments,
         SUM(CASE WHEN "transType" = 'Income' THEN "amount"::numeric ELSE 0 END) - 
-        SUM(CASE WHEN "transType" = 'Expense' THEN "amount"::numeric ELSE 0 END) AS balance,
+        SUM(CASE WHEN "transType" IN ('Expense', 'Investment') THEN "amount"::numeric ELSE 0 END) AS balance,
         EXTRACT(YEAR FROM "date") AS year
       FROM "transaction"
       WHERE DATE_TRUNC('year', "date") = DATE_TRUNC('year', MAKE_DATE($1::integer, 1, 1))
@@ -220,8 +267,8 @@ app.get('/transactions/yearlyByMonth', async (req, res) => {
       ORDER BY year, EXTRACT(MONTH FROM "date");
     `;
     const queryParams = [year];
-    const expense = await pool.query(queryText, queryParams);
-    res.json(expense.rows);
+    const result = await pool.query(queryText, queryParams);
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

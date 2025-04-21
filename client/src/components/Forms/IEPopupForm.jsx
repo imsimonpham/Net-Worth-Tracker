@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
 import { convertToFloat, convertDateToSystemFormat, getAccountBalanceById } from '../../functions/utilities';
-import { updateTransactionById, createNewTransaction, getAllTransactions} from '../../functions/data';
+import { updateTransactionById, createNewTransaction} from '../../functions/data';
 import { getAccountById } from '../../functions/utilities';
 
 export default function IEPopupForm({handleClose, transaction, getTransactions, accounts, getAccounts}){
@@ -65,7 +65,7 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
       transType: transactionType,
       category: category, 
       amount: amount, 
-      fromAcctId: transactionType === 'Expense' ? accountId : null,
+      fromAcctId: transactionType === 'Expense' || transactionType === 'Investment' ? accountId : null,
       toAcctId: transactionType === 'Income' ? accountId : null,
       note: note
     }
@@ -109,6 +109,7 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
               onChange={handleTransactionTypeChange}
             >
               <option value="Income">Income</option>
+              <option value="Investment">Investment</option>
               <option value="Expense">Expense</option>
             </Form.Select>
           </Form.Group>
@@ -120,19 +121,25 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
           <Form.Group controlId="category">
             <Form.Label>Category</Form.Label>
             <Form.Select aria-label="Category" value={category} onChange={handleCategoryChange}>
-              {
-                transactionType === 'Expense' 
-                ? categories.expense.map((expense)=> (
-                  <option key={expense.id} value={expense.value}>
-                    {expense.name}
-                  </option>
-                ))
-                : categories.income.map((income)=> (
-                  <option key={income.id} value={income.value}>
-                    {income.name}
-                  </option>
-                ))
-              }
+            {
+              transactionType === 'Expense' 
+                ? categories.expense.map((expense) => (
+                    <option key={expense.id} value={expense.value}>
+                      {expense.name}
+                    </option>
+                  ))
+                : transactionType === 'Income'
+                ? categories.income.map((income) => (
+                    <option key={income.id} value={income.value}>
+                      {income.name}
+                    </option>
+                  ))
+                : categories.investment.map((investment) => (
+                    <option key={investment.id} value={investment.value}>
+                      {investment.name}
+                    </option>
+                  ))
+            }
             </Form.Select>
             {errors.category && <div className="text-danger">{errors.category}</div>}
           </Form.Group>

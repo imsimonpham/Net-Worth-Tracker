@@ -4,15 +4,18 @@ import IncomePieChart from './IECharts/IncomePieChart';
 import ExpensePiechart from './IECharts/ExpensePieChart';
 import {convertToFloat} from '../../../functions/utilities';
 import {useEffect, useState } from "react";
-import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses, getYearlyData } from '../../../functions/data';
+import { getMonthlyIncome, getYearlyIncome, getMonthlyExpenses, getYearlyExpenses, getMonthlyInvestments, getYearlyInvestments, getYearlyData } from '../../../functions/data';
 import {Form} from 'react-bootstrap';
+import InvestmentPieChart from './IECharts/InvestmentPieChart';
 
 export default function IEChartArea ({transactions, isMobile}){
   const [legendHeight, setLegendHeight] = useState(0);
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
+  const [investmentData, setInvestmentData] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+  const [totalInvestments, setTotalInvestment] = useState(0);
   const [yearlyData, setYearlyData] = useState([]);
 
   // HANDLE INCOME DATA
@@ -22,7 +25,8 @@ export default function IEChartArea ({transactions, isMobile}){
       : await getMonthlyIncome(year, month); 
 
     const incomeColors = {
-      'Investment Gain': '#d8c99b',
+      'Government Payment': '#7c9a56',
+      'Investment': '#d8c99b',
       'Miscellaneous': '#d8973c',
       'Salary': '#bd632f',
       'Side gigs': '#50808e'
@@ -63,19 +67,21 @@ export default function IEChartArea ({transactions, isMobile}){
     const expenseColors = {
       'Car': '#e46a55',
       'Clothing': '#d36a7f',
-      'Debt Payments': '#b85f7a',
-      'Eat out': '#e87c47',
+      'Debt Payment': '#b85f7a',
+      'Eat out': '#f4a98c',
       'Education': '#e4a349',
       'Electricity': '#f0a741',
       'Entertainment': '#f15b4e',
+      'Gym': '#f6bd60',
       'Groceries': '#6fa68d',
       'Healthcare': '#55a0a9',
       'Insurance': '#7d8b97',
       'Internet': '#5f88b1',
-      'Investment Loss': '#8c5a6c',
       'Miscellaneous': '#a99c6a',
-      'Pet Supplies': '#e08585',
+      'Mobile': '#63e6be',
+      'Pet': '#e08585',
       'Rent': '#8c8c8c',
+      'Tech Services': '#b4c5e4',
       'Transportation': '#9c704d'
     }; 
 
@@ -103,6 +109,45 @@ export default function IEChartArea ({transactions, isMobile}){
     setTotalExpenses(totalExpensesCal);
     setExpenseData(updatedExpenses);
   }
+
+  // HANDLE INVESTMENT DATA
+  const getInvestmentsForPeriod = async (year, month) => { 
+    const investments = month === 0 
+      ? await getYearlyInvestments(year) 
+      : await getMonthlyInvestments(year, month); 
+  
+    const investmentColors = {
+      'IBKR': '#b4c5e4',      
+      'NDAX': '#c9e4b4',      
+      'WS-FHSA': '#f7d9c4',   
+      'WS-RRSP': '#eac4d5',   
+      'WS-TFSA': '#d5c4e8'    
+    }; 
+  
+    // convert amount to float and add color property
+    const investment = investments.map(investment => ({
+      ...investment, 
+      totalAmount: convertToFloat(investment.totalAmount), 
+      color: investmentColors[investment.category] || '#000000'
+    }))
+  
+    // accumulate amount
+    const totalInvestmentsCal = investment.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0,
+    );
+  
+    // calculate percentage
+    const updatedInvestments = investment.map(investment => ({
+      ...investment,
+      percentage: totalInvestmentsCal > 0 
+        ? convertToFloat((investment.totalAmount / totalInvestmentsCal * 100).toFixed(2)) 
+        : 0
+    }));
+  
+    setTotalInvestment(totalInvestmentsCal);
+    setInvestmentData(updatedInvestments);
+  }
   
   
   // HANDLE IE DATA
@@ -125,6 +170,7 @@ export default function IEChartArea ({transactions, isMobile}){
       month: monthNames[Number(data.month) - 1],
       income: Number(data.income),
       expenses: Number(data.expenses),
+      investment: Number(data.investment),
       balance: Number(data.balance),
     }));
 
@@ -179,8 +225,9 @@ export default function IEChartArea ({transactions, isMobile}){
   useEffect(()=> {
     getIncomeSourcesForPeriod(selectedYear, selectedMonth);
     getExpensesForPeriod(selectedYear, selectedMonth);
+    getInvestmentsForPeriod(selectedYear, selectedMonth);
     updateIEData(selectedYear, selectedMonth);
-  }, [selectedMonth, selectedYear, totalIncome, totalExpenses])
+  }, [selectedMonth, selectedYear, totalIncome, totalExpenses, totalInvestments])
   
   return (
     <div className="mb-3"> 
@@ -208,13 +255,16 @@ export default function IEChartArea ({transactions, isMobile}){
           ))}
         </Form.Select>
         <Col sm={12}>
-          <IEChart yearlyData={yearlyData} totalIncome={totalIncome} totalExpenses={totalExpenses} />
+          <IEChart yearlyData={yearlyData} totalIncome={totalIncome} totalExpenses={totalExpenses} totalInvestments={totalInvestments}/>
         </Col>
-        <Col sm={6}>
+        <Col sm={4}>
           <IncomePieChart incomeData={incomeData} legendHeight={legendHeight} isMobile={isMobile}/>
         </Col>
-        <Col sm={6}>
-          <ExpensePiechart expenseData={expenseData} setLegendHeight={setLegendHeight}/>
+        <Col sm={4}>
+          <ExpensePiechart expenseData={expenseData} setLegendHeight={setLegendHeight} />
+        </Col>
+        <Col sm={4}>
+          <InvestmentPieChart investmentData={investmentData} setLegendHeight={setLegendHeight}/>
         </Col>
       </Row>
     </div>

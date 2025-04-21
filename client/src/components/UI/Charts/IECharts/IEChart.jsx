@@ -1,13 +1,16 @@
 import {ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, ComposedChart, Line } from 'recharts';
 
-const IEChart = ({yearlyData, totalIncome, totalExpenses}) => {
+const IEChart = ({yearlyData, totalIncome, totalExpenses, totalInvestments}) => {
   return (
     <div className="mb-3" >
-      <h5 className="text-center mb-2">Income and Expenses</h5>
-      <p className="text-center mb-2">
+      <h5 className="text-center mb-2">Income, Expenses and Investments</h5>
+      <p className="text-center">
         Total income: <span style={{color:"#4d908e"}}>${totalIncome}</span>&nbsp; 
-        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses}</span>&nbsp;
-        Balance: <span style={{color:"#ff7300"}}>${totalIncome - totalExpenses}</span>
+        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses}</span>
+      </p>
+      <p className="text-center mb-2">
+        Total investments: <span style={{color:"#f6bd60"}}>${totalInvestments}</span>&nbsp;
+        Balance: <span style={{color:"#ff7300"}}>${totalIncome - totalExpenses - totalInvestments}</span>
       </p>
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={yearlyData}>
@@ -17,6 +20,7 @@ const IEChart = ({yearlyData, totalIncome, totalExpenses}) => {
           <Legend content={CustomLegend}/>
           <Bar dataKey="income"  fill="#4d908e" maxBarSize={30}/>
           <Bar dataKey="expenses"  fill="#fe6d73" maxBarSize={30}/>
+          <Bar dataKey="investments"  fill="#f6bd60" maxBarSize={30}/>
           <Line type="monotone" dataKey="balance" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
@@ -36,6 +40,9 @@ const CustomTooltip = ({ active, payload, label }) => {
           <li style={{ padding: '2px 0', color: '#fe6d73' }}>
             Expenses: ${payload[1].value}
           </li>
+          <li style={{ padding: '2px 0', color: '#f6bd60' }}>
+            Investments: ${payload[1].value}
+          </li>
           <li style={{ padding: '2px 0', color: '#ff7300' }}>
             Balance: ${payload[2].value}
           </li>
@@ -50,20 +57,33 @@ const CustomLegend = ({ payload }) => {
   if (payload && payload.length) {
     return (
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'inline-flex', gap: '12px' }}>
-          <li style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 32 32" style={{ marginRight: '4px' }}>
               <path stroke="none" fill="#4d908e" d="M0,4h32v24h-32z" />
             </svg>
             <span style={{ color: '#4d908e' }}>Income</span>
-          </li>
-          <li style={{ display: 'flex', alignItems: 'center' }}>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 32 32" style={{ marginRight: '4px' }}>
               <path stroke="none" fill="#fe6d73" d="M0,4h32v24h-32z" />
             </svg>
             <span style={{ color: '#fe6d73' }}>Expenses</span>
-          </li>
-          <li style={{ display: 'flex', alignItems: 'center' }}>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 32 32" style={{ marginRight: '4px' }}>
+              <path stroke="none" fill="#f6bd60" d="M0,4h32v24h-32z" />
+            </svg>
+            <span style={{ color: '#f6bd60' }}>Investments</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 32 32" style={{ marginRight: '4px' }}>
               <path
                 strokeWidth="4"
@@ -76,8 +96,8 @@ const CustomLegend = ({ payload }) => {
               />
             </svg>
             <span style={{ color: '#ff7300' }}>Balance</span>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     );
   }

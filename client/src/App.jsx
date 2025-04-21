@@ -1,5 +1,5 @@
 import Popup from './components/Others/Popup';
-import { Routes, Route, Navigate} from 'react-router-dom';
+import { Routes, Route} from 'react-router-dom';
 import NavigationBar from './components/Others/NavigationBar';
 import Spendings from './pages/Spendings';
 import React, {useState, useEffect} from "react";
