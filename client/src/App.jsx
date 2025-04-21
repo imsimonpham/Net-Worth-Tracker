@@ -1,6 +1,6 @@
 import Popup from './components/Others/Popup';
 import { Routes, Route, Navigate} from 'react-router-dom';
-import NavBar from './components/Others/NavBar';
+import NavigationBar from './components/Others/NavigationBar';
 import Spendings from './pages/Spendings';
 import React, {useState, useEffect} from "react";
 import { getAllAccounts, getAllTransactions } from './functions/data';
@@ -32,7 +32,7 @@ export default function App(){
   
   return (
     <div className="container">
-      <NavBar className="mb-5"/>
+      <NavigationBar className="mb-5"/>
       <Routes>
         <Route path="/spendings" 
           element={<Spendings 
