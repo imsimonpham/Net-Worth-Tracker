@@ -112,7 +112,7 @@ const createData = async (endpoint, body) => {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: body && JSON.stringify(body) 
+        body: JSON.stringify(body) 
       }
     );
     if (!res.ok) throw new Error(`Error: ${res.status}`);
