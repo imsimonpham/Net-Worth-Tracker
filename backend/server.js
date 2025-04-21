@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv'); 
 const SQL = require('sql-template-strings');
 
-const isDev = false;
+const isDev = true;
 
 dotenv.config({ path: '../client/.env' });
 const port = process.env.PORT || 5000;
@@ -293,6 +293,7 @@ app.post('/accounts', async (req, res) => {
 
     res.json(newAccount.rows[0]);
   } catch (err) {
+    console.error('Create account error:', err);
     console.error(err.message);
     res.status(500).send("Server error");
   }

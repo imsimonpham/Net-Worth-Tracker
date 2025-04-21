@@ -25,15 +25,15 @@ export default function AccountTable ({accounts, getAccounts, deleteAccount, isM
     )
   } else {
     return (
-      <div className="">
+      <div>
         {accounts.map((account, index)=> (
           <AccountRow 
-          key={account.id} 
-          accounts={accounts}
-          account={account} getAccounts={getAccounts} 
-          deleteAccount={deleteAccount}     
-          index={index}   
-          isMobile={isMobile}/>
+            key={account.id} 
+            accounts={accounts}
+            account={account} getAccounts={getAccounts} 
+            deleteAccount={deleteAccount}     
+            index={index}   
+            isMobile={isMobile}/>
         ))}
       </div>
     )

@@ -61,7 +61,7 @@ export default function AccountRow({account, accounts, getAccounts, deleteAccoun
   } else {
     return (
       <div key={account.id} className={index !== accounts.length - 1 ? "mb-2" : ""}>
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between align-items-center">
           {
             isEditing ? 
             (
@@ -76,7 +76,7 @@ export default function AccountRow({account, accounts, getAccounts, deleteAccoun
             ) : (  
               <span 
                 onClick={handleEditClick} 
-                style={{cursor: "pointer", display: "inline-block", width: "45%"}}>{accountName}
+                style={{cursor: "pointer", width: "45%"}}>{accountName}
               </span>
             )
           }
