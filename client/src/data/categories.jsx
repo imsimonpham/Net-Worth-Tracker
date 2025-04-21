@@ -11,7 +11,8 @@ const categories = {
     { id: 8, name: 'Groceries', value: 'Groceries' },
     { id: 9, name: 'Healthcare', value: 'Healthcare' },
     { id: 10, name: 'Insurance', value: 'Insurance' },
-    { id: 11, name: 'Internet', value: 'Internet' },
+    { id: 11, name: 'Investment', value: 'Investment' },
+    { id: 12, name: 'Internet', value: 'Internet'},
     { id: 13, name: 'Miscellaneous', value: 'Miscellaneous' },
     { id: 14, name: 'Pet', value: 'Pet' },
     { id: 15, name: 'Rent', value: 'Rent' },
@@ -19,9 +20,11 @@ const categories = {
   ],
   income: [
     { id: 0, name: 'Select an option', value: '' },
-    { id: 2, name: 'Miscellaneous', value: 'Miscellaneous' },
-    { id: 3, name: 'Salary', value: 'Salary' },
-    { id: 4, name: 'Side gigs', value: 'Side gigs' }
+    { id: 1, name: 'Government Payment', value: 'Government Payment' },
+    { id: 2, name: 'Investment', value: 'Investment' },
+    { id: 3, name: 'Miscellaneous', value: 'Miscellaneous' },
+    { id: 4, name: 'Salary', value: 'Salary' },
+    { id: 5, name: 'Side gig', value: 'Side gig' }
   ]
 };
 
