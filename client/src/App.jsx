@@ -34,14 +34,13 @@ export default function App(){
     <div className="container">
       <NavigationBar className="mb-5"/>
       <Routes>
-        <Route path="/spendings" 
+        <Route path="/" 
           element={<Spendings 
           transactions={transactions} 
           setTransactions={setTransactions}
           getTransactions={getTransactions}
           accounts={accounts} getAccounts={getAccounts}
           isMobile={isMobile}/>}/>
-         <Route path="*" element={<Navigate to="/spendings" replace />} />
       </Routes>
       <Popup 
         accounts={accounts} setAccounts={setAccounts} 
