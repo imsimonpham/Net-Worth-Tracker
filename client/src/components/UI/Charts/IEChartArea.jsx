@@ -82,7 +82,8 @@ export default function IEChartArea ({transactions, isMobile}){
       'Pet': '#e08585',
       'Rent': '#8c8c8c',
       'Tech Services': '#b4c5e4',
-      'Transportation': '#9c704d'
+      'Transportation': '#9c704d', 
+      'Vacation': '#f7c8e0'
     }; 
 
     //convert amount to float and add color property
