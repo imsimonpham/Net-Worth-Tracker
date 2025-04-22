@@ -192,7 +192,7 @@ td{
 /* POPUP */
 .popup .accordion{
   position: fixed;
-  bottom: 3%;
+  top: 3%;
   right: 3%;
 }
 

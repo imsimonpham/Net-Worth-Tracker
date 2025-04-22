@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv'); 
 const SQL = require('sql-template-strings');
 
-const isDev = false;
+const isDev = true;
 
 dotenv.config({ path: '../client/.env' });
 const port = process.env.PORT || 5000;

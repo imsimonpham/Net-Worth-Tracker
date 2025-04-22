@@ -1,4 +1,4 @@
-const isDev = false;
+const isDev = true;
 const API_BASE_URL = isDev ? 
   'http://localhost:5000' : import.meta.env.VITE_SERVER_API_URL;
 export {API_BASE_URL};

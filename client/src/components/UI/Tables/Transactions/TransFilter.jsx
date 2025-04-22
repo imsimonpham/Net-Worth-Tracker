@@ -80,6 +80,7 @@ export default function TransFilter({
       >
         <option value="All Transaction Types">All transaction types</option>
         <option value="Income">Income</option>
+        <option value="Investment">Investment</option>
         <option value="Expense">Expense</option>
         <option value="Transfer">Transfer</option>
       </Form.Select>
