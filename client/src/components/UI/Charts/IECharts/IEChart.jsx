@@ -47,10 +47,10 @@ const CustomTooltip = ({ active, payload, label }) => {
             Expenses: ${payload[1].value}
           </li>
           <li style={{ padding: '2px 0', color: '#f6bd60' }}>
-            Investments: ${payload[1].value}
+            Investments: ${payload[2].value}
           </li>
           <li style={{ padding: '2px 0', color: '#ff7300' }}>
-            Balance: ${payload[2].value}
+            Balance: ${payload[3].value}
           </li>
         </ul>
       </div>
