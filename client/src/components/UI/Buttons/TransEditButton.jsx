@@ -29,7 +29,7 @@ export default function TransEditButton({transaction, getTransactions, accounts,
         
         <Modal.Body>
           {
-            (activeModal === 'Income' || activeModal === 'Expense') && 
+            (activeModal === 'Income' || activeModal === 'Expense' || activeModal === 'Investment') && 
             <IEPopupForm 
               handleClose={handleClose} 
               transaction={transaction}  getTransactions={getTransactions}

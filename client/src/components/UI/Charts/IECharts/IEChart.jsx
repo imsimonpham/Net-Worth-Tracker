@@ -5,16 +5,22 @@ const IEChart = ({yearlyData, totalIncome, totalExpenses, totalInvestments}) => 
     <div className="mb-3" >
       <h5 className="text-center mb-2">Income, Expenses and Investments</h5>
       <p className="text-center">
-        Total income: <span style={{color:"#4d908e"}}>${totalIncome}</span>&nbsp; 
-        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses}</span>
+        Total income: <span style={{color:"#4d908e"}}>${totalIncome.toFixed(2)}</span>
+      </p>
+      <p className="text-center">
+        Total expenses: <span style={{color:"#fe6d73"}}>${totalExpenses.toFixed(2)}</span></p>
+      <p className="text-center">
+        Total investments: <span style={{color:"#f6bd60"}}>${totalInvestments.toFixed(2)}</span>&nbsp;
+      </p>
+      <p className="text-center">
+        Balance before investments: <span style={{color:"#ff7300"}}>${(totalIncome - totalExpenses).toFixed(2)}</span>
       </p>
       <p className="text-center mb-2">
-        Total investments: <span style={{color:"#f6bd60"}}>${totalInvestments}</span>&nbsp;
-        Balance: <span style={{color:"#ff7300"}}>${totalIncome - totalExpenses - totalInvestments}</span>
+        Balance after investments: <span style={{color:"#ff7300"}}>${(totalIncome - totalExpenses - totalInvestments).toFixed(2)}</span>
       </p>
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={yearlyData}>
-          <XAxis dataKey="month"/>
+          <XAxis dataKey="month" barGap={2}/>
           <YAxis />
           <Tooltip content={CustomTooltip}/>
           <Legend content={CustomLegend}/>
