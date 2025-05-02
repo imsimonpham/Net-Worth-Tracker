@@ -30,7 +30,7 @@ export default function TransFilter({
   };
 
   return (
-    <div className='mb-3 d-flex flex-wrap'>
+    <div className='mb-2 d-flex flex-wrap'>
       <Dropdown className="me-3">
         <Dropdown.Toggle>
           {dateString || 'Last 30 days'}
@@ -61,7 +61,7 @@ export default function TransFilter({
         </Dropdown.Menu>
       </Dropdown>
       <Form.Select
-        className={isMobile ? 'dropdown-filter mt-2' : 'dropdown-filter'}
+        className='dropdown-filter'
         value={transactionType}
         onChange={(e) => setTransactionType(e.target.value)}
       >
