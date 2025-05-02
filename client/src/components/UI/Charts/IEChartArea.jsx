@@ -26,6 +26,7 @@ export default function IEChartArea ({transactions, isMobile}){
 
     const incomeColors = {
       'Government Payment': '#7c9a56',
+      'Interest & Cash Back': '#a6b3d8',
       'Investment': '#d8c99b',
       'Miscellaneous': '#d8973c',
       'Salary': '#bd632f',
