@@ -50,13 +50,11 @@ export default function IEPopupForm({handleClose, transaction, getTransactions})
       note: note
     }
 
-    console.log(body)
-
     const upsertTransaction = transaction ? 
       await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
 
-    // handleClose();
+    handleClose();
   }
 
   // submit form
