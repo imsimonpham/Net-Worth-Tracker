@@ -22,7 +22,7 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
   const [accountBalance, setAccountBalance]  = useState(accountId ? getAccountBalanceById(accounts, accountId) : 0);
   const [note, setNote] = useState(transaction?.note || '');
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA');
 
   // handle variable changes
   const handleDateChange = (e) => setDate(e.target.value);
@@ -98,7 +98,7 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
             <Form.Control 
               type="date" value={date} onChange={handleDateChange}
               max={today}/>
-            {errors.date && <div className="text-danger">{errors.date}</div>}
+              {errors.date && <div className="text-danger">{errors.date}</div>}
           </Form.Group>
         </Col>
         <Col md={6}>

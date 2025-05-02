@@ -25,6 +25,8 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
   const [sendingAccountBalance, setSendingAccountBalance]  = useState(sendingAccountId ? getAccountBalanceById(accounts, sendingAccountId) : 0);
   const [note, setNote] = useState(transaction?.note || '');
 
+  const today = new Date().toLocaleDateString('en-CA');
+
   // handle variable changes
   const handleDateChange = (e) => setDate(e.target.value);
   const handleAmountChange = (e) => setAmount(e.target.value);
@@ -93,6 +95,7 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
     await getAccounts();
   }
 
+  
   return (
     <Form className='transaction-form' onSubmit={onSubmitForm}>
       <Row className="mb-3">
@@ -101,8 +104,8 @@ export default function TransferPopupForm({handleClose, transaction, getTransact
             <Form.Label>Date</Form.Label>
             <Form.Control 
               type="date" value={date} onChange={handleDateChange}
-              max={new Date().toISOString().split('T')[0]}/>
-            {errors.date && <div className="text-danger">{errors.date}</div>}
+              max={today}/>
+             {errors.date && <div className="text-danger">{errors.date}</div>}
           </Form.Group>
         </Col>
         <Col md={6}>
