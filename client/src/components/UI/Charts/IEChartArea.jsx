@@ -266,7 +266,7 @@ export default function IEChartArea ({transactions, isMobile}){
           <ExpensePiechart expenseData={expenseData} setLegendHeight={setLegendHeight} />
         </Col>
         <Col sm={4}>
-          <InvestmentPieChart investmentData={investmentData} setLegendHeight={setLegendHeight}/>
+          <InvestmentPieChart investmentData={investmentData} legendHeight={legendHeight}/>
         </Col>
       </Row>
     </div>

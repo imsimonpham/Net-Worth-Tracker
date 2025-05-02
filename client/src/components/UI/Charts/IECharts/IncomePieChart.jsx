@@ -16,7 +16,7 @@ const IncomePieChart = ({ incomeData, legendHeight, isMobile}) => {
   return (
     <div className={isMobile ? 'mb-3' : ''}>
       <h5 className="text-center mt-2">Income breakdown</h5>
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height={320}>
         <PieChart>
           <Tooltip content={CustomTooltip} />
           <Legend

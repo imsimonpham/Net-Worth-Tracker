@@ -12,37 +12,38 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const InvestmentPieChart = ({ investmentData, setLegendHeight }) => {
-  const containerRef = useRef(null);
-  useEffect(() => {
-    const getLegendHeight = () => {
-      if (containerRef.current) {
-        const legend = containerRef.current.querySelector(".recharts-legend-wrapper");
-        if (legend) {
-          if (legend.offsetHeight > 40) 
-            setLegendHeight(legend.offsetHeight);
-          else {
-            legend.style.minHeight = "auto";
-            setLegendHeight(legend.offsetHeight);
-          }
-        }
-      }
-    };
-    const timeout = setTimeout(getLegendHeight, 100);
+const InvestmentPieChart = ({ investmentData, legendHeight}) => {
+  // const containerRef = useRef(null);
+  // useEffect(() => {
+  //   const getLegendHeight = () => {
+  //     if (containerRef.current) {
+  //       const legend = containerRef.current.querySelector(".recharts-legend-wrapper");
+  //       if (legend) {
+  //         if (legend.offsetHeight > 40) 
+  //           setLegendHeight(legend.offsetHeight);
+  //         else {
+  //           legend.style.minHeight = "auto";
+  //           setLegendHeight(legend.offsetHeight);
+  //         }
+  //       }
+  //     }
+  //   };
+  //   const timeout = setTimeout(getLegendHeight, 100);
 
-    return () => clearTimeout(timeout);
-  }, [investmentData]);
+  //   return () => clearTimeout(timeout);
+  // }, [investmentData]);
 
   return (
-    <div className="" ref={containerRef}>
+    <div>
       <h5 className="text-center mt-2">Investment Breakdown</h5>
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height={320}>
         <PieChart>
           <Tooltip content={<CustomTooltip />} />
           <Legend
             layout="horizontal"
             verticalAlign="bottom"
             align="center"
+            height={legendHeight}
           />
           <Pie
             data={investmentData}
