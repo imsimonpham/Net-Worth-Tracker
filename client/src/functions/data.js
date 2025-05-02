@@ -3,27 +3,6 @@ const API_BASE_URL = isDev ?
   'http://localhost:5000' : import.meta.env.VITE_SERVER_API_URL;
 export {API_BASE_URL};
 
-//ACCOUNTS
-export const getAllAccounts = async () => {
-  return getData('/accounts/');
-};
-
-export const deleteAccountById = async (id) => {
-  return deleteData(`/accounts/${id}`)
-}
-
-export const createNewAccount = async (body) => {
-  return createData(`/accounts`, body);
-}
-
-export const updateAccountNameById = async (id, body) => {
-  return updateData(`/accounts/name/${id}`, body);
-}
-
-export const updateAccountCashBalanceById = async (id, body) => {
-  return updateData(`/accounts/cash/${id}`, body); 
-}
-
 //TRANSACTIONS
 export const getAllTransactions = async () => {
   return getData('/transactions/');

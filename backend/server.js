@@ -41,15 +41,15 @@ app.get('/', async (req, res) => {
 //create transaction
 app.post('/transactions', async (req, res) => {
   try {
-    const { date, transType, category, amount, fromAcctId, toAcctId, note } = req.body;
+    const { date, transType, category, amount, note } = req.body;
 
     const newTrans = await pool.query(
       `INSERT INTO transaction 
-        ("date", "transType", "category", "amount", "fromAcctId", "toAcctId", "note") 
+        ("date", "transType", "category", "amount", "note") 
       VALUES 
-        ($1, $2, $3, $4, $5, $6, $7) 
+        ($1, $2, $3, $4, $5) 
       RETURNING *`,
-      [date, transType, category, amount, fromAcctId, toAcctId, note]
+      [date, transType, category, amount, note]
     );
 
     res.json(newTrans.rows[0]);
@@ -89,7 +89,7 @@ app.delete('/transactions/:id', async (req, res) => {
 app.put('/transactions/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, transType, category, amount, fromAcctId, toAcctId, note } = req.body;
+    const { date, transType, category, amount, note } = req.body;
 
     const updateTrans = await pool.query(
       `UPDATE transaction
@@ -97,11 +97,9 @@ app.put('/transactions/:id', async (req, res) => {
            "transType" = $2,
            "category" = $3,
            "amount" = $4,
-           "fromAcctId" = $5,
-           "toAcctId" = $6,
-           "note" = $7
-       WHERE id = $8`,
-      [date, transType, category, amount, fromAcctId, toAcctId, note, id]
+           "note" = $5
+       WHERE id = $6`,
+      [date, transType, category, amount, note, id]
     );
 
     res.json({ message: "Transaction was updated successfully" });
@@ -276,112 +274,6 @@ app.get('/transactions/yearlyByMonth', async (req, res) => {
 });
 
 
-//ACCOUNTS
-//create account
-app.post('/accounts', async (req, res) => {
-  try {
-    const { name, balance, isActive } = req.body;
-
-    const newAccount = await pool.query(
-      `INSERT INTO account
-        ("name", "balance", "isActive")
-      VALUES
-        ($1, $2, $3)
-      RETURNING *`,
-      [name, balance, isActive]
-    );
-
-    res.json(newAccount.rows[0]);
-  } catch (err) {
-    console.error('Create account error:', err);
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-//get accounts
-app.get('/accounts', async (req, res) => {
-  try {
-    const allAccounts = await pool.query(
-      `SELECT * FROM account`
-    );
-    res.json(allAccounts.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-app.get('/accounts/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const account = await pool.query(
-      `SELECT * FROM account  
-       WHERE id = $1`,
-      [id]
-    );
-    res.json(account.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-//delete account
-app.delete('/accounts/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteAcct = await pool.query(
-      `DELETE FROM account
-       WHERE id = $1`,
-      [id]
-    );
-    res.json('account was deleted successfully');
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// update account name
-app.put('/accounts/name/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name } = req.body;
-
-    const updateAcct = await pool.query(
-      `UPDATE account
-       SET "name" = $1
-       WHERE id = $2`,
-      [name, id]
-    );
-
-    res.json('Account name was updated successfully');
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// update account cash balance
-app.put('/accounts/cash/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { balance } = req.body;
-
-    const updateAcct = await pool.query(
-      `UPDATE account
-       SET "balance" = $1
-       WHERE id = $2`,
-      [balance, id]
-    );
-
-    res.json("Account's balance was updated successfully");
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
 
 
 //START APP

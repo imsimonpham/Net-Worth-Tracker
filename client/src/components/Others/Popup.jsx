@@ -1,19 +1,14 @@
 import { useState  } from 'react';
 import {Button, Modal, Accordion} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faDollarSign, faRightLeft, faPlus, faGear, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import { faX, faDollarSign, faUserGear} from '@fortawesome/free-solid-svg-icons';
 import IEPopupForm from '../Forms/IEPopupForm';
-import TransferPopupForm from '../Forms/TransferPopupForm';
-import AddAccountForm from '../Forms/AddAccountForm'; 
-import ManageAccountsForm from '../Forms/ManageAccountsForm';
 
-export default function Popup({accounts, setAccounts, getAccounts, getTransactions, isMobile}){
-  const [activeModal, setActiveModal] = useState(null);
+export default function Popup({getTransactions, isMobile}){
+  const [show, setShow] = useState(false);
 
-  const handleShow = (modalType) => setActiveModal(modalType);
-  const handleClose = () => setActiveModal(null);
-
-  
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
     <div className="popup">
@@ -26,26 +21,8 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
           <Button
             style={{ width: '40px', height: '40px' }}
             className='btn btn-transaction mb-3'
-            onClick={() => handleShow('IE')}>
+            onClick={handleShow}>
             <FontAwesomeIcon icon={faDollarSign} />
-          </Button>
-          <Button
-            style={{ width: '40px', height: '40px' }}
-            className='btn btn-transaction mb-3'
-            onClick={() => handleShow('Transfer')}>
-            <FontAwesomeIcon icon={faRightLeft} />
-          </Button>
-          <Button
-            style={{ width: '40px', height: '40px' }}
-            className='btn btn-transaction mb-3'
-            onClick={() => handleShow('Add Acount')}>
-            <FontAwesomeIcon icon={faPlus} />
-          </Button>
-          <Button
-            style={{ width: '40px', height: '40px' }}
-            className='btn btn-transaction'
-            onClick={() => handleShow('Manage Accounts')}>
-            <FontAwesomeIcon icon={faGear} />
           </Button>
         </Accordion.Body>
       </Accordion.Item>
@@ -53,15 +30,12 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
 
       <Modal 
         className='modal-container' 
-        show={activeModal !== null} 
-        onHide={handleClose}
-        style={isMobile ? { width: '100%' } : { width: '65%', left: '50%', transform: 'translateX(-50%)'}}>
+        show={show} onHide={handleClose}
+        // style={isMobile ? { width: '100%' } : { width: '65%', left: '50%', transform: 'translateX(-50%)'}}
+        >
         <Modal.Header>
           <Modal.Title className='h5'>
-            {activeModal === 'IE' && 'Income/Expense Transaction'}
-            {activeModal === 'Transfer' && 'Transfer between accounts'}
-            {activeModal === 'Add Acount' && 'New account'}
-            {activeModal === 'Manage Accounts' && 'Manage accounts'}
+            New Transaction
           </Modal.Title>
           <Button className='btn btn-x' onClick={handleClose}>
             <FontAwesomeIcon icon={faX} style={{color: "#99999F"}}/>
@@ -69,10 +43,7 @@ export default function Popup({accounts, setAccounts, getAccounts, getTransactio
         </Modal.Header>
         
         <Modal.Body>
-          {activeModal === 'IE' && <IEPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>}
-          {activeModal === 'Transfer' && <TransferPopupForm handleClose={handleClose} accounts={accounts} getTransactions={getTransactions} getAccounts={getAccounts}/>}
-          {activeModal === 'Add Acount' && <AddAccountForm handleClose={handleClose} getAccounts={getAccounts}/>}
-          {activeModal === 'Manage Accounts' && <ManageAccountsForm handleClose={handleClose} accounts={accounts} setAccounts={setAccounts} getAccounts={getAccounts} isMobile={isMobile}/>}
+          <IEPopupForm handleClose={handleClose} getTransactions={getTransactions} />
         </Modal.Body>
       </Modal>
     </div>

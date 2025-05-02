@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 import TransRow from './TransRow';
-import {deleteTransactionById } from '../../../../functions/data';
+import {deleteTransactionById } from '../../../functions/data';
 import TransFilter from './TransFilter';
-import {formatDateForUI, getAccountById} from '../../../../functions/utilities';
+import {formatDateForUI} from '../../../functions/utilities';
 
-export default function TransTable({accounts, getAccounts, transactions, setTransactions, getTransactions, isMobile}){
+export default function TransTable({transactions, setTransactions, getTransactions, isMobile}){
   //filter data
   const [dateRange, setDateRange] = useState(30); 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const [account, setAccount] = useState('All accounts');
   const [transactionType, setTransactionType] = useState('All Transaction Types');
 
   //apply filters
@@ -37,14 +36,6 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
       return transactionDate >= start && transactionDate <= end;
     });
   };
-
-  const filterbyAccount = (transactions, account) => {
-    return transactions.filter((transaction) => {
-      const fromAcct = getAccountById(accounts, transaction.fromAcctId);
-      const toAcct = getAccountById(accounts, transaction.toAcctId);
-      return account === 'All accounts' || (fromAcct?.name === account || toAcct?.name === account);
-    });
-  }
   
 
   const filterByTransactionType = (transactions, transactionType) => {
@@ -55,7 +46,7 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
 
   let filteredTransactions = filterByDate(transactions, startDate, endDate);
   filteredTransactions = filterByTransactionType(filteredTransactions, transactionType);
-  filteredTransactions = filterbyAccount(filteredTransactions, account);
+
 
   //delete transaction
   const deleteTransaction = async (id) => {
@@ -63,7 +54,6 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
     setTransactions(transactions.filter(
       transaction => transaction.id !== id
     ))
-    getAccounts();
   }
 
   //mobile display
@@ -82,7 +72,6 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
         dateRange={dateRange} setDateRange={setDateRange} 
         startDate={startDate} setStartDate={setStartDate}
         endDate={endDate} setEndDate={setEndDate}
-        setAccount={setAccount} accounts={accounts}
         getTransactions={getTransactions}
         transactionType={transactionType} setTransactionType={setTransactionType}
         isMobile={isMobile}/>
@@ -95,8 +84,6 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
                 <th>Transaction Type</th>
                 <th>Category</th>
                 <th>Amount</th>
-                <th>Sending Account</th>
-                <th>Receiving Account</th>
                 <th>Note</th>
                 <th></th>
               </tr>
@@ -108,7 +95,7 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
                   <TransRow 
                     isMobile={isMobile} key={transaction.id} 
                     transaction={transaction} deleteTransaction={deleteTransaction}  getTransactions={getTransactions}
-                    accounts={accounts} getAccounts={getAccounts}/>
+                  />
               ))}
             </tbody>
           </Table>
@@ -127,7 +114,6 @@ export default function TransTable({accounts, getAccounts, transactions, setTran
                     transaction={transaction} 
                     getTransactions={getTransactions}
                     deleteTransaction={deleteTransaction}
-                    accounts={accounts} getAccounts={getAccounts}
                   />
                 ))}
               </div>

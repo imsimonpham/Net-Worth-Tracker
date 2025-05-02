@@ -1,13 +1,12 @@
-import TransTable from "../components/UI/Tables/Transactions/TransTable";
+import TransTable from "../components/UI/Tables/TransTable";
 import IEChartArea from "../components/UI/Charts/IEChartArea";
 import React from 'react';
 
-export default function Spendings({accounts, getAccounts, transactions, setTransactions, getTransactions, isMobile}){
+export default function Spendings({transactions, setTransactions, getTransactions, isMobile}){
   return (
     <>
-      <IEChartArea accounts = {accounts} transactions={transactions} isMobile={isMobile}/>
-      <TransTable 
-        accounts = {accounts} getAccounts={getAccounts} 
+      <IEChartArea transactions={transactions} isMobile={isMobile}/>
+      <TransTable  
         getTransactions={getTransactions}
         transactions={transactions} setTransactions={setTransactions}  
         isMobile={isMobile}/>

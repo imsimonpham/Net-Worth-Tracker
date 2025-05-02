@@ -3,17 +3,10 @@ import { Routes, Route} from 'react-router-dom';
 import NavigationBar from './components/Others/NavigationBar';
 import Spendings from './pages/Spendings';
 import React, {useState, useEffect} from "react";
-import { getAllAccounts, getAllTransactions } from './functions/data';
+import {getAllTransactions } from './functions/data';
 import { useMediaQuery } from "react-responsive";
 
 export default function App(){
-  //get all accounts
-  const [accounts, setAccounts] = useState([]);
-  const getAccounts = async () => {
-    const accounts = await getAllAccounts();
-    setAccounts(accounts);
-  };
-
   //get transactions
   const [transactions, setTransactions] = useState([]);
   const getTransactions = async() => {
@@ -22,7 +15,6 @@ export default function App(){
   }
 
   useEffect(()=>{
-    getAccounts();
     getTransactions();
   }, [])
   
@@ -39,12 +31,9 @@ export default function App(){
           transactions={transactions} 
           setTransactions={setTransactions}
           getTransactions={getTransactions}
-          accounts={accounts} getAccounts={getAccounts}
           isMobile={isMobile}/>}/>
       </Routes>
       <Popup 
-        accounts={accounts} setAccounts={setAccounts} 
-        getAccounts={getAccounts}
         getTransactions={getTransactions}
         isMobile={isMobile} 
       />

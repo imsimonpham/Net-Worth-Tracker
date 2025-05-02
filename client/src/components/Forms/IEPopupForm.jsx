@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import categories from '../../data/categories';
-import { convertToFloat, convertDateToSystemFormat, getAccountBalanceById } from '../../functions/utilities';
+import { convertToFloat } from '../../functions/utilities';
 import { updateTransactionById, createNewTransaction} from '../../functions/data';
-import { getAccountById } from '../../functions/utilities';
 
-export default function IEPopupForm({handleClose, transaction, getTransactions, accounts, getAccounts}){
+export default function IEPopupForm({handleClose, transaction, getTransactions}){
   // variables
   const [date, setDate] = useState(
     transaction ? (transaction.date).slice(0, 10) : '');
@@ -14,12 +13,6 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
   const [amount, setAmount] = useState(
     transaction ? 
     convertToFloat(transaction.amount) : 0);
-  const [accountId, setAccountId] = useState(
-    transaction && (transaction.fromAcctId || transaction.toAcctId) || ''  
-  );
-  const [accountName, setAccountName] = useState(
-    accountId ? getAccountById(accounts, accountId).name : '');
-  const [accountBalance, setAccountBalance]  = useState(accountId ? getAccountBalanceById(accounts, accountId) : 0);
   const [note, setNote] = useState(transaction?.note || '');
 
   const today = new Date().toLocaleDateString('en-CA');
@@ -32,16 +25,6 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
   };
   const handleCategoryChange = (e) => setCategory(e.target.value);
   const handleAmountChange = (e) => setAmount(e.target.value);
-  const handleAccountChange = (e) => {
-    const selectedOption = e.target.options[e.target.selectedIndex];
-    const selectedAccount = getAccountById(accounts, selectedOption.id);
-    if(selectedAccount !== undefined){
-      setAccountId(selectedOption.id);
-      setAccountName(selectedAccount.name);
-      setAccountBalance(convertToFloat(selectedAccount.balance));    
-    } 
-  }
-
   const handleNoteChange = (e) => setNote(e.target.value);
 
   // form validation
@@ -52,8 +35,6 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
     if (!date) newErrors.date = 'Date is required';
     if (!category) newErrors.category = 'Category is required';
     if (!amount || amount <= 0) newErrors.amount = 'Amount must be greater than zero'; 
-    if (!accountId) newErrors.accountId = 'Transaction account is required';
-    if(transactionType === 'Expense' && amount > accountBalance)  newErrors.fund = 'Insufficient fund';
   
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -66,16 +47,16 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
       transType: transactionType,
       category: category, 
       amount: amount, 
-      fromAcctId: transactionType === 'Expense' || transactionType === 'Investment' ? accountId : null,
-      toAcctId: transactionType === 'Income' ? accountId : null,
       note: note
     }
+
+    console.log(body)
 
     const upsertTransaction = transaction ? 
       await updateTransactionById(transaction.id, body) : 
       await createNewTransaction(body);
 
-    handleClose();
+    // handleClose();
   }
 
   // submit form
@@ -86,7 +67,6 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
 
     //refresh data
     await getTransactions();
-    await getAccounts();
   }
 
   return (
@@ -153,28 +133,6 @@ export default function IEPopupForm({handleClose, transaction, getTransactions, 
           </Form.Group>
         </Col>
       </Row>
-
-      <Row className="mb-3">
-        <Col md={12}>
-          <Form.Group controlId="transactionAccount">
-            <Form.Label>Transaction Account</Form.Label>
-            <Form.Select 
-              aria-label="Transaction Account" 
-              value={accountName}  
-              onChange={handleAccountChange}
-            >
-              <option value="">Select an account</option>
-              {accounts
-                .map((account)=>(
-                  <option key={account.id} value={account.name} id={account.id}>{account.name}</option>
-              ))}
-            </Form.Select>
-            {errors.accountId && <div className="text-danger">{errors.accountId}</div>}
-            {errors.fund && <div className="text-danger">{errors.fund}</div>}
-          </Form.Group>
-        </Col>
-      </Row>
-
       <Row className="mb-3">
         <Col md={12}>
           <Form.Group controlId="note">

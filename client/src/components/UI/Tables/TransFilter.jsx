@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import { Form, Dropdown } from 'react-bootstrap';
-import { formatDateForUI } from '../../../../functions/utilities';
+import { formatDateForUI } from '../../../functions/utilities';
 
 export default function TransFilter({ 
-  accounts,
   startDate, setStartDate,
   endDate, setEndDate, 
-  setAccount, 
   transactionType, setTransactionType, isMobile}){
 
   //date range
@@ -63,17 +61,6 @@ export default function TransFilter({
         </Dropdown.Menu>
       </Dropdown>
       <Form.Select
-        className='dropdown-filter me-3'
-        onChange={(e) => setAccount(e.target.value)}
-      >
-        <option value="All accounts">All accounts</option>
-        {
-          accounts.map((account)=> (
-            <option key={account.id} value={account.name}>{account.name}</option>
-          ))   
-        }
-      </Form.Select>
-      <Form.Select
         className={isMobile ? 'dropdown-filter mt-2' : 'dropdown-filter'}
         value={transactionType}
         onChange={(e) => setTransactionType(e.target.value)}
@@ -82,7 +69,6 @@ export default function TransFilter({
         <option value="Income">Income</option>
         <option value="Investment">Investment</option>
         <option value="Expense">Expense</option>
-        <option value="Transfer">Transfer</option>
       </Form.Select>
     </div>
   )

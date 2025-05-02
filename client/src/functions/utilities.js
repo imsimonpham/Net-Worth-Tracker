@@ -27,23 +27,11 @@ export function formatDateForUI(stringDate) {
   });
 }
 
-export function getAccountById(accounts, id){
-  return accounts.find(account => account.id === Number(id));
-}
-
-export function getAccountBalanceById(accounts, id){
-  const account = accounts.find(account => account.id === Number(id));
-  return convertToFloat(account.balance);
-}
-
 export const getColorFromId = (id) => {
   const hue = (id * 137) % 360; // Spread hues evenly
   return `hsl(${hue}, 60%, 65%)`; // Reduce lightness for a darker pastel look
 };
 
-export function isDataAvailable(marketData) {
-  return marketData && Object.keys(marketData).length > 0;
-}
 
 
 
