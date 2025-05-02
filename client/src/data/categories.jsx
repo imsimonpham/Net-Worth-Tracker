@@ -24,7 +24,7 @@ const categories = {
   income: [
     { id: 0, name: 'Select an option', value: '' },
     { id: 1, name: 'Government Payment', value: 'Government Payment' },
-    { id: 2, name: 'Interest, Cash Back & Dividend', value: 'Interest, Cash Back & Dividend' },
+    { id: 2, name: 'ICD (Interest, Cash Back & Dividend)', value: 'ICD' },
     { id: 3, name: 'Investment', value: 'Investment' },
     { id: 4, name: 'Miscellaneous', value: 'Miscellaneous' },
     { id: 5, name: 'Salary', value: 'Salary' },
