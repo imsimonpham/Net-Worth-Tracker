@@ -8,8 +8,7 @@ import { getAccountById } from '../../functions/utilities';
 export default function IEPopupForm({handleClose, transaction, getTransactions, accounts, getAccounts}){
   // variables
   const [date, setDate] = useState(
-    transaction ? 
-    convertDateToSystemFormat(transaction.date) : '');
+    transaction ? (transaction.date).slice(0, 10) : '');
   const [transactionType, setTransactionType] = useState(transaction?.transType ||'Income');
   const [category, setCategory] = useState(transaction?.category ||'');
   const [amount, setAmount] = useState(

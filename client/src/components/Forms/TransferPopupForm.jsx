@@ -6,8 +6,7 @@ import {updateTransactionById, createNewTransaction } from "../../functions/data
 export default function TransferPopupForm({handleClose, transaction, getTransactions,  accounts, getAccounts}){
   // variables
   const [date, setDate] = useState(
-    transaction ? 
-    convertDateToSystemFormat(transaction.date) : '');
+    transaction ? (transaction.date).slice(0, 10) : '');
   const [amount, setAmount] = useState(
     transaction ? 
     convertToFloat(transaction.amount) : 0);

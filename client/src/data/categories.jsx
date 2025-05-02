@@ -24,10 +24,11 @@ const categories = {
   income: [
     { id: 0, name: 'Select an option', value: '' },
     { id: 1, name: 'Government Payment', value: 'Government Payment' },
-    { id: 2, name: 'Investment', value: 'Investment' },
-    { id: 3, name: 'Miscellaneous', value: 'Miscellaneous' },
-    { id: 4, name: 'Salary', value: 'Salary' },
-    { id: 5, name: 'Side gig', value: 'Side gig' }
+    { id: 2, name: 'Interest & Cash Back', value: 'Interest & Cash Back' },
+    { id: 3, name: 'Investment', value: 'Investment' },
+    { id: 4, name: 'Miscellaneous', value: 'Miscellaneous' },
+    { id: 5, name: 'Salary', value: 'Salary' },
+    { id: 6, name: 'Side gig', value: 'Side gig' }
   ],
   investment: [
     { id: 0, name: 'Select an option', value: '' },
