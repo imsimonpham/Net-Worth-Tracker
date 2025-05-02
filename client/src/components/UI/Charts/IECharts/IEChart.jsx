@@ -12,11 +12,8 @@ const IEChart = ({yearlyData, totalIncome, totalExpenses, totalInvestments}) => 
       <p className="text-center">
         Total investments: <span style={{color:"#f6bd60"}}>${totalInvestments.toFixed(2)}</span>&nbsp;
       </p>
-      <p className="text-center">
-        Balance before investments: <span style={{color:"#ff7300"}}>${(totalIncome - totalExpenses).toFixed(2)}</span>
-      </p>
       <p className="text-center mb-2">
-        Balance after investments: <span style={{color:"#ff7300"}}>${(totalIncome - totalExpenses - totalInvestments).toFixed(2)}</span>
+        Balance: <span style={{color:"#ff7300"}}>${(totalIncome - totalExpenses - totalInvestments).toFixed(2)}</span>
       </p>
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={yearlyData}>
