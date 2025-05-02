@@ -12,26 +12,17 @@ export default function Popup({getTransactions, isMobile}){
 
   return (
     <div className="popup">
-      <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header className="drag-handle">
-          <FontAwesomeIcon style={{ width: '40px' }} icon={faUserGear} />
-        </Accordion.Header>
-        <Accordion.Body>
-          <Button
-            style={{ width: '40px', height: '40px' }}
-            className='btn btn-transaction mb-3'
-            onClick={handleShow}>
-            <FontAwesomeIcon icon={faDollarSign} />
-          </Button>
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
+      <Button
+        style={{ width: '40px', height: '40px', right: isMobile ? '3.3%' : '1.7%'}}
+        className='btn btn-transaction btn-fixed mb-3'
+        onClick={handleShow}
+        >
+        <FontAwesomeIcon icon={faDollarSign} />
+      </Button>
 
       <Modal 
         className='modal-container' 
         show={show} onHide={handleClose}
-        // style={isMobile ? { width: '100%' } : { width: '65%', left: '50%', transform: 'translateX(-50%)'}}
         >
         <Modal.Header>
           <Modal.Title className='h5'>

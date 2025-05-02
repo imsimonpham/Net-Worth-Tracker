@@ -58,12 +58,12 @@ export default function TransRow({transaction, deleteTransaction, getTransaction
     )
   } else {
     return (
-      <div className="py-0 mb-2 d-flex justify-content-between">
+      <div className="py-0 mb-2 d-flex justify-content-between" style={{minHeight: "40px"}}>
         <p className="d-flex flex-column" style={{width: "50%"}}>
           <span>
             {transaction.category} {formatTransTypeString(transaction.transType, false)}
           </span>
-          <span>{transaction.note}</span>
+          <small>{transaction.note}</small>
         </p>
         <p>{transaction.amount}</p>   
         <div style={{width: "35%", textAlign: "right"}}>
