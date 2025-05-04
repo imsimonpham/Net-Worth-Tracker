@@ -30,7 +30,7 @@ export default function IEChartArea ({transactions, isMobile}){
       'Investment': '#d8c99b',
       'Miscellaneous': '#d8973c',
       'Salary': '#bd632f',
-      'Side gigs': '#50808e'
+      'Side gig': '#50808e'
     };
   
     //convert amount to float and add color property
@@ -70,7 +70,7 @@ export default function IEChartArea ({transactions, isMobile}){
       'Clothing': '#d36a7f',
       'Debt Payment': '#b85f7a',
       'Eat out': '#f4a98c',
-      'Education': '#e4a349',
+      'Education': '#4b7bec',
       'Electricity': '#f0a741',
       'Entertainment': '#f15b4e',
       'Gym': '#f6bd60',
