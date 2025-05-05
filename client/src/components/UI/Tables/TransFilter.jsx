@@ -1,11 +1,32 @@
-import React, {useState, useEffect} from 'react';
-import { Form, Dropdown } from 'react-bootstrap';
-import { formatDateForUI } from '../../../functions/utilities';
+import React, {useState} from 'react';
+import { Form, Dropdown, Button } from 'react-bootstrap';
+import { formatDateForUI, exportToExcel, convertToFloat } from '../../../functions/utilities';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faFileExcel} from '@fortawesome/free-solid-svg-icons';
+import categories from '../../../data/categories';
 
 export default function TransFilter({ 
   startDate, setStartDate,
   endDate, setEndDate, 
-  transactionType, setTransactionType, isMobile}){
+  transactionType, setTransactionType, 
+  category, setCategory,
+  filteredTransactions,
+  isMobile}){
+
+  // filter category
+  const getCategoryOptions = () => {
+    if (transactionType === 'Income') return categories.income;
+    if (transactionType === 'Expense') return categories.expense;
+    if (transactionType === 'Investment') return categories.investment;
+    return [];
+  };
+
+  const getFirstOption = () => {
+    if (transactionType === 'Income') return 'All Income';
+    if (transactionType === 'Expense') return 'All Expenses';
+    if (transactionType === 'Investment') return 'All Investments';
+    return '';
+  };
 
   //date range
   const [dateString, setDateString] = useState('');
@@ -29,9 +50,22 @@ export default function TransFilter({
     }  
   };
 
+  const handleExport = () => {
+    const exportData = filteredTransactions.map(txn => ({
+      Date: txn.date,
+      'Transaction Type': txn.transType,
+      Category: txn.category,
+      Amount: convertToFloat(txn.amount),
+      Note: txn.note
+    }));
+  
+    exportToExcel(exportData);
+  };
+  
+
   return (
     <div className='mb-2 d-flex flex-wrap'>
-      <Dropdown className="me-3">
+      <Dropdown className="me-2">
         <Dropdown.Toggle>
           {dateString || 'Last 30 days'}
         </Dropdown.Toggle>
@@ -61,15 +95,37 @@ export default function TransFilter({
         </Dropdown.Menu>
       </Dropdown>
       <Form.Select
-        className='dropdown-filter'
+        className='dropdown-filter me-2'
         value={transactionType}
         onChange={(e) => setTransactionType(e.target.value)}
       >
-        <option value="All Transaction Types">All transaction types</option>
+        <option value="All Transactions">All Transactions</option>
         <option value="Income">Income</option>
         <option value="Investment">Investment</option>
         <option value="Expense">Expense</option>
       </Form.Select>
+
+      {transactionType !== 'All Transactions' && (
+        <Form.Select
+          className={isMobile ? 'dropdown-filter mt-2 me-2' : 'dropdown-filter me-2'}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">{getFirstOption()}</option>
+          {getCategoryOptions()
+            .filter(option => option.id !== 0) // skip "Select an option"
+            .map(option => (
+              <option key={option.id} value={option.value}>
+                {option.name}
+              </option>
+          ))}
+        </Form.Select>
+      )}
+      <Button 
+        className={isMobile && transactionType !== 'All Transactions' ? 'mt-2' : ''} 
+        onClick={() => handleExport()}>
+        <FontAwesomeIcon icon={faFileExcel} />
+      </Button>
     </div>
   )
 }

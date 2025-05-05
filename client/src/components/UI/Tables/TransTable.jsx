@@ -11,7 +11,8 @@ export default function TransTable({transactions, setTransactions, getTransactio
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const [transactionType, setTransactionType] = useState('All Transaction Types');
+  const [transactionType, setTransactionType] = useState('All Transactions');
+  const [category, setCategory] = useState('');
 
   //apply filters
   const filterByDate = (transactions, startDate, endDate) => {  
@@ -40,12 +41,28 @@ export default function TransTable({transactions, setTransactions, getTransactio
 
   const filterByTransactionType = (transactions, transactionType) => {
     return transactions.filter((transaction) => {
-      return transactionType === 'All Transaction Types' || transactionType === transaction.transType;
+      return transactionType === 'All Transactions' || transactionType === transaction.transType;
     })
   }
 
+  const filterByCategory = (transactions, category) => {
+    return transactions.filter((transaction) => {
+      return category === '' || category === transaction.category;
+    });
+  }; 
+  
   let filteredTransactions = filterByDate(transactions, startDate, endDate);
   filteredTransactions = filterByTransactionType(filteredTransactions, transactionType);
+  filteredTransactions = filterByCategory(filteredTransactions, category);
+
+  const handleTransactionTypeChange = (value) => {
+    setTransactionType(value);
+    setCategory(''); // Reset category when type changes
+  };
+  
+  const handleCategoryChange = (value) => {
+    setCategory(value);
+  }
 
 
   //delete transaction
@@ -73,7 +90,10 @@ export default function TransTable({transactions, setTransactions, getTransactio
         startDate={startDate} setStartDate={setStartDate}
         endDate={endDate} setEndDate={setEndDate}
         getTransactions={getTransactions}
-        transactionType={transactionType} setTransactionType={setTransactionType}
+        transactionType={transactionType} 
+        setTransactionType={handleTransactionTypeChange}
+        category={category} setCategory={handleCategoryChange}
+        filteredTransactions={filteredTransactions}
         isMobile={isMobile}/>
       {
         !isMobile ? 
